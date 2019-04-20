@@ -1,0 +1,58 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "pathname"
+require "fileutils"
+require_relative "../lib/rails_redis_search/version"
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("..", __dir__)
+MASTER_CHECK = <<~MASTER_CHECK
+  if [ $(git symbolic-ref --short -q HEAD) != 'master' ];
+    then exit 1;
+  fi
+MASTER_CHECK
+VERSION_TYPES = %w(major minor patch).freeze
+
+def system!(*args)
+  system(*args) || abort("\n== Command #{args} failed ==")
+end
+
+abort("\n== Version Type incorrect ==") unless VERSION_TYPES.include?(ARGV[0])
+
+abort("\n== Not on master") unless system(MASTER_CHECK)
+
+current_version = RailsRedisSearch::VERSION.split(".").map(&:to_i)
+
+case ARGV[0]
+when "major"
+  current_version[0] += 1
+  current_version[1] = 0
+  current_version[2] = 0
+when "minor"
+  current_version[1] += 1
+  current_version[2] = 0
+when "patch"
+  current_version[2] += 1
+end
+
+FileUtils.chdir APP_ROOT do
+  contents = <<~FILE
+    # frozen_string_literal: true
+
+    module RailsRedisSearch
+      VERSION = "#{current_version.join('.')}"
+    end
+  FILE
+
+  puts "== Updating version to #{current_version.join('.')} =="
+  File.write("lib/rails_redis_search/version.rb", contents)
+
+  system! "git add lib/rails_redis_search/version.rb"
+
+  puts "== Committing updated files =="
+  system! "git commit -m 'Version bump to #{current_version.join('.')}'"
+
+  puts "== Tagging release =="
+  system! "bundle exec rake release"
+end
