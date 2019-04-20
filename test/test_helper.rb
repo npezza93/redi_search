@@ -1,22 +1,27 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
-
-require "minitest/autorun"
 require "minitest/pride"
+require "pry"
 
-class TestCase < Minitest::Test
-  def self.test(name, &block)
-    test_name = "test_#{name.gsub(/\s+/, '_')}".to_sym
-    defined = method_defined? test_name
-    raise "#{test_name} is already defined in #{self}" if defined
+# Configure Rails Environment
+ENV["RAILS_ENV"] = "test"
 
-    if block_given?
-      define_method(test_name, &block)
-    else
-      define_method(test_name) do
-        flunk "No implementation provided for #{name}"
-      end
-    end
-  end
+require_relative "../test/dummy/config/environment"
+ActiveRecord::Migrator.migrations_paths =
+  [File.expand_path("../test/dummy/db/migrate", __dir__)]
+require "rails/test_help"
+
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
+
+require "rails/test_unit/reporter"
+Rails::TestUnitReporter.executable = "bin/test"
+
+# Load fixtures from the engine
+if ActiveSupport::TestCase.respond_to?(:fixture_path=)
+  ActiveSupport::TestCase.fixture_path = File.expand_path("fixtures", __dir__)
+  ActionDispatch::IntegrationTest.fixture_path =
+    ActiveSupport::TestCase.fixture_path
+  ActiveSupport::TestCase.file_fixture_path =
+    ActiveSupport::TestCase.fixture_path + "/files"
+  ActiveSupport::TestCase.fixtures :all
 end
