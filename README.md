@@ -2,7 +2,14 @@
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rails_redis_search`. To experiment with that code, run `bin/console` for an interactive prompt.
 
-TODO: Delete this and the text above, and describe your gem
+1. git clone https://github.com/RedisLabsModules/RediSearch.git
+1. cd RediSearch
+1. mkdir build
+1. cd build
+1. cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo
+1. make
+1. redis-server --loadmodule ./redisearch.so or load the module in your redis.conf
+
 
 ## Installation
 
