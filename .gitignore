@@ -7,3 +7,5 @@
 /spec/reports/
 /tmp/
 Gemfile.lock
+*.sqlite3
+*.log
