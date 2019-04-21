@@ -32,8 +32,7 @@ module RediSearch
       @redis = Redis.new(host: "127.0.0.1", port: "6379")
 
       define_singleton_method :create_index do
-        binding.pry
-        redis.call("FT.CREATE", index_name, "SCHEMA", schema.to_s)
+        redis.call("FT.CREATE", index_name, "SCHEMA", schema.to_a)
       end
 
       define_singleton_method :drop_index do

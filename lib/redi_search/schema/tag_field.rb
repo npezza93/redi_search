@@ -12,12 +12,12 @@ module RediSearch
         @no_index = no_index
       end
 
-      def to_s
-        query = [name, "TAG"]
+      def to_a
+        query = [name.to_s, "TAG"]
         query += boolean_options_string
-        query += ["SEPARATOR #{separator}"] if separator
+        query += ["SEPARATOR", separator] if separator
 
-        query.join(" ")
+        query
       end
 
       private
@@ -27,7 +27,7 @@ module RediSearch
       def boolean_options_string
         %i(sortable no_index).map do |option|
           if ActiveRecord::Type::Boolean.new.cast(send(option))
-            [option.to_s.upcase.split("_").join]
+            option.to_s.upcase.split("_").join
           end
         end.compact
       end

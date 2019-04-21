@@ -5,7 +5,7 @@ require "active_record/type"
 module RediSearch
   class Schema
     class TextField
-      def initialize(name, weight: nil, phonetic: nil, sortable: false,
+      def initialize(name, weight: 1.0, phonetic: nil, sortable: false,
                      no_index: false, no_stem: false)
         @name = name
         @weight = weight
@@ -15,13 +15,13 @@ module RediSearch
         @no_stem = no_stem
       end
 
-      def to_s
-        query = [name, "TEXT"]
+      def to_a
+        query = [name.to_s, "TEXT"]
         query += boolean_options_string
-        query += ["WEIGHT #{weight}"] if weight
-        query += ["PHONETIC #{phonetic}"] if phonetic
+        query += ["WEIGHT", weight] if weight
+        query += ["PHONETIC", phonetic] if phonetic
 
-        query.join(" ")
+        query
       end
 
       private
@@ -31,7 +31,7 @@ module RediSearch
       def boolean_options_string
         %i(sortable no_index no_stem).map do |option|
           if ActiveRecord::Type::Boolean.new.cast(send(option))
-            [option.to_s.upcase.split("_").join]
+            option.to_s.upcase.split("_").join
           end
         end.compact
       end

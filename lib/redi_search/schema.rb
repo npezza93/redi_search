@@ -12,7 +12,7 @@ module RediSearch
       @schema_hash = schema_hash
     end
 
-    def to_s
+    def to_a
       schema_hash.map do |field_name, options|
         options = [options] if options.is_a? Symbol
         schema, options = options.to_a.flatten
@@ -20,8 +20,8 @@ module RediSearch
         "RediSearch::Schema::#{schema.to_s.classify}Field".
           constantize.
           new(field_name, **options.to_h).
-          to_s
-      end
+          to_a
+      end.flatten
     end
 
     private
