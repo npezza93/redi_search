@@ -22,7 +22,7 @@ module RediSearch
   class_methods do
     attr_reader :index_name, :redis
 
-    def searchable(**options)
+    def redi_search(**options)
       cattr_accessor(
         :index_name,
         default: (options[:index_name] || name.underscore + "_idx").to_s

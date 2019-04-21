@@ -3,5 +3,5 @@
 class User < ApplicationRecord
   include RediSearch
 
-  searchable schema: { name: :text }
+  redi_search schema: { name: :text }
 end
