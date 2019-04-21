@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  include RailsRedisSearch
+  include RediSearch
 
-  searchable schema: { name: "TEXT" }
+  searchable schema: { name: :text }
 end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_redis_search/schema"
+require "redi_search/schema"
 
-module RailsRedisSearch
+module RediSearch
   class SchemaTest < ActiveSupport::TestCase
     test "#to_s" do
       schema = <<~SCHEMA.squish
@@ -13,7 +13,7 @@ module RailsRedisSearch
 
       assert_equal(
         schema,
-        RailsRedisSearch::Schema.new({
+        RediSearch::Schema.new({
           name: { text: { sortable: true } },
           age: { numeric: { sortable: true } },
           myTag: { tag: { sortable: true } },

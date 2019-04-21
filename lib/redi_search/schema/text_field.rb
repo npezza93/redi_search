@@ -2,10 +2,10 @@
 
 require "active_record/type"
 
-module RailsRedisSearch
+module RediSearch
   class Schema
     class TextField
-      def initialize(name, weight: 1.0, phonetic: nil, sortable: false,
+      def initialize(name, weight: nil, phonetic: nil, sortable: false,
                      no_index: false, no_stem: false)
         @name = name
         @weight = weight

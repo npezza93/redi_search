@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require "rails_redis_search/schema/geo_field"
-require "rails_redis_search/schema/numeric_field"
-require "rails_redis_search/schema/tag_field"
-require "rails_redis_search/schema/text_field"
+require "redi_search/schema/geo_field"
+require "redi_search/schema/numeric_field"
+require "redi_search/schema/tag_field"
+require "redi_search/schema/text_field"
 require "active_support/inflector"
 
-module RailsRedisSearch
+module RediSearch
   class Schema
     def initialize(schema_hash)
       @schema_hash = schema_hash
@@ -17,11 +17,11 @@ module RailsRedisSearch
         options = [options] if options.is_a? Symbol
         schema, options = options.to_a.flatten
 
-        "RailsRedisSearch::Schema::#{schema.to_s.classify}Field".
+        "RediSearch::Schema::#{schema.to_s.classify}Field".
           constantize.
           new(field_name, **options.to_h).
           to_s
-      end.join(" ")
+      end
     end
 
     private

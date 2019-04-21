@@ -5,7 +5,7 @@ require_relative "boot"
 require "rails/all"
 
 Bundler.require(*Rails.groups)
-require "rails_redis_search"
+require "redi_search"
 
 module Dummy
   class Application < Rails::Application

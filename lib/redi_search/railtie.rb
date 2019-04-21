@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RailsRedisSearch
+module RediSearch
   class Railtie < ::Rails::Railtie
   end
 end

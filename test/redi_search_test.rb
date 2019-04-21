@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails_redis_search"
+require "redi_search"
 
-class RailsRedisSearchTest < ActiveSupport::TestCase
+class RediSearchTest < ActiveSupport::TestCase
   test "index name" do
     assert_equal "user_idx", User.index_name
   end
@@ -14,9 +14,9 @@ class RailsRedisSearchTest < ActiveSupport::TestCase
   end
 
   test "only ActiveRecord models are searchable" do
-    assert_raises RailsRedisSearch::Error do
+    assert_raises RediSearch::Error do
       class Thing
-        include RailsRedisSearch
+        include RediSearch
       end
     end
   end

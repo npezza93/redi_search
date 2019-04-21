@@ -4,18 +4,18 @@ require "active_support/concern"
 require "active_record/base"
 require "redis"
 
-require "rails_redis_search/railtie"
-require "rails_redis_search/error"
-require "rails_redis_search/version"
-require "rails_redis_search/schema"
+require "redi_search/railtie"
+require "redi_search/error"
+require "redi_search/version"
+require "redi_search/schema"
 
-module RailsRedisSearch
+module RediSearch
   extend ActiveSupport::Concern
 
   def self.included(other_class)
     return if other_class <= ActiveRecord::Base
 
-    raise RailsRedisSearch::Error,
+    raise RediSearch::Error,
           "Not included in an ActiveRecord backed class"
   end
 
@@ -32,6 +32,7 @@ module RailsRedisSearch
       @redis = Redis.new(host: "127.0.0.1", port: "6379")
 
       define_singleton_method :create_index do
+        binding.pry
         redis.call("FT.CREATE", index_name, "SCHEMA", schema.to_s)
       end
 

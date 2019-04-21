@@ -2,7 +2,7 @@
 
 require "active_record/type"
 
-module RailsRedisSearch
+module RediSearch
   class Schema
     class NumericField
       def initialize(name, sortable: false, no_index: false)

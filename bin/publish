@@ -3,7 +3,7 @@
 
 require "pathname"
 require "fileutils"
-require_relative "../lib/rails_redis_search/version"
+require_relative "../lib/redi_search/version"
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("..", __dir__)
@@ -22,7 +22,7 @@ abort("\n== Version Type incorrect ==") unless VERSION_TYPES.include?(ARGV[0])
 
 abort("\n== Not on master") unless system(MASTER_CHECK)
 
-current_version = RailsRedisSearch::VERSION.split(".").map(&:to_i)
+current_version = RediSearch::VERSION.split(".").map(&:to_i)
 
 case ARGV[0]
 when "major"
@@ -40,15 +40,15 @@ FileUtils.chdir APP_ROOT do
   contents = <<~FILE
     # frozen_string_literal: true
 
-    module RailsRedisSearch
+    module RediSearch
       VERSION = "#{current_version.join('.')}"
     end
   FILE
 
   puts "== Updating version to #{current_version.join('.')} =="
-  File.write("lib/rails_redis_search/version.rb", contents)
+  File.write("lib/redi_search/version.rb", contents)
 
-  system! "git add lib/rails_redis_search/version.rb"
+  system! "git add lib/redi_search/version.rb"
 
   puts "== Committing updated files =="
   system! "git commit -m 'Version bump to #{current_version.join('.')}'"
