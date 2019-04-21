@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "active_record/type"
+
 module RailsRedisSearch
   class Schema
     class TextField
