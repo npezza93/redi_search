@@ -46,6 +46,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_dependency "redis"
 
   spec.add_development_dependency "bundler", "~> 1.17"
+  spec.add_development_dependency "faker"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 10.0"

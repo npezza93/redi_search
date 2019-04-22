@@ -1,7 +1,6 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
-
-two:
-  name: MyString2
+<% 50.times do |i| %>
+  "user#{i}":
+    name: <%= Faker::Name.name %>
+<% end %>
