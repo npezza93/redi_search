@@ -5,22 +5,24 @@ require "redi_search/error"
 
 module RediSearch
   class Index
-    def initialize(client, name)
-      @client = client
+    attr_reader :name, :schema
+
+    def initialize(name, schema)
       @name = name
+      @schema = schema
     end
 
     def search(query, **options)
       client.call!("SEARCH", query, *options.to_a.flatten)
     end
 
-    def create(schema)
-      create!(schema)
+    def create
+      create!
     rescue Redis::CommandError
       false
     end
 
-    def create!(schema)
+    def create!
       client.call!("CREATE", name, "SCHEMA", Schema.new(schema).to_a).ok?
     end
 
@@ -79,6 +81,8 @@ module RediSearch
 
     private
 
-    attr_reader :client, :name
+    def client
+      RediSearch.client
+    end
   end
 end
