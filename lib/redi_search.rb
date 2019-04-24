@@ -8,6 +8,7 @@ require "redi_search/railtie"
 require "redi_search/error"
 require "redi_search/version"
 require "redi_search/schema"
+require "redi_search/client"
 
 module RediSearch
   extend ActiveSupport::Concern
