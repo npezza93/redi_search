@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "active_record/type"
+require "redi_search/schema/field"
 
 module RediSearch
   class Schema
-    class TagField
+    class TagField < Field
       def initialize(name, separator: nil, sortable: false, no_index: false)
         @name = name
         @separator = separator
@@ -24,12 +24,8 @@ module RediSearch
 
       attr_reader :name, :separator, :sortable, :no_index
 
-      def boolean_options_string
-        %i(sortable no_index).map do |option|
-          if ActiveRecord::Type::Boolean.new.cast(send(option))
-            option.to_s.upcase.split("_").join
-          end
-        end.compact
+      def boolean_options
+        %i(sortable no_index)
       end
     end
   end

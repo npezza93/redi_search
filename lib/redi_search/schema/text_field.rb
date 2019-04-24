@@ -4,7 +4,7 @@ require "active_record/type"
 
 module RediSearch
   class Schema
-    class TextField
+    class TextField < Field
       def initialize(name, weight: 1.0, phonetic: nil, sortable: false,
                      no_index: false, no_stem: false)
         @name = name
@@ -28,12 +28,8 @@ module RediSearch
 
       attr_reader :name, :weight, :phonetic, :sortable, :no_index, :no_stem
 
-      def boolean_options_string
-        %i(sortable no_index no_stem).map do |option|
-          if ActiveRecord::Type::Boolean.new.cast(send(option))
-            option.to_s.upcase.split("_").join
-          end
-        end.compact
+      def boolean_options
+        %i(sortable no_index no_stem)
       end
     end
   end
