@@ -2,21 +2,29 @@
 
 require "redis"
 
+require "redi_search/configuration"
+
 require "redi_search/railtie"
-require "redi_search/client"
 require "redi_search/index"
 
 module RediSearch
-  extend ActiveSupport::Concern
+  class << self
+    attr_writer :configuration
 
-  def self.included(other_class)
-    return if other_class <= ActiveRecord::Base
+    def configuration
+      @configuration ||= Configuration.new
+    end
 
-    raise RediSearch::Error,
-          "Not included in an ActiveRecord backed class"
+    def reset
+      @configuration = Configuration.new
+    end
+
+    def configure
+      yield(configuration)
+    end
   end
 
-  class_methods do
+  class << self
     attr_reader :index_name, :redis
 
     def redi_search(**options)

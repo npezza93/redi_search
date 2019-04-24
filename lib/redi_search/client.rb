@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "redis"
+
 module RediSearch
   class Client
     class Response < SimpleDelegator
@@ -24,8 +26,8 @@ module RediSearch
       attr_reader :response
     end
 
-    def initialize(redis_instance)
-      @redis_instance = redis_instance
+    def initialize(redis_config)
+      @redis = Redis.new(redis_config)
     end
 
     def call!(command, *params)
@@ -33,15 +35,15 @@ module RediSearch
     end
 
     def pipelined
-      Response.new(redis_instance.pipelined { yield })
+      Response.new(redis.pipelined { yield })
     end
 
     private
 
-    attr_reader :redis_instance
+    attr_reader :redis
 
     def send_command(command, *params)
-      Response.new(redis_instance.call("FT.#{command}", *params))
+      Response.new(redis.call("FT.#{command}", *params))
     end
   end
 end
