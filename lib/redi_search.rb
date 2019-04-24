@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
-require "active_support/concern"
-require "active_record/base"
 require "redis"
 
 require "redi_search/railtie"
-require "redi_search/error"
-require "redi_search/version"
-require "redi_search/schema"
 require "redi_search/client"
+require "redi_search/index"
 
 module RediSearch
   extend ActiveSupport::Concern
