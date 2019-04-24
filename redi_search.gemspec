@@ -10,7 +10,7 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.authors       = ["Nick Pezza"]
   spec.email         = ["npezza93@gmail.com"]
 
-  spec.summary       = %q(Integrates RediSearch with Rails models)
+  spec.summary       = %q(RediSearch ruby wrapper that can integrate with Rails)
   spec.homepage      = "https://github.com/npezza93/redi_search"
   spec.license       = "MIT"
 
@@ -40,13 +40,13 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rails", "~> 6.0.0.beta3"
   spec.add_dependency "redis"
 
   spec.add_development_dependency "bundler", "~> 1.17"
   spec.add_development_dependency "faker"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "pry"
+  spec.add_development_dependency "rails", "~> 6.0.0.beta3"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rubocop"
   spec.add_development_dependency "rubocop-performance"
