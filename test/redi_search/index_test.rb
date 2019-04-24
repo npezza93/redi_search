@@ -25,11 +25,11 @@ module RediSearch
       name = Faker::Name.name
       record = User.create(name: name)
       assert @index.add(record)
-      assert_equal 1, @index.search(record.name.split(" ")[0]).first
+      assert_equal 1, @index.search(record.name.split(" ")[0]).count
 
       record_jr = User.create(name: name + " jr")
       assert @index.add(record_jr)
-      assert_equal 2, @index.search(record.name.split(" ")[0]).first
+      assert_equal 2, @index.search(record.name.split(" ")[0]).count
     end
 
     test "#exists?" do

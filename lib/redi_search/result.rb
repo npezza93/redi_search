@@ -6,7 +6,7 @@ module RediSearch
 
     def initialize(doc_id, fields)
       @doc_id = doc_id
-      @raw_fields = fields.in_groups(2).to_h
+      @raw_fields = fields.in_groups_of(2).to_h
       @raw_fields.each do |field, value|
         define_singleton_method field do
           value
