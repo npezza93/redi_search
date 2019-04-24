@@ -13,7 +13,7 @@ module RediSearch
     end
 
     def search(query, **options)
-      client.call!("SEARCH", query, *options.to_a.flatten)
+      client.call!("SEARCH", name, query, *options.to_a.flatten)
     end
 
     def create
@@ -66,17 +66,13 @@ module RediSearch
     end
 
     def info
-      client.call!("INFO", name)
+      Hash[*client.call!("INFO", name)]
     rescue Redis::CommandError
       nil
     end
 
     def fields
-      @fields ||= begin
-        info.to_a.then do |description|
-          description[description.index("fields") + 1].map(&:first)
-        end
-      end
+      @fields ||= info["fields"].map(&:first)
     end
 
     private
