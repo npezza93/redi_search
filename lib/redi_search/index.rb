@@ -2,6 +2,7 @@
 
 require "redi_search/schema"
 require "redi_search/error"
+require "redi_search/search/query"
 require "redi_search/result/collection"
 
 module RediSearch
@@ -13,10 +14,8 @@ module RediSearch
       @schema = schema
     end
 
-    def search(query, **options)
-      results = client.call!("SEARCH", name, query, *options.to_a.flatten)
-
-      Result::Collection.new(results[0], results[1..-1])
+    def search(query)
+      Search::Query.new(self, query)
     end
 
     def create
