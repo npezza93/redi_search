@@ -18,6 +18,15 @@ module RediSearch
         def search(query)
           class_variable_get(:@@redi_search_index).search(query)
         end
+
+        def reindex
+          index = class_variable_get(:@@redi_search_index)
+
+          index.create unless index.exist?
+          find_each do |record|
+            index.add(record)
+          end
+        end
       end
     end
   end
