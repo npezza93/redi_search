@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 require "active_support/core_ext/module/delegation"
+require "redi_search/search/query/highlight_clause"
 
 module RediSearch
   module Search
     class Query
       include Enumerable
 
-      attr_accessor :index, :query, :options
+      attr_accessor :index, :query, :options, :command
 
       def initialize(index, query)
         @index = index
         @query = query
         @loaded = false
-        @options = []
+        @command = ["SEARCH", index.name, query]
       end
 
       def inspect
@@ -26,8 +27,8 @@ module RediSearch
         @loaded
       end
 
-      def highlight
-        options.push("HIGHLIGHT")
+      def highlight(**options)
+        command.push(*HighlightClause.new(**options).clause)
 
         self
       end
@@ -46,11 +47,10 @@ module RediSearch
 
       def execute
         @loaded = true
-        results = RediSearch.client.call!(
-          "SEARCH", index.name, query, *options.flatten
-        )
 
-        @records = Result::Collection.new(results[0], results[1..-1])
+        RediSearch.client.call!(*command).then do |results|
+          @records = Result::Collection.new(results[0], results[1..-1])
+        end
       end
     end
   end
