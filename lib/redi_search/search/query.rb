@@ -54,8 +54,12 @@ module RediSearch
       def execute
         @loaded = true
 
-        RediSearch.client.call!(*command).then do |results|
-          @records = Result::Collection.new(results[0], results[1..-1])
+        ActiveSupport::Notifications.instrument("search.redi_search", {
+          name: "RediSearch", query: command
+        }) do
+          RediSearch.client.call!(*command).then do |results|
+            @records = Result::Collection.new(results[0], results[1..-1])
+          end
         end
       end
     end
