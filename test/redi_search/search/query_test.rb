@@ -35,6 +35,14 @@ module RediSearch
           query.highlight(tags: { open: "b", close: "bb" }).command
         )
       end
+
+      test "slop clause" do
+        query = RediSearch::Search::Query.new(@index, "dr")
+
+        assert_equal(
+          ["SEARCH", "user_idx", "dr", "SLOP", 1], query.slop(1).command
+        )
+      end
     end
   end
 end

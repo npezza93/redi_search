@@ -33,6 +33,12 @@ module RediSearch
         self
       end
 
+      def slop(slop)
+        command.push("SLOP", slop)
+
+        self
+      end
+
       def to_a
         execute unless loaded?
 
