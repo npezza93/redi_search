@@ -39,15 +39,15 @@ module RediSearch
       client.call!("DROP", name).ok?
     end
 
-    def add(records)
-      add!(records)
+    def add(record, score = 1.0)
+      add!(record, score)
     rescue Redis::CommandError
       false
     end
 
-    def add!(record)
+    def add!(record, score = 1.0)
       client.call!(
-        "ADD", name, record.id, record.score, "REPLACE", "FIELDS",
+        "ADD", name, record.id, score, "REPLACE", "FIELDS",
         *fields.flat_map do |field|
           [field, record.public_send(field)]
         end
