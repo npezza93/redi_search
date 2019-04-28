@@ -17,14 +17,32 @@ module RediSearch
     end
 
     def search(event)
+      log_command(event, YELLOW)
+    end
+
+    def create(event)
+      log_command(event, GREEN)
+    end
+
+    def drop(event)
+      log_command(event, RED)
+    end
+
+    def add(event)
+      log_command(event, GREEN)
+    end
+
+    private
+
+    def log_command(event, debug_color)
       self.class.runtime += event.duration
       return unless logger.debug?
 
       payload = event.payload
-      command =
-        color("#{payload[:name]} (#{event.duration.round(1)}ms)", RED, true)
+      command = "#{payload[:name]} (#{event.duration.round(1)}ms)"
+      query = payload[:query].join(" ")
 
-      debug "  #{command}  #{color(payload[:query].join(' '), BLUE, true)}"
+      debug "  #{color(command, RED, true)}  #{color(query, debug_color, true)}"
     end
   end
 end
