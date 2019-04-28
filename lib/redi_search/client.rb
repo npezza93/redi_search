@@ -31,7 +31,12 @@ module RediSearch
     end
 
     def call!(command, *params)
-      send_command(command, *params)
+      ActiveSupport::Notifications.instrument(
+        "#{command.downcase}.redi_search",
+        { name: "RediSearch", query: [command, params] }
+      ) do
+        send_command(command, *params)
+      end
     end
 
     def pipelined
