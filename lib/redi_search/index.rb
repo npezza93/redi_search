@@ -77,6 +77,14 @@ module RediSearch
       @fields ||= info["fields"].map(&:first)
     end
 
+    def reindex(docs)
+      drop if exist?
+      create
+      docs.each do |doc|
+        add(doc)
+      end
+    end
+
     private
 
     def client

@@ -20,12 +20,7 @@ module RediSearch
         end
 
         def reindex
-          index = class_variable_get(:@@redi_search_index)
-
-          index.create unless index.exist?
-          find_each do |record|
-            index.add(record)
-          end
+          class_variable_get(:@@redi_search_index).reindex(all)
         end
       end
     end
