@@ -15,6 +15,8 @@ module RediSearch
     end
 
     def search(query)
+      raise(Error, "Index doesnt exist") unless exist?
+
       Search::Query.new(self, query)
     end
 
