@@ -70,21 +70,19 @@ module RediSearch
     end
 
     def info
-      Hash[*client.call!("INFO", name)]
+      @info ||= Hash[*client.call!("INFO", name)]
     rescue Redis::CommandError
       nil
     end
 
     def fields
-      @fields ||= info["fields"].map(&:first)
+      @fields ||= schema.keys.map(&:to_s)
     end
 
     def reindex(docs)
       drop if exist?
       create
-      docs.each do |doc|
-        add(doc)
-      end
+      add_multiple! docs
     end
 
     private
