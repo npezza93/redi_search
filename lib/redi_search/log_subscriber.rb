@@ -32,6 +32,10 @@ module RediSearch
       log_command(event, GREEN)
     end
 
+    def info(event)
+      log_command(event, CYAN)
+    end
+
     private
 
     def log_command(event, debug_color)
