@@ -37,7 +37,7 @@ module RediSearch
     end
 
     def del
-      RediSearch.client.call!("DEL", index.name, document_id).ok?
+      client.call!("DEL", index.name, document_id).ok?
     end
 
     def pretty_print(printer) # rubocop:disable Metrics/MethodLength
@@ -62,6 +62,10 @@ module RediSearch
 
     def schema_fields
       @schema_fields ||= index.schema.fields.map(&:to_s)
+    end
+
+    def client
+      RediSearch.client
     end
   end
 end
