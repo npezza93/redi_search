@@ -59,10 +59,16 @@ module RediSearch
       return unless logger.debug?
 
       payload = event.payload
-      command = "#{payload[:name]} (#{event.duration.round(1)}ms)"
-      query = payload[:query].join(" ")
+      name = "#{payload[:name]} (#{event.duration.round(1)}ms)"
+      command = command_string(payload)
 
-      debug "  #{color(command, RED, true)}  #{color(query, debug_color, true)}"
+      debug "  #{color(name, RED, true)}  #{color(command, debug_color, true)}"
+    end
+
+    def command_string(payload)
+      payload[:query].tap do |query|
+        query[0] = query[0].dup.prepend "FT."
+      end.join(" ")
     end
   end
 end
