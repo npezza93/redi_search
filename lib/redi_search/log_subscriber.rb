@@ -67,7 +67,9 @@ module RediSearch
 
     def command_string(payload)
       payload[:query].tap do |query|
-        query[0] = query[0].dup.prepend "FT."
+        if query[0].upcase == query[0]
+          query[0] = query[0].dup.prepend "FT."
+        end
       end.join(" ")
     end
   end
