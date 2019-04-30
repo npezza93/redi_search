@@ -40,6 +40,18 @@ module RediSearch
       log_command(event, MAGENTA)
     end
 
+    def get(event)
+      log_command(event, CYAN)
+    end
+
+    def mget(event)
+      log_command(event, CYAN)
+    end
+
+    def del(event)
+      log_command(event, RED)
+    end
+
     private
 
     def log_command(event, debug_color)
