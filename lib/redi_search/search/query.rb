@@ -8,11 +8,12 @@ module RediSearch
     class Query
       include Enumerable
 
-      attr_accessor :index, :query, :options, :command
+      attr_accessor :index, :query, :model, :options, :command
 
-      def initialize(index, query)
+      def initialize(index, query, model)
         @index = index
         @query = query
+        @model = model
         @loaded = false
         @command = ["SEARCH", index.name, query]
       end
@@ -43,6 +44,10 @@ module RediSearch
         execute unless loaded?
 
         @records
+      end
+
+      def results
+        model.where(id: to_a.map(&:document_id))
       end
 
       delegate :count, :each, to: :to_a

@@ -7,17 +7,16 @@ require "redi_search/result/collection"
 
 module RediSearch
   class Index
-    attr_reader :name, :schema
+    attr_reader :name, :schema, :model
 
-    def initialize(name, schema)
+    def initialize(name, schema, model = nil)
       @name = name
       @schema = Schema.new(schema)
+      @model = model
     end
 
     def search(query)
-      raise(Error, "Index doesnt exist") unless exist?
-
-      Search::Query.new(self, query)
+      Search::Query.new(self, query, model)
     end
 
     def create
