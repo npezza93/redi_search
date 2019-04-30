@@ -34,6 +34,6 @@ module RediSearch
 end
 
 ActiveSupport.on_load(:active_record) do
-  extend RediSearch::Model
+  include RediSearch::Model
 end
 RediSearch::LogSubscriber.attach_to :redi_search

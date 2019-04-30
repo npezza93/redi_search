@@ -1,26 +1,30 @@
 # frozen_string_literal: true
 
 require "redi_search/index"
+require "active_support/concern"
 
 module RediSearch
   module Model
-    def redi_search(**options) # rubocop:disable Metrics/MethodLength
-      index = Index.new(options[:index_name] || "#{name.underscore}_idx",
-                        options[:schema])
+    extend ActiveSupport::Concern
 
-      class_eval do
-        cattr_reader :redi_search_index
+    class_methods do
+      attr_reader :redi_search_index
 
-        class_variable_set :@@redi_search_index, index
-      end
+      def redi_search(**options) # rubocop:disable Metrics/MethodLength
+        @redi_search_index = Index.new(
+          options[:index_name] || "#{name.underscore}_idx",
+          options[:schema],
+          self
+        )
 
-      class << self
-        def search(query)
-          class_variable_get(:@@redi_search_index).search(query)
-        end
+        class << self
+          def search(query)
+            redi_search_index.search(query)
+          end
 
-        def reindex
-          class_variable_get(:@@redi_search_index).reindex(all)
+          def reindex
+            redi_search_index.reindex(all)
+          end
         end
       end
     end
