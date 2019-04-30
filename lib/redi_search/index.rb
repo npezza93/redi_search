@@ -2,6 +2,7 @@
 
 require "redi_search/schema"
 require "redi_search/error"
+require "redi_search/document/converter"
 require "redi_search/search/query"
 require "redi_search/result/collection"
 
@@ -48,9 +49,7 @@ module RediSearch
     def add!(record, score = 1.0)
       client.call!(
         "ADD", name, record.id, score, "REPLACE", "FIELDS",
-        *fields.flat_map do |field|
-          [field, record.public_send(field)]
-        end
+        Document::Converter.new(self, record).document.to_a
       )
     end
 

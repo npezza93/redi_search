@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require "redi_search/index"
+require "redi_search/document/converter"
+
 require "active_support/concern"
 
 module RediSearch
@@ -27,6 +29,10 @@ module RediSearch
           end
         end
       end
+    end
+
+    def redi_search_document
+      Document::Converter.new(self.class.redi_search_index, self).document
     end
   end
 end

@@ -27,8 +27,10 @@ module RediSearch
     def initialize(index, document_id, fields)
       @index = index
       @document_id = document_id
+      @to_a = []
 
       schema_fields.each do |field|
+        @to_a.push([field, fields[field]])
         instance_variable_set(:"@#{field}", fields[field])
         define_singleton_method field do
           fields[field]
@@ -56,13 +58,17 @@ module RediSearch
       end
     end
 
-    private
-
-    attr_reader :index
-
     def schema_fields
       @schema_fields ||= index.schema.fields.map(&:to_s)
     end
+
+    def to_a
+      @to_a.flatten
+    end
+
+    private
+
+    attr_reader :index
 
     def client
       RediSearch.client
