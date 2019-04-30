@@ -55,7 +55,7 @@ module RediSearch
         @loaded = true
 
         RediSearch.client.call!(*command).then do |results|
-          @records = Result::Collection.new(results[0], results[1..-1])
+          @records = Result::Collection.new(index, results[0], results[1..-1])
         end
       end
     end

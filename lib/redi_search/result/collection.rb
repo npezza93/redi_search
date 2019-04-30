@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/result"
 require "active_support/core_ext/module/delegation"
 
 module RediSearch
@@ -11,10 +10,10 @@ module RediSearch
       attr_reader :count, :records
       delegate :each, to: :records
 
-      def initialize(count, records)
+      def initialize(index, count, records)
         @count = count
         @records = Hash[*records].map do |doc_id, fields|
-          Result.new(doc_id, fields)
+          Document.new(index, doc_id, Hash[*fields])
         end
       end
     end
