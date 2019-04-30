@@ -17,10 +17,10 @@ module RediSearch
         @command = ["SEARCH", index.name, query]
       end
 
-      def inspect
+      def pretty_print(printer)
         execute unless loaded?
 
-        "[#{@records.records.map(&:inspect).join(', ')}]"
+        printer.pp(records)
       end
 
       def loaded?
