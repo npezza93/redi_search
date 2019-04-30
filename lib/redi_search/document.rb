@@ -36,6 +36,10 @@ module RediSearch
       end
     end
 
+    def del
+      RediSearch.client.call!("DEL", index.name, document_id).ok?
+    end
+
     def pretty_print(printer) # rubocop:disable Metrics/MethodLength
       printer.object_address_group(self) do
         printer.seplist(

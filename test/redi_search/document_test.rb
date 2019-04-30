@@ -68,5 +68,17 @@ module RediSearch
       assert_equal @record1.id, docs.first.document_id
       assert_nil docs.second
     end
+
+    test "#del" do
+      @record = User.create(
+        first: Faker::Name.first_name, last: Faker::Name.last_name
+      )
+      assert @index.add(@record)
+      assert_equal 1, @index.info["num_docs"].to_i
+
+      doc = RediSearch::Document.get(@index, @record.id)
+      assert doc.del
+      assert_equal 0, @index.info["num_docs"].to_i
+    end
   end
 end

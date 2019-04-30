@@ -70,7 +70,7 @@ module RediSearch
     end
 
     def info
-      @info ||= Hash[*client.call!("INFO", name)]
+      Hash[*client.call!("INFO", name)]
     rescue Redis::CommandError
       nil
     end
