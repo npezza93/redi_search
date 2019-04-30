@@ -9,6 +9,7 @@ require "redi_search/railtie"
 require "redi_search/model"
 require "redi_search/index"
 require "redi_search/log_subscriber"
+require "redi_search/document"
 
 module RediSearch
   class << self
