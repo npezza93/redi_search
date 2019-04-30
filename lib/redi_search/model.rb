@@ -4,7 +4,7 @@ require "redi_search/index"
 
 module RediSearch
   module Model
-    def redi_search(**options)
+    def redi_search(**options) # rubocop:disable Metrics/MethodLength
       index = Index.new(options[:index_name] || "#{name.underscore}_idx",
                         options[:schema])
 
