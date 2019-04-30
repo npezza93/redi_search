@@ -36,6 +36,10 @@ module RediSearch
       log_command(event, CYAN)
     end
 
+    def pipeline(event)
+      log_command(event, MAGENTA)
+    end
+
     private
 
     def log_command(event, debug_color)
