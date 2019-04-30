@@ -2,5 +2,6 @@
 
 <% 50.times do |i| %>
   "user#{i}":
-    name: <%= Faker::Name.name %>
+    first: <%= Faker::Name.first_name %>
+    last: <%= Faker::Name.last_name %>
 <% end %>
