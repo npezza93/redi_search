@@ -21,5 +21,17 @@ module RediSearch
         }).to_a
       )
     end
+
+    test "#fields" do
+      assert_equal(
+        %i(name age myTag other),
+        RediSearch::Schema.new({
+          name: { text: { sortable: true } },
+          age: { numeric: { sortable: true } },
+          myTag: { tag: { sortable: true } },
+          other: :text
+        }).fields
+      )
+    end
   end
 end

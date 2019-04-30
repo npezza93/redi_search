@@ -7,12 +7,12 @@ require "redi_search/schema/text_field"
 
 module RediSearch
   class Schema
-    def initialize(schema_hash)
-      @schema_hash = schema_hash
+    def initialize(raw)
+      @raw = raw
     end
 
     def to_a
-      schema_hash.map do |field_name, options|
+      raw.map do |field_name, options|
         options = [options] if options.is_a? Symbol
         schema, options = options.to_a.flatten
 
@@ -23,8 +23,12 @@ module RediSearch
       end.flatten
     end
 
+    def fields
+      raw.keys
+    end
+
     private
 
-    attr_reader :schema_hash
+    attr_reader :raw
   end
 end

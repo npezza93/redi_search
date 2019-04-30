@@ -11,7 +11,7 @@ module RediSearch
 
     def initialize(name, schema)
       @name = name
-      @schema = schema
+      @schema = Schema.new(schema)
     end
 
     def search(query)
@@ -27,7 +27,7 @@ module RediSearch
     end
 
     def create!
-      client.call!("CREATE", name, "SCHEMA", Schema.new(schema).to_a).ok?
+      client.call!("CREATE", name, "SCHEMA", schema.to_a).ok?
     end
 
     def drop
@@ -76,7 +76,7 @@ module RediSearch
     end
 
     def fields
-      @fields ||= schema.keys.map(&:to_s)
+      @fields ||= schema.fields.map(&:to_s)
     end
 
     def reindex(docs)
