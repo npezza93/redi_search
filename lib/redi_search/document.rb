@@ -2,6 +2,16 @@
 
 module RediSearch
   class Document
+    class << self
+      def get(index, document_id)
+        response = RediSearch.client.call!("GET", index.name, document_id)
+
+        return if response.blank?
+
+        new(index, document_id, Hash[*response])
+      end
+    end
+
     attr_reader :document_id
 
     def initialize(index, document_id, fields)
