@@ -10,6 +10,16 @@ module RediSearch
 
         new(index, document_id, Hash[*response])
       end
+
+      def mget(index, *document_ids)
+        document_ids.zip(
+          RediSearch.client.call!("MGET", index.name, *document_ids)
+        ).map do |document|
+          next if document[1].blank?
+
+          new(index, document[0], Hash[*document[1]])
+        end.compact
+      end
     end
 
     attr_reader :document_id
