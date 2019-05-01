@@ -2,6 +2,8 @@
 
 require "redis"
 require "active_support"
+require "active_support/core_ext/object"
+require "active_support/core_ext/module/delegation"
 
 require "redi_search/configuration"
 

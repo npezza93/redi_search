@@ -3,7 +3,7 @@
 require "redi_search/schema"
 require "redi_search/error"
 require "redi_search/document/converter"
-require "redi_search/search/query"
+require "redi_search/search"
 require "redi_search/result/collection"
 
 module RediSearch
@@ -17,7 +17,7 @@ module RediSearch
     end
 
     def search(query)
-      Search::Query.new(self, query, model)
+      Search.new(self, query, model)
     end
 
     def create
