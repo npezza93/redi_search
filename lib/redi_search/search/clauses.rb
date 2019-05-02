@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "redi_search/search/term"
+
 module RediSearch
   class Search
     module Clauses
@@ -55,6 +57,18 @@ module RediSearch
 
       def limit(offset, num)
         clauses.push("LIMIT", offset, num)
+
+        self
+      end
+
+      def and(new_term)
+        @term_clause.push(Term.new(new_term))
+
+        self
+      end
+
+      def or(new_term)
+        @term_clause.push(Term.new(new_term))
 
         self
       end

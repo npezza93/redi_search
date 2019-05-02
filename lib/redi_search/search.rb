@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "redi_search/search/clauses"
+require "redi_search/search/term"
 require "redi_search/search/highlight_clause"
 
 module RediSearch
@@ -10,6 +11,7 @@ module RediSearch
 
     def initialize(index, term, model = nil, **options)
       @index = index
+      @term_clause = Term.new(term, **options)
       @model = model
       @loaded = false
       @clauses = []
@@ -19,6 +21,8 @@ module RediSearch
       execute unless loaded?
 
       printer.pp(records)
+    rescue Redis::CommandError => e
+      printer.pp(e.message)
     end
 
     def loaded?
