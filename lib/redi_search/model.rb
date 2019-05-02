@@ -20,8 +20,8 @@ module RediSearch
         )
 
         class << self
-          def search(query)
-            redi_search_index.search(query)
+          def search(query, **options)
+            redi_search_index.search(query, **options)
           end
 
           def reindex

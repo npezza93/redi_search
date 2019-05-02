@@ -8,9 +8,8 @@ module RediSearch
     include Enumerable
     include Clauses
 
-    def initialize(index, term, model = nil)
+    def initialize(index, term, model = nil, **options)
       @index = index
-      @term_clause = [term]
       @model = model
       @loaded = false
       @clauses = []
@@ -45,7 +44,7 @@ module RediSearch
     private
 
     attr_reader :records
-    attr_accessor :index, :term_clause, :model, :options, :clauses
+    attr_accessor :index, :term_clause, :model, :clauses
 
     def command
       ["SEARCH", index.name, term_clause, *clauses]

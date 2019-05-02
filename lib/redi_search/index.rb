@@ -16,8 +16,8 @@ module RediSearch
       @model = model
     end
 
-    def search(query)
-      Search.new(self, query, model)
+    def search(query, **options)
+      Search.new(self, query, model, **options)
     end
 
     def create
