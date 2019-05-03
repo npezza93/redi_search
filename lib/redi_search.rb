@@ -7,7 +7,6 @@ require "active_support/core_ext/module/delegation"
 
 require "redi_search/configuration"
 
-require "redi_search/railtie"
 require "redi_search/model"
 require "redi_search/index"
 require "redi_search/log_subscriber"
