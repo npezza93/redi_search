@@ -9,7 +9,7 @@ module RediSearch
       end
 
       def to_s
-        "'#{apply_fuzziness}'"
+        "`#{apply_fuzziness}`"
       end
 
       private
