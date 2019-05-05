@@ -1,7 +1,62 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-<% 50.times do |i| %>
-  "user#{i}":
-    first: <%= Faker::Name.first_name %>
-    last: <%= Faker::Name.last_name %>
-<% end %>
+user1:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user2:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user3:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user4:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user5:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user6:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user7:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user8:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user9:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user10:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user11:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user12:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user13:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user14:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user15:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user16:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user17:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user18:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user19:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
+user20:
+  first: <%= Faker::Name.first_name %>
+  last: <%= Faker::Name.last_name %>
