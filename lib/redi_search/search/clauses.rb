@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "redi_search/search/term"
+require "redi_search/search/and_clause"
 
 module RediSearch
   class Search
@@ -61,8 +62,9 @@ module RediSearch
         self
       end
 
-      def and(new_term)
-        @term_clause.push(Term.new(new_term))
+      def and(*new_terms, **terms_with_options)
+        @term_clause =
+          AndClause.new(@term_clause, *new_terms, **terms_with_options)
 
         self
       end
