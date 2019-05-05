@@ -43,7 +43,13 @@ module RediSearch
     delegate :count, :each, to: :to_a
 
     def to_redis
-      command.join(" ")
+      command.map do |arg|
+        if arg.to_s.split.size > 1
+          arg.inspect
+        else
+          arg
+        end
+      end.join(" ")
     end
 
     private

@@ -19,6 +19,10 @@ module RediSearch
         [clause, parenthesize(@terms.map(&:to_s))].compact.join(operand)
       end
 
+      def inspect
+        to_s.inspect
+      end
+
       def append(clause)
         @terms << clause
       end
