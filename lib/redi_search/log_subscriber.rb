@@ -77,7 +77,7 @@ module RediSearch
     end
 
     def multiword?(string)
-      string.to_s.split.size > 1
+      string.to_s.split(/\s|\|/).size > 1
     end
   end
 end

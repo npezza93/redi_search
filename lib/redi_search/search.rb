@@ -44,7 +44,7 @@ module RediSearch
 
     def to_redis
       command.map do |arg|
-        if arg.to_s.split.size > 1
+        if arg.to_s.split(/\s|\|/).size > 1
           arg.inspect
         else
           arg
