@@ -39,7 +39,7 @@ module RediSearch
         self
       end
 
-      def limit(offset, num)
+      def limit(num, offset = 0)
         clauses.push("LIMIT", offset, num)
 
         self

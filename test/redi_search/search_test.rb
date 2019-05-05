@@ -86,6 +86,24 @@ module RediSearch
       end
     end
 
+    test "#limit clause defaults to 0 offset" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` LIMIT 0 10",
+        query.limit(10).to_redis
+      )
+    end
+
+    test "#limit clause with custom offset" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` LIMIT 5 10",
+        query.limit(10, 5).to_redis
+      )
+    end
+
     test "terms with options" do
       query = User.search(hello: { fuzziness: 1 })
 
