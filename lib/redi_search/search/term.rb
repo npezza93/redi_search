@@ -9,7 +9,9 @@ module RediSearch
       end
 
       def to_s
-        "`#{apply_fuzziness}`"
+        apply_fuzziness.tr("`", "\`").then do |str|
+          "`#{str}`"
+        end
       end
 
       private
