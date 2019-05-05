@@ -60,6 +60,32 @@ module RediSearch
       )
     end
 
+    test "#sort_by clause" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` SORTBY first asc",
+        query.sort_by(:first).to_redis
+      )
+    end
+
+    test "#sort_by desc clause" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` SORTBY first desc",
+        query.sort_by(:first, order: :desc).to_redis
+      )
+    end
+
+    test "#sort_by arg error with bad order" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_raise ArgumentError do
+        query.sort_by(:first, order: :random)
+      end
+    end
+
     test "terms with options" do
       query = User.search(hello: { fuzziness: 1 })
 
@@ -92,5 +118,28 @@ module RediSearch
       )
     end
 
+    # test "and not phrase" do
+    #   query = User.search("hello").and.not "world"
+    #
+    #   assert_equal(
+    #     "SEARCH user_idx \"`hello` -`world`\"", query.to_redis
+    #   )
+    # end
+    #
+    # test "and not multiple phrase" do
+    #   query = User.search("hello").and.not "world", "werld"
+    #
+    #   assert_equal(
+    #     "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
+    #   )
+    # end
+    #
+    # test "union inside phrase" do
+    #   query = User.search("obama").or "barack", "barrack"
+    #
+    #   assert_equal(
+    #     "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
+    #   )
+    # end
   end
 end

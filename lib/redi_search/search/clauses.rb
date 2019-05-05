@@ -31,7 +31,7 @@ module RediSearch
         self
       end
 
-      def sortby(field, order: :asc)
+      def sort_by(field, order: :asc)
         raise ArgumentError unless %i(asc desc).include?(order.to_sym)
 
         clauses.push("SORTBY", field, order)
