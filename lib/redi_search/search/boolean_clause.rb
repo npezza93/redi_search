@@ -23,10 +23,6 @@ module RediSearch
         to_s.inspect
       end
 
-      def append(clause)
-        @terms << clause
-      end
-
       private
 
       attr_reader :prior_clause, :terms
