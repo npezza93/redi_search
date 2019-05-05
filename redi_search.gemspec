@@ -44,13 +44,5 @@ Gem::Specification.new do |spec| # rubocop:disable Metrics/BlockLength
   spec.add_runtime_dependency "redis"
 
   spec.add_development_dependency "bundler", "~> 1.17"
-  spec.add_development_dependency "faker"
-  spec.add_development_dependency "minitest", "~> 5.0"
-  spec.add_development_dependency "pry"
-  spec.add_development_dependency "pry-rails"
-  spec.add_development_dependency "rails", "~> 6.0.0.rc1"
   spec.add_development_dependency "rake", "~> 12.0"
-  spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "rubocop-performance"
-  spec.add_development_dependency "sqlite3"
 end

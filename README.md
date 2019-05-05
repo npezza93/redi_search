@@ -1,5 +1,7 @@
 # RediSearch
 
+[![Build Status](https://travis-ci.com/npezza93/redi_search.svg?branch=master)](https://travis-ci.com/npezza93/redi_search)
+
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/redi_search`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 1. git clone https://github.com/RedisLabsModules/RediSearch.git
