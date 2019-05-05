@@ -136,6 +136,14 @@ module RediSearch
       )
     end
 
+    test "and phrase" do
+      query = User.search("hello").and "world"
+
+      assert_equal(
+        "SEARCH user_idx \"`hello` `world`\"", query.to_redis
+      )
+    end
+
     # test "and not phrase" do
     #   query = User.search("hello").and.not "world"
     #
