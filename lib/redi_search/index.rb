@@ -13,8 +13,8 @@ module RediSearch
       @model = model
     end
 
-    def search(query, **options)
-      Search.new(self, query, model, **options)
+    def search(*terms, **terms_with_options)
+      Search.new(self, model, *terms, **terms_with_options)
     end
 
     def create
