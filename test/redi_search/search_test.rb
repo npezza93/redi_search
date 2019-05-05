@@ -66,5 +66,14 @@ module RediSearch
         "SEARCH user_idx \"`hello world`\"", query.to_redis
       )
     end
+
+    test "or phrase" do
+      query = User.search("hello").or "world"
+
+      assert_equal(
+        "SEARCH user_idx \"`hello`|`world`\"", query.to_redis
+      )
+    end
+
   end
 end
