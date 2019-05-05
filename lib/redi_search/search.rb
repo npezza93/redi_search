@@ -3,6 +3,7 @@
 require "redi_search/search/clauses"
 require "redi_search/search/term"
 require "redi_search/search/highlight_clause"
+require "redi_search/result/collection"
 
 module RediSearch
   class Search

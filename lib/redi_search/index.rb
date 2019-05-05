@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 require "redi_search/schema"
-require "redi_search/error"
-require "redi_search/document/converter"
 require "redi_search/search"
-require "redi_search/result/collection"
 
 module RediSearch
   class Index
