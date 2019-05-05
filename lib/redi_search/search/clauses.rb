@@ -19,7 +19,7 @@ module RediSearch
         self
       end
 
-      def inorder
+      def in_order
         clauses.push("INORDER")
 
         self

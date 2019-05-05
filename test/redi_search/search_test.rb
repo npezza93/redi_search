@@ -43,6 +43,14 @@ module RediSearch
       )
     end
 
+    test "#in_order clause" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` INORDER", query.in_order.to_redis
+      )
+    end
+
     test "terms with options" do
       query = User.search(hello: { fuzziness: 1 })
 
