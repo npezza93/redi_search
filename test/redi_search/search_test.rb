@@ -50,5 +50,21 @@ module RediSearch
         "SEARCH user_idx `%hello%`", query.to_redis
       )
     end
+
+    test "simple phrase" do
+      query = User.search("hello", "world")
+
+      assert_equal(
+        "SEARCH user_idx \"(`hello` `world`)\"", query.to_redis
+      )
+    end
+
+    test "exact phrase" do
+      query = User.search("hello world")
+
+      assert_equal(
+        "SEARCH user_idx \"`hello world`\"", query.to_redis
+      )
+    end
   end
 end
