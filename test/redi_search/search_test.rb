@@ -42,5 +42,13 @@ module RediSearch
         "SEARCH user_idx `dr` SLOP 1", query.slop(1).to_redis
       )
     end
+
+    test "terms with options" do
+      query = User.search(hello: { fuzziness: 1 })
+
+      assert_equal(
+        "SEARCH user_idx `%hello%`", query.to_redis
+      )
+    end
   end
 end
