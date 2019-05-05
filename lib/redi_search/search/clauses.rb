@@ -31,24 +31,6 @@ module RediSearch
         self
       end
 
-      def expander(expander)
-        clauses.push("EXPANDER", expander)
-
-        self
-      end
-
-      def scorer(scorer)
-        clauses.push("SCORER", scorer)
-
-        self
-      end
-
-      def payload(payload)
-        clauses.push("PAYLOAD", payload)
-
-        self
-      end
-
       def sortby(field, order: :asc)
         raise ArgumentError unless %i(asc desc).include?(order.to_sym)
 
