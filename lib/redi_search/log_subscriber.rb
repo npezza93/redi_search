@@ -66,18 +66,23 @@ module RediSearch
     end
 
     def command_string(payload)
-      payload[:query].flatten.tap do |query|
-        query.each_with_index do |arg, i|
-          if i.zero? && !multiword?(arg)
-            query[i] = arg.dup.prepend "FT."
-          end
-          query[i] = arg.inspect if multiword?(arg) && query.count > 1
-        end
+      payload[:query].flatten.map.with_index do |arg, i|
+        arg = "FT.#{arg}" if prepend_ft?(arg, i)
+        arg = arg.inspect if inspect_arg?(payload, arg)
+        arg
       end.join(" ")
     end
 
     def multiword?(string)
       string.to_s.split(/\s|\|/).size > 1
+    end
+
+    def prepend_ft?(arg, index)
+      index.zero? && !multiword?(arg)
+    end
+
+    def inspect_arg?(payload, arg)
+      multiword?(arg) && payload[:query].flatten.count > 1
     end
   end
 end
