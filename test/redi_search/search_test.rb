@@ -21,13 +21,13 @@ module RediSearch
     end
 
     test "highlight command" do
-      query = RediSearch::Search.new(@index, "dr")
+      query = RediSearch::Search.new(@index, nil, "dr")
 
       assert_equal "SEARCH user_idx `dr` HIGHLIGHT", query.highlight.to_redis
     end
 
     test "highlight command with tags" do
-      query = RediSearch::Search.new(@index, "dr")
+      query = RediSearch::Search.new(@index, nil, "dr")
 
       assert_equal(
         "SEARCH user_idx `dr` HIGHLIGHT TAGS b bb",
@@ -36,7 +36,7 @@ module RediSearch
     end
 
     test "slop clause" do
-      query = RediSearch::Search.new(@index, "dr")
+      query = RediSearch::Search.new(@index, nil, "dr")
 
       assert_equal(
         "SEARCH user_idx `dr` SLOP 1", query.slop(1).to_redis
