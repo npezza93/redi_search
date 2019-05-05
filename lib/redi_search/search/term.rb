@@ -22,7 +22,9 @@ module RediSearch
           raise ArgumentError, "fuzziness can only be between 0 and 3"
         end
 
-        "#{'%' * amount}#{term}#{'%' * amount}"
+        ("%" * amount).then do |fuzziness|
+          "#{fuzziness}#{term}#{fuzziness}"
+        end
       end
     end
   end
