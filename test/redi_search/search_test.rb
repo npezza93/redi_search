@@ -51,6 +51,15 @@ module RediSearch
       )
     end
 
+    test "#language clause" do
+      query = RediSearch::Search.new(@index, nil, "dr")
+
+      assert_equal(
+        "SEARCH user_idx `dr` LANGUAGE danish",
+        query.language("danish").to_redis
+      )
+    end
+
     test "terms with options" do
       query = User.search(hello: { fuzziness: 1 })
 
