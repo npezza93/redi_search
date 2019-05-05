@@ -2,6 +2,7 @@
 
 require "redi_search/search/term"
 require "redi_search/search/and_clause"
+require "redi_search/search/or_clause"
 
 module RediSearch
   class Search
@@ -69,8 +70,9 @@ module RediSearch
         self
       end
 
-      def or(new_term)
-        @term_clause.push(Term.new(new_term))
+      def or(*new_terms, **terms_with_options)
+        @term_clause =
+          OrClause.new(@term_clause, *new_terms, **terms_with_options)
 
         self
       end
