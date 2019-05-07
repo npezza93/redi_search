@@ -16,7 +16,7 @@ module RediSearch
     end
 
     test "query execution" do
-      query = RediSearch::Search.new(@index, "dr")
+      query = RediSearch::Search.new(@index, nil, "dr")
       assert_equal RediSearch::Result::Collection, query.to_a.class
     end
 
@@ -75,14 +75,34 @@ module RediSearch
       )
     end
 
-    # test "and not phrase" do
-    #   query = User.search("hello").and.not "world"
-    #
-    #   assert_equal(
-    #     "SEARCH user_idx \"`hello` -`world`\"", query.to_redis
-    #   )
-    # end
-    #
+    test "and not phrase" do
+      query = User.search("hello").and.not "world"
+
+      assert_equal(
+        "SEARCH user_idx \"`hello` -`world`\"", query.to_redis
+      )
+    end
+
+    test "and raises arg error without terms" do
+      assert_raise ArgumentError do
+        User.search("hello").and.to_s
+      end
+    end
+
+    test "and not raises arg error without terms" do
+      assert_raise ArgumentError do
+        User.search("hello").and.not.to_a
+      end
+    end
+
+    test "negation of or" do
+      query = User.search("hello").or.not "world"
+
+      assert_equal(
+        "SEARCH user_idx \"`hello`|-`world`\"", query.to_redis
+      )
+    end
+
     # test "and not multiple phrase" do
     #   query = User.search("hello").and.not "world", "werld"
     #

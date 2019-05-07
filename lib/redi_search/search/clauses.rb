@@ -47,16 +47,24 @@ module RediSearch
 
       def and(*new_terms, **terms_with_options)
         @term_clause =
-          AndClause.new(@term_clause, *new_terms, **terms_with_options)
+          AndClause.new(self, @term_clause, *new_terms, **terms_with_options)
 
-        self
+        if new_terms.blank? && terms_with_options.blank?
+          @term_clause
+        else
+          self
+        end
       end
 
       def or(*new_terms, **terms_with_options)
         @term_clause =
-          OrClause.new(@term_clause, *new_terms, **terms_with_options)
+          OrClause.new(self, @term_clause, *new_terms, **terms_with_options)
 
-        self
+        if new_terms.blank? && terms_with_options.blank?
+          @term_clause
+        else
+          self
+        end
       end
     end
   end

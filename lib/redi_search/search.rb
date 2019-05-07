@@ -13,7 +13,7 @@ module RediSearch
     def initialize(index, model = nil, *terms, **terms_with_options)
       @index = index
       @model = model
-      @term_clause = AndClause.new(nil, *terms, **terms_with_options)
+      @term_clause = AndClause.new(self, nil, *terms, **terms_with_options)
       @loaded = false
       @clauses = []
     end
