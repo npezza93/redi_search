@@ -11,23 +11,27 @@ module RediSearch
       end
 
       def to_s
-        apply_fuzziness.tr("`", "\`").then do |str|
-          "`#{str}`"
-        end
+        @term.to_s.
+          tr("`", "\`").
+          then { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
+          then { |str| "#{optional_operator}#{str}" }.
+          then { |str| "`#{str}`" }
       end
 
       private
 
       attr_accessor :term, :options
 
-      def apply_fuzziness
-        amount = options[:fuzziness].to_i
-        if amount.negative? || amount > 3
-          raise ArgumentError, "fuzziness can only be between 0 and 3"
-        end
+      def fuzziness
+        @fuzziness ||= options[:fuzziness].to_i
+      end
 
-        ("%" * amount).then do |fuzziness|
-          "#{fuzziness}#{term}#{fuzziness}"
+      def optional_operator
+        return unless options[:optional]
+
+        "~"
+      end
+
       def validate_options
         unsupported_options =
           (options.keys.map(&:to_s) - %w(fuzziness optional)).join(", ")

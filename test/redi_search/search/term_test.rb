@@ -25,6 +25,16 @@ module RediSearch
       test "escapes backticks in term" do
         assert_equal "`te\`rm`", Term.new("te`rm").to_s
       end
+
+      test "unsupported options throw error" do
+        assert_raise ArgumentError do
+          Term.new("term", random: true)
+        end
+      end
+
+      test "support optional terms" do
+        assert_equal "`~term`", Term.new("term", optional: true).to_s
+      end
     end
   end
 end
