@@ -15,6 +15,7 @@ module RediSearch
           tr("`", "\`").
           then { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
           then { |str| "#{optional_operator}#{str}" }.
+          then { |str| "#{str}#{prefix_operator}" }.
           then { |str| "`#{str}`" }
       end
 
@@ -32,9 +33,15 @@ module RediSearch
         "~"
       end
 
+      def prefix_operator
+        return unless options[:prefix]
+
+        "*"
+      end
+
       def validate_options
         unsupported_options =
-          (options.keys.map(&:to_s) - %w(fuzziness optional)).join(", ")
+          (options.keys.map(&:to_s) - %w(fuzziness optional prefix)).join(", ")
 
         if unsupported_options.present?
           raise(ArgumentError,

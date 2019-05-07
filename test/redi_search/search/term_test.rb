@@ -35,6 +35,10 @@ module RediSearch
       test "support optional terms" do
         assert_equal "`~term`", Term.new("term", optional: true).to_s
       end
+
+      test "support prefix term" do
+        assert_equal "`hel*`", Term.new("hel", prefix: true).to_s
+      end
     end
   end
 end
