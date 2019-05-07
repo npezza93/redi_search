@@ -6,6 +6,8 @@ module RediSearch
       def initialize(term, **options)
         @term = term
         @options = options
+
+        validate_options
       end
 
       def to_s
@@ -26,7 +28,17 @@ module RediSearch
 
         ("%" * amount).then do |fuzziness|
           "#{fuzziness}#{term}#{fuzziness}"
+      def validate_options
+        unsupported_options =
+          (options.keys.map(&:to_s) - %w(fuzziness optional)).join(", ")
+
+        if unsupported_options.present?
+          raise(ArgumentError,
+                "#{unsupported_options} are unsupported term options")
         end
+
+        raise(ArgumentError, "fuzziness can only be between 0 and 3") if
+          fuzziness.negative? || fuzziness > 3
       end
     end
   end
