@@ -52,6 +52,10 @@ module RediSearch
       log_command(event, RED)
     end
 
+    def spellcheck(event)
+      log_command(event, YELLOW)
+    end
+
     private
 
     def log_command(event, debug_color)

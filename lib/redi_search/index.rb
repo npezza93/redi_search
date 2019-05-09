@@ -2,6 +2,7 @@
 
 require "redi_search/schema"
 require "redi_search/search"
+require "redi_search/spellcheck"
 
 module RediSearch
   class Index
@@ -15,6 +16,10 @@ module RediSearch
 
     def search(*terms, **terms_with_options)
       Search.new(self, model, *terms, **terms_with_options)
+    end
+
+    def spellcheck(query, distance: 1)
+      Spellcheck.new(self, query, distance: distance)
     end
 
     def create
