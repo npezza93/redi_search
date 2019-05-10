@@ -25,6 +25,13 @@ module RediSearch
         self
       end
 
+      def no_content
+        @no_content = true
+        clauses.push("NOCONTENT")
+
+        self
+      end
+
       def language(language)
         clauses.push("LANGUAGE", language)
 

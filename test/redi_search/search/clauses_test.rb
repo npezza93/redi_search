@@ -83,6 +83,21 @@ module RediSearch
           query.limit(10, 5).to_redis
         )
       end
+
+      test "no_content just returns docs with ids" do
+        Name = Struct.new(:name) do
+          def id
+            SecureRandom.hex
+          end
+        end
+        User.find_each do |user|
+          @index.add Name.new(user.first)
+        end
+
+        assert_nothing_raised do
+          refute @index.search("*").no_content.to_a.empty?
+        end
+      end
     end
   end
 end
