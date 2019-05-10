@@ -8,6 +8,7 @@ module RediSearch
       @index = index
       @query = query
       @distance = distance
+      @loaded = false
     end
 
     #:nocov:
