@@ -10,10 +10,10 @@ module RediSearch
     include Enumerable
     include Clauses
 
-    def initialize(index, model = nil, *terms, **terms_with_options)
+    def initialize(index, term, model = nil, **term_options)
       @index = index
       @model = model
-      @term_clause = AndClause.new(self, nil, *terms, **terms_with_options)
+      @term_clause = AndClause.new(self, term, nil, **term_options)
       @loaded = false
       @clauses = []
     end

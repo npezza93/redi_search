@@ -16,18 +16,18 @@ module RediSearch
     end
 
     test "query execution" do
-      query = RediSearch::Search.new(@index, nil, "dr")
+      query = RediSearch::Search.new(@index, "dr")
       assert_equal RediSearch::Result::Collection, query.to_a.class
     end
 
     test "highlight command" do
-      query = RediSearch::Search.new(@index, nil, "dr")
+      query = RediSearch::Search.new(@index, "dr")
 
       assert_equal "SEARCH user_idx `dr` HIGHLIGHT", query.highlight.to_redis
     end
 
     test "highlight command with tags" do
-      query = RediSearch::Search.new(@index, nil, "dr")
+      query = RediSearch::Search.new(@index, "dr")
 
       assert_equal(
         "SEARCH user_idx `dr` HIGHLIGHT TAGS b bb",
@@ -36,7 +36,7 @@ module RediSearch
     end
 
     test "terms with options" do
-      query = User.search(hello: { fuzziness: 1 })
+      query = User.search(:hello, fuzziness: 1)
 
       assert_equal(
         "SEARCH user_idx `%hello%`", query.to_redis
@@ -44,10 +44,10 @@ module RediSearch
     end
 
     test "simple phrase" do
-      query = User.search("hello", "world")
+      query = User.search("hello").and("world")
 
       assert_equal(
-        "SEARCH user_idx \"(`hello` `world`)\"", query.to_redis
+        "SEARCH user_idx \"`hello` `world`\"", query.to_redis
       )
     end
 
@@ -76,7 +76,7 @@ module RediSearch
     end
 
     test "and not phrase" do
-      query = User.search("hello").and.not "world"
+      query = User.search("hello").and.not("world")
 
       assert_equal(
         "SEARCH user_idx \"`hello` -`world`\"", query.to_redis

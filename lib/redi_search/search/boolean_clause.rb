@@ -3,12 +3,12 @@
 module RediSearch
   class Search
     class BooleanClause
-      def initialize(search, prior_clause = nil, *terms, **terms_with_options)
+      def initialize(search, term, prior_clause = nil, **term_options)
         @search = search
         @prior_clause = prior_clause
         @not = false
 
-        initialize_terms(*terms, **terms_with_options)
+        initialize_terms(term, **term_options)
       end
 
       def to_s
@@ -24,10 +24,10 @@ module RediSearch
         to_s.inspect
       end
 
-      def not(*terms, **terms_with_options)
+      def not(term, **term_options)
         @not = true
 
-        initialize_terms(*terms, **terms_with_options)
+        initialize_terms(term, **term_options)
 
         search
       end
@@ -54,17 +54,16 @@ module RediSearch
         "-"
       end
 
-      def initialize_terms(*terms, **terms_with_options)
-        @query_terms = terms.map do |term|
+      def initialize_terms(term, **term_options)
+        return if term.blank?
+
+        @query_terms ||= []
+        @query_terms <<
           if term.is_a? RediSearch::Search
             term
           else
-            Term.new(term)
+            Term.new(term, term_options)
           end
-        end
-        terms_with_options.each do |term, options|
-          @query_terms << Term.new(term, options)
-        end
       end
 
       def queryify_terms

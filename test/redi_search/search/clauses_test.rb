@@ -16,7 +16,7 @@ module RediSearch
       end
 
       test "slop clause" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` SLOP 1", query.slop(1).to_redis
@@ -24,7 +24,7 @@ module RediSearch
       end
 
       test "#in_order clause" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` INORDER", query.in_order.to_redis
@@ -32,7 +32,7 @@ module RediSearch
       end
 
       test "#language clause" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` LANGUAGE danish",
@@ -41,7 +41,7 @@ module RediSearch
       end
 
       test "#sort_by clause" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` SORTBY first asc",
@@ -50,7 +50,7 @@ module RediSearch
       end
 
       test "#sort_by desc clause" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` SORTBY first desc",
@@ -59,7 +59,7 @@ module RediSearch
       end
 
       test "#sort_by arg error with bad order" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_raise ArgumentError do
           query.sort_by(:first, order: :random)
@@ -67,7 +67,7 @@ module RediSearch
       end
 
       test "#limit clause defaults to 0 offset" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` LIMIT 0 10",
@@ -76,7 +76,7 @@ module RediSearch
       end
 
       test "#limit clause with custom offset" do
-        query = RediSearch::Search.new(@index, nil, "dr")
+        query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
           "SEARCH user_idx `dr` LIMIT 5 10",
