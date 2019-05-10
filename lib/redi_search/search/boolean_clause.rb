@@ -16,7 +16,7 @@ module RediSearch
 
         [
           prior_clause.presence,
-          parenthesize(query_terms.map(&:to_s)).dup.prepend(not_operator)
+          parenthesize(queryify_terms).dup.prepend(not_operator)
         ].compact.join(operand)
       end
 
@@ -56,10 +56,24 @@ module RediSearch
 
       def initialize_terms(*terms, **terms_with_options)
         @query_terms = terms.map do |term|
-          Term.new(term)
+          if term.is_a? RediSearch::Search
+            term
+          else
+            Term.new(term)
+          end
         end
         terms_with_options.each do |term, options|
           @query_terms << Term.new(term, options)
+        end
+      end
+
+      def queryify_terms
+        query_terms.map do |term|
+          if term.is_a? RediSearch::Search
+            "(#{term.term_clause})"
+          else
+            term.to_s
+          end
         end
       end
     end

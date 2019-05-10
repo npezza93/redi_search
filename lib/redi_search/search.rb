@@ -52,10 +52,12 @@ module RediSearch
       end.join(" ")
     end
 
+    attr_reader :term_clause
+
     private
 
     attr_reader :records
-    attr_accessor :index, :term_clause, :model, :clauses
+    attr_accessor :index, :model, :clauses
 
     def command
       ["SEARCH", index.name, term_clause, *clauses]

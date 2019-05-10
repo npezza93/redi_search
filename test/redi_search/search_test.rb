@@ -103,14 +103,26 @@ module RediSearch
       )
     end
 
-    # test "and not multiple phrase" do
-    #   query = User.search("hello").and.not "world", "werld"
-    #
-    #   assert_equal(
-    #     "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
-    #   )
-    # end
-    #
+    test "and not multiple phrase" do
+      query = User.search("hello").and.not(
+        User.search("world").or("werld")
+      )
+
+      assert_equal(
+        "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
+      )
+    end
+
+    test "intersection of unions" do
+      query = User.search("hello").or("halo").and(
+        User.search("world").or("werld")
+      )
+
+      assert_equal(
+        "SEARCH user_idx \"`hello`|`halo` (`world`|`werld`)\"", query.to_redis
+      )
+    end
+
     # test "union inside phrase" do
     #   query = User.search("obama").or "barack", "barrack"
     #
