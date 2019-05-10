@@ -10,6 +10,7 @@ module RediSearch
       @distance = distance
     end
 
+    #:nocov:
     def pretty_print(printer)
       execute unless loaded?
 
@@ -17,6 +18,7 @@ module RediSearch
     rescue Redis::CommandError => e
       printer.pp(e.message)
     end
+    #:nocov:
 
     def loaded?
       @loaded

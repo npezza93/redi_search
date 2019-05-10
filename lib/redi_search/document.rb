@@ -42,6 +42,7 @@ module RediSearch
       client.call!("DEL", index.name, document_id).ok?
     end
 
+    #:nocov:
     def pretty_print(printer) # rubocop:disable Metrics/MethodLength
       printer.object_address_group(self) do
         printer.seplist(
@@ -57,6 +58,7 @@ module RediSearch
         end
       end
     end
+    #:nocov:
 
     def schema_fields
       @schema_fields ||= index.schema.fields.map(&:to_s)

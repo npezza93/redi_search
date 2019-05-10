@@ -10,11 +10,13 @@ module RediSearch
       Thread.current[:searchkick_runtime] ||= 0
     end
 
+    #:nocov:
     def self.reset_runtime
       rt = runtime
       self.runtime = 0
       rt
     end
+    #:nocov:
 
     def search(event)
       log_command(event, YELLOW)
