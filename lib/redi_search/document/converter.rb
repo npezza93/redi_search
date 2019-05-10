@@ -18,12 +18,6 @@ module RediSearch
         )
       end
 
-      def raw_fields
-        document.schema_fields.flat_map do |field|
-          [field, record.public_send(field)]
-        end
-      end
-
       private
 
       attr_reader :index, :record
