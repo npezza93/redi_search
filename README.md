@@ -58,6 +58,74 @@ RediSearch.configure do |config|
 end
 ```
 
+#### Index
+
+All actions revolve around indexes. To instantiate one:
+```ruby
+RediSearch::Index.new(name_of_index, schema)
+```
+The name is a string identifying the index and the schema is the argument is a hash that defines all the fields in an index. Each field can be one of four types: geo, numeric, tag, or text.
+
+###### Text field options
+- *weight* (default: 1.0)
+  - Declares the importance of this field when calculating result accuracy. This is a multiplication factor.
+  - Ex: `{ name: { text: { weight: 2 } } }`
+- *phonetic*
+  - Will perform phonetic matching on field in searches by default. The obligatory {matcher} argument specifies the phonetic algorithm and language used. The following matchers are supported:
+    - dm:en - Double Metaphone for English
+    - dm:fr - Double Metaphone for French
+    - dm:pt - Double Metaphone for Portuguese
+    - dm:es - Double Metaphone for Spanish
+  - Ex: `{ name: { text: { phonetic: 'dm:en' } } }`
+- *sortable* (default: false)
+  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
+  - Ex: `{ name: { text: { sortable: true } } }`
+- *no_index* (default: false)
+  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
+  - Ex: `{ name: { text: { no_index: true } } }`
+- *no_stem* (default: false)
+  - Disable stemming when indexing its values. This may be ideal for things like proper names.
+  - Ex: `{ name: { text: { no_stem: true } } }`
+
+###### Numeric field options
+- *sortable* (default: false)
+  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
+  - Ex: `{ id: { numeric: { sortable: true } } }`
+- *no_index* (default: false)
+  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
+  - Ex: `{ id: { numeric: { no_index: true } } }`
+
+###### Tag field options
+- *sortable* (default: false)
+  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
+  - Ex: `{ tag: { tag: { sortable: true } } }`
+- *no_index* (default: false)
+  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
+  - Ex: `{ tag: { tag: { no_index: true } } }`
+- *separator* (default: ",")
+  - Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.
+  - Ex: `{ tag: { tag: { separator: ',' } } }`
+
+###### Geo field options
+- *sortable* (default: false)
+  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
+  - Ex: `{ place: { geo: { sortable: true } } }`
+- *no_index* (default: false)
+  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
+  - Ex: `{ place: { geo: { no_index: true } } }`
+
+Some of the commands that are available on an index are as follows:
+- *create*
+  - creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+- *drop*
+  - drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+- *exist?*
+  - Returns a boolean signifying indexes existence.
+- *info*  
+  - Returns a hash with all the information for the index
+- *fields*
+  - Returns an array of field names in the index
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. You can also start a rails console if you `cd` into `test/dummy`.

@@ -5,7 +5,7 @@ require "redi_search/schema/field"
 module RediSearch
   class Schema
     class TagField < Field
-      def initialize(name, separator: nil, sortable: false, no_index: false)
+      def initialize(name, separator: ",", sortable: false, no_index: false)
         @name = name
         @separator = separator
         @sortable = sortable
