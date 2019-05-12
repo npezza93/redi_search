@@ -20,7 +20,7 @@ module RediSearch
         )
 
         if respond_to? :after_commit
-          after_commit :redi_search_add_document, on: [:create, :update]
+          after_commit :redi_search_add_document, on: %i(create update)
         end
         if respond_to? :after_destroy_commit
           after_destroy_commit :redi_search_delete_document
