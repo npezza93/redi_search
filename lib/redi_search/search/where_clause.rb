@@ -14,12 +14,20 @@ module RediSearch
       def to_s
         [
           prior_clause.presence,
-          "(@#{field}:#{queryify_term})"
+          "(#{not_operator}@#{field}:#{queryify_term})"
         ].compact.join(" ")
       end
 
       def inspect
         to_s.inspect
+      end
+
+      def not(condition)
+        @not = true
+
+        initialize_term(condition)
+
+        search
       end
 
       private
@@ -32,6 +40,12 @@ module RediSearch
         else
           term.to_s
         end
+      end
+
+      def not_operator
+        return "" unless @not
+
+        "-"
       end
 
       def initialize_term(condition)

@@ -32,6 +32,33 @@ module RediSearch
           query.to_redis
         )
       end
+
+      test "negate where clause" do
+        query = @index.search.where(x: :foo).where.not(y: :bar)
+
+        assert_equal(
+          "SEARCH user_idx (@x:`foo`) (-@y:`bar`)",
+          query.to_redis
+        )
+      end
+
+      test "negate where union clause" do
+        query = @index.search.where.not(x: @index.search("foo").or("bar"))
+
+        assert_equal(
+          "SEARCH user_idx (-@x:(`foo`|`bar`))",
+          query.to_redis
+        )
+      end
+
+      test "where with prefix" do
+        query = @index.search.where(name: :john, prefix: true)
+
+        assert_equal(
+          "SEARCH user_idx (@name:`john*`)",
+          query.to_redis
+        )
+      end
     end
   end
 end
