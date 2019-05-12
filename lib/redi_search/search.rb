@@ -57,6 +57,10 @@ module RediSearch
       end.join(" ")
     end
 
+    def dup
+      self.class.new(index)
+    end
+
     attr_reader :term_clause
 
     private

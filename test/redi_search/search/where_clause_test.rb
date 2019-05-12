@@ -59,6 +59,15 @@ module RediSearch
           query.to_redis
         )
       end
+
+      test "or two where clauses" do
+        query = @index.search.where(x: :foo).or.where(y: :bar)
+
+        assert_equal(
+          "SEARCH user_idx (@x:`foo`)|(@y:`bar`)",
+          query.to_redis
+        )
+      end
     end
   end
 end

@@ -58,11 +58,14 @@ module RediSearch
       end
 
       def queryify_term
-        if term.is_a? RediSearch::Search
+        if term.is_a?(RediSearch::Search) &&
+           !term.term_clause.is_a?(RediSearch::Search::WhereClause)
           "(#{term.term_clause})"
+        elsif term.is_a?(RediSearch::Search)
+          term.term_clause
         else
-          term.to_s
-        end
+          term
+        end.to_s
       end
     end
   end
