@@ -21,7 +21,7 @@ module RediSearch
     test "adds document when a record is created" do
       assert User.reindex
 
-      assert_difference -> { User.redi_search_index.info["num_docs"].to_i }, 1 do
+      assert_difference -> { User.redi_search_index.info.num_docs.to_i }, 1 do
         User.create(first: "foo", last: "bar")
       end
     end
@@ -29,7 +29,7 @@ module RediSearch
     test "removes document when a record is destroyed" do
       assert User.reindex
 
-      assert_difference -> { User.redi_search_index.info["num_docs"].to_i }, -1 do
+      assert_difference -> { User.redi_search_index.info.num_docs.to_i }, -1 do
         User.last.destroy
       end
     end

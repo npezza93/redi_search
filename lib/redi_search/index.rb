@@ -74,7 +74,9 @@ module RediSearch
     end
 
     def info
-      Hash[*client.call!("INFO", name)]
+      hash = Hash[*client.call!("INFO", name)]
+      info_struct = Struct.new(*hash.keys.map(&:to_sym))
+      info_struct.new(*hash.values)
     rescue Redis::CommandError
       nil
     end
