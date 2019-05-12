@@ -8,15 +8,15 @@ module RediSearch
         @prior_clause = prior_clause
         @not = false
 
-        initialize_terms(term, **term_options)
+        initialize_term(term, **term_options)
       end
 
       def to_s
-        raise ArgumentError, "missing query terms" if query_terms.blank?
+        raise ArgumentError, "missing query terms" if term.blank?
 
         [
           prior_clause.presence,
-          parenthesize(queryify_terms).dup.prepend(not_operator)
+          queryify_term.dup.prepend(not_operator)
         ].compact.join(operand)
       end
 
@@ -27,22 +27,14 @@ module RediSearch
       def not(term, **term_options)
         @not = true
 
-        initialize_terms(term, **term_options)
+        initialize_term(term, **term_options)
 
         search
       end
 
       private
 
-      attr_reader :prior_clause, :query_terms, :search
-
-      def parenthesize(terms)
-        if terms.count > 1
-          "(#{terms.join(operand)})"
-        else
-          terms.join(operand)
-        end
-      end
+      attr_reader :prior_clause, :term, :search
 
       def operand
         raise NotImplementedError
@@ -54,11 +46,10 @@ module RediSearch
         "-"
       end
 
-      def initialize_terms(term, **term_options)
+      def initialize_term(term, **term_options)
         return if term.blank?
 
-        @query_terms ||= []
-        @query_terms <<
+        @term =
           if term.is_a? RediSearch::Search
             term
           else
@@ -66,13 +57,11 @@ module RediSearch
           end
       end
 
-      def queryify_terms
-        query_terms.map do |term|
-          if term.is_a? RediSearch::Search
-            "(#{term.term_clause})"
-          else
-            term.to_s
-          end
+      def queryify_term
+        if term.is_a? RediSearch::Search
+          "(#{term.term_clause})"
+        else
+          term.to_s
         end
       end
     end
