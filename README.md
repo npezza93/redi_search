@@ -187,6 +187,20 @@ index.search("hello").and.not(index.search("world").or("werld"))
 index.search("hello").and(index.search("world").or("werld"))
 ```
 
+### Rails Integration
+
+Integration with Rails is on by default! All you have to do is add the following to the model you want to search:
+```ruby
+class User < ApplicationRecord
+  redi_search schema: {
+    first: { text: { phonetic: "dm:en" } },
+    last: { text: { phonetic: "dm:en" } }
+  }
+end
+```
+
+This will automatically add `User.search` and `User.reindex` methods. You can also use `User.redi_search_index` to get the `RediSearch::Index` instance. `User.reindex` will first `drop` the index if it exists, create the index with the given schema, and then add all the records to the index.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. You can also start a rails console if you `cd` into `test/dummy`.

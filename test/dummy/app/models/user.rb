@@ -5,8 +5,4 @@ class User < ApplicationRecord
     first: { text: { phonetic: "dm:en" } },
     last: { text: { phonetic: "dm:en" } }
   }
-
-  def score
-    1.0
-  end
 end
