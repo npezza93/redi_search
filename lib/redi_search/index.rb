@@ -63,6 +63,10 @@ module RediSearch
       end.ok?
     end
 
+    def del(record, delete_document: false)
+      client.call!("DEL", name, record.id, ("DD" if delete_document))
+    end
+
     def exist?
       !client.call!("INFO", name).empty?
     rescue Redis::CommandError

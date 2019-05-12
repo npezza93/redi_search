@@ -19,6 +19,13 @@ module RediSearch
           self
         )
 
+        if respond_to? :after_commit
+          after_commit :redi_search_add_document, on: [:create, :update]
+        end
+        if respond_to? :after_destroy_commit
+          after_destroy_commit :redi_search_delete_document
+        end
+
         class << self
           def search(term = nil, **term_options)
             redi_search_index.search(term, **term_options)
@@ -33,6 +40,18 @@ module RediSearch
 
     def redi_search_document
       Document::Converter.new(self.class.redi_search_index, self).document
+    end
+
+    def redi_search_delete_document
+      return unless self.class.redi_search_index.exist?
+
+      self.class.redi_search_index.del(self, delete_document: true)
+    end
+
+    def redi_search_add_document
+      return unless self.class.redi_search_index.exist?
+
+      self.class.redi_search_index.add(self)
     end
   end
 end
