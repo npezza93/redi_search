@@ -11,12 +11,11 @@ module RediSearch
       end
 
       def to_s
-        @term.to_s.
-          tr("`", "\`").
-          then { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
-          then { |str| "#{optional_operator}#{str}" }.
-          then { |str| "#{str}#{prefix_operator}" }.
-          then { |str| "`#{str}`" }
+        if @term.is_a? Range
+          stringify_range
+        else
+          stringify_query
+        end
       end
 
       private
@@ -37,6 +36,23 @@ module RediSearch
         return unless options[:prefix]
 
         "*"
+      end
+
+      def stringify_query
+        @term.to_s.
+          tr("`", "\`").
+          then { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
+          then { |str| "#{optional_operator}#{str}" }.
+          then { |str| "#{str}#{prefix_operator}" }.
+          then { |str| "`#{str}`" }
+      end
+
+      def stringify_range
+        first, last = @term.first, @term.last
+        first = "-inf" if first == -Float::INFINITY
+        last = "+inf" if last == Float::INFINITY
+
+        "[#{first} #{last}]"
       end
 
       def validate_options

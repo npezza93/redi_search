@@ -68,6 +68,44 @@ module RediSearch
           query.to_redis
         )
       end
+
+      test "between range" do
+        query = @index.search.where(num: 10..20)
+
+        assert_equal(
+          "SEARCH user_idx (@num:[10 20])",
+          query.to_redis
+        )
+      end
+
+      test "greater than num" do
+        query = @index.search.where(num: 10..Float::INFINITY)
+
+        assert_equal(
+          "SEARCH user_idx (@num:[10 +inf])",
+          query.to_redis
+        )
+      end
+
+      test "less than num" do
+        query = @index.search.where(num: -Float::INFINITY..10)
+
+        assert_equal(
+          "SEARCH user_idx (@num:[-inf 10])",
+          query.to_redis
+        )
+      end
+
+      test "complex ranges" do
+        query = @index.search.
+                where(num: -Float::INFINITY..9).
+                or.where(num: 21..Float::INFINITY)
+
+        assert_equal(
+          "SEARCH user_idx (@num:[-inf 9])|(@num:[21 +inf])",
+          query.to_redis
+        )
+      end
     end
   end
 end
