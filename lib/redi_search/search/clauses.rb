@@ -53,10 +53,14 @@ module RediSearch
         self
       end
 
-      def where(condition, **term_options)
-        @term_clause = WhereClause.new(condition, @term_clause, **term_options)
+      def where(**condition)
+        @term_clause = WhereClause.new(self, condition, @term_clause)
 
-        self
+        if condition.blank?
+          @term_clause
+        else
+          self
+        end
       end
 
       def and(new_term = nil, **term_options)

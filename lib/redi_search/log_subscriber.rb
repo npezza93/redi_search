@@ -80,7 +80,7 @@ module RediSearch
     end
 
     def multiword?(string)
-      !string.to_s.starts_with?("@") && string.to_s.split(/\s|\|/).size > 1
+      !string.to_s.starts_with?("(@") && string.to_s.split(/\s|\|/).size > 1
     end
 
     def prepend_ft?(arg, index)
