@@ -10,13 +10,15 @@ module RediSearch
     include Enumerable
     include Clauses
 
-    def initialize(index, term, model = nil, **term_options)
+    def initialize(index, term = nil, model = nil, **term_options)
       @index = index
       @model = model
-      @term_clause = AndClause.new(self, term, nil, **term_options)
       @loaded = false
       @no_content = false
       @clauses = []
+
+      @term_clause = term.presence &&
+        AndClause.new(self, term, nil, **term_options)
     end
 
     #:nocov:
@@ -47,7 +49,7 @@ module RediSearch
 
     def to_redis
       command.map do |arg|
-        if arg.to_s.split(/\s|\|/).size > 1
+        if !arg.to_s.starts_with?("@") && arg.to_s.split(/\s|\|/).size > 1
           arg.inspect
         else
           arg

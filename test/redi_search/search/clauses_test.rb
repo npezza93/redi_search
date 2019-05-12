@@ -98,6 +98,24 @@ module RediSearch
           refute @index.search("*").no_content.to_a.empty?
         end
       end
+
+      test "where clause is field specific" do
+        query = RediSearch::Search.new(@index).where(name: :foo)
+
+        assert_equal(
+          "SEARCH user_idx @name:`foo`",
+          query.to_redis
+        )
+      end
+
+      test "where clause can take query" do
+        query = @index.search.where(name: @index.search("foo").or("bar"))
+
+        assert_equal(
+          "SEARCH user_idx @name:(`foo`|`bar`)",
+          query.to_redis
+        )
+      end
     end
   end
 end

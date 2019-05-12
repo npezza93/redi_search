@@ -3,6 +3,7 @@
 require "redi_search/search/term"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
+require "redi_search/search/where_clause"
 
 module RediSearch
   class Search
@@ -48,6 +49,12 @@ module RediSearch
 
       def limit(num, offset = 0)
         clauses.push("LIMIT", offset, num)
+
+        self
+      end
+
+      def where(condition, **term_options)
+        @term_clause = WhereClause.new(condition, @term_clause, **term_options)
 
         self
       end

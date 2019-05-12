@@ -13,6 +13,10 @@ module RediSearch
       def count
         @count || super
       end
+
+      def size
+        @count || super
+      end
     end
   end
 end

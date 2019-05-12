@@ -20,7 +20,7 @@ module RediSearch
         )
 
         class << self
-          def search(term, **term_options)
+          def search(term = nil, **term_options)
             redi_search_index.search(term, **term_options)
           end
 

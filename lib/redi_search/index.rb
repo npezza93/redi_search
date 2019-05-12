@@ -14,7 +14,7 @@ module RediSearch
       @model = model
     end
 
-    def search(term, **term_options)
+    def search(term = nil, **term_options)
       Search.new(self, term, model, **term_options)
     end
 
