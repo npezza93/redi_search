@@ -48,7 +48,7 @@ require 'redi_search'
 
 ## Usage
 
-#### Configuration
+### Configuration
 ```ruby
 RediSearch.configure do |config|
   config.redis_config = {
@@ -58,7 +58,7 @@ RediSearch.configure do |config|
 end
 ```
 
-#### Index
+### Index
 
 All actions revolve around indexes. To instantiate one:
 ```ruby
@@ -66,7 +66,7 @@ RediSearch::Index.new(name_of_index, schema)
 ```
 The name is a string identifying the index and the schema is the argument is a hash that defines all the fields in an index. Each field can be one of four types: geo, numeric, tag, or text.
 
-###### Text field options
+#### Text field options
 - *weight* (default: 1.0)
   - Declares the importance of this field when calculating result accuracy. This is a multiplication factor.
   - Ex: `{ name: { text: { weight: 2 } } }`
@@ -87,7 +87,7 @@ The name is a string identifying the index and the schema is the argument is a h
   - Disable stemming when indexing its values. This may be ideal for things like proper names.
   - Ex: `{ name: { text: { no_stem: true } } }`
 
-###### Numeric field options
+#### Numeric field options
 - *sortable* (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ id: { numeric: { sortable: true } } }`
@@ -95,7 +95,7 @@ The name is a string identifying the index and the schema is the argument is a h
   - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
   - Ex: `{ id: { numeric: { no_index: true } } }`
 
-###### Tag field options
+#### Tag field options
 - *sortable* (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ tag: { tag: { sortable: true } } }`
@@ -106,7 +106,7 @@ The name is a string identifying the index and the schema is the argument is a h
   - Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.
   - Ex: `{ tag: { tag: { separator: ',' } } }`
 
-###### Geo field options
+#### Geo field options
 - *sortable* (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ place: { geo: { sortable: true } } }`
@@ -125,6 +125,67 @@ Some of the commands that are available on an index are as follows:
   - Returns a hash with all the information for the index
 - *fields*
   - Returns an array of field names in the index
+- *add*
+  - Takes an object as the first argument and a second argument that is a score (a value between 0.0 and 1.0). The object passed must respond to all the fields in the schema. Has an accompanying bang method that will raise an exception upon failure.
+- *add_multiple!*
+  - Takes an array of objects that respond to all the fields in the schema. This provides a more performant way to add multiple documents to the index.
+
+### Searching
+
+Searching is initiated off an `RediSearch::Index` object.
+```ruby
+main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
+main ❯ index.search("john")
+  RediSearch (1.1ms)  FT.SEARCH user_idx `john`
+=> [#<RediSearch::Document:0x00007f862e241b78 first: "Gene", last: "Volkman", document_id: "10039">,
+#<RediSearch::Document:0x00007f862e2417b8 first: "Jeannie", last: "Ledner", document_id: "9998">]
+```
+- Simple phrase query - hello AND world
+```ruby
+index.search("hello").and("world")
+```
+- Exact phrase query - hello FOLLOWED BY world
+```ruby
+index.search("hello world")
+```
+- Union: documents containing either hello OR world
+```ruby
+index.search("hello").or("world")
+```
+- Not: documents containing hello but not world
+```ruby
+index.search("hello").and.not("world")
+```
+
+All terms support a few options that can be applied.
+
+- Prefix Queries: match all terms starting with a prefix
+```ruby
+index.search("hel", prefix: true)
+index.search("hello worl", prefix: true)
+index.search("hel", prefix: true).and("worl", prefix: true)
+index.search("hello").and.not("worl", prefix: true)
+```
+
+- Optional terms with higher priority to ones containing more matches
+```ruby
+index.search("foo").and("bar", optional: true).and("baz", optional: true)
+```
+
+- Fuzzy matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
+```ruby
+index.search("zuchini", fuzziness: 1)
+```
+
+- Complex intersections and unions
+```ruby
+# Intersection of unions
+index.search(index.search("hello").or("halo")).and(index.search("world").or("werld"))
+# Negation of union
+index.search("hello").and.not(index.search("world").or("werld"))
+# Union inside phrase
+index.search("hello").and(index.search("world").or("werld"))
+```
 
 ## Development
 
