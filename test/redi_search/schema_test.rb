@@ -8,7 +8,8 @@ module RediSearch
     test "#to_s" do
       schema = [
         "name", "TEXT", "SORTABLE", "WEIGHT", 1.0, "age", "NUMERIC",
-        "SORTABLE", "myTag", "TAG", "SORTABLE", "other", "TEXT", "WEIGHT", 1.0
+        "SORTABLE", "myTag", "TAG", "SORTABLE", "SEPARATOR", ",",
+        "other", "TEXT", "WEIGHT", 1.0
       ]
 
       assert_equal(
