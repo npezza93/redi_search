@@ -3,17 +3,16 @@
 module RediSearch
   class Search
     class HighlightClause
-      def initialize(**options)
-        @options = options.to_h
-
-        parse_options
+      def initialize(fields: [], tags: {})
+        @fields = fields
+        @tags = tags.to_h
       end
 
       def clause
         [
           "HIGHLIGHT",
-          (fields_clause(**options[:fields]) if options.key?(:fields)),
-          (tags_clause(**options[:tags]) if options.key? :tags),
+          fields_clause,
+          tags_clause,
         ].compact.flatten(1)
       end
 
@@ -21,18 +20,20 @@ module RediSearch
 
       attr_reader :options, :tags_args, :fields_args
 
-      def parse_options
-        return if options.except(:fields, :tags).empty?
+      def tags_clause
+        return if @tags.empty?
 
-        arg_error "Unsupported argument: #{options}"
+        if @tags[:open].present? && @tags[:close].present?
+          ["TAGS", @tags[:open], @tags[:close]]
+        else
+          arg_error("Missing opening or closing tag")
+        end
       end
 
-      def tags_clause(open:, close:)
-        ["TAGS", open, close]
-      end
+      def fields_clause
+        return if @fields.empty?
 
-      def fields_clause(num:, field:)
-        ["FIELDS", num, field]
+        ["FIELDS", @fields.size, @fields]
       end
 
       def arg_error(msg)

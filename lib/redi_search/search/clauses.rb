@@ -8,8 +8,10 @@ require "redi_search/search/where_clause"
 module RediSearch
   class Search
     module Clauses
-      def highlight(**options)
-        clauses.push(*HighlightClause.new(**options).clause)
+      def highlight(fields: [], tags: {})
+        clauses.push(*HighlightClause.new(
+          fields: fields, tags: tags
+        ).clause)
 
         self
       end
