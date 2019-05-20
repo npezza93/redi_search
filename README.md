@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://github.com/npezza93/redi_search">
+    <img src="https://raw.githubusercontent.com/npezza93/redi_search/master/.github/logo.png" width="350">
+  </a>
+</p>
+
 # RediSearch
 
 [![Build Status](https://travis-ci.com/npezza93/redi_search.svg?branch=master)](https://travis-ci.com/npezza93/redi_search)
