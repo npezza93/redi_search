@@ -16,8 +16,20 @@ before_install:
   - docker run -d -p 6379:6379 redislabs/redisearch:latest --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
 after_script:
   - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
-script: bundle exec $COMMAND
+rvm:
+  - 2.6
+  - 2.5
+  - 2.4
+gemfile:
+  - gemfiles/rails_6.gemfile
+  - gemfiles/rails_52.gemfile
+  - gemfiles/rails_51.gemfile
 matrix:
+  exclude:
+    - rvm: 2.4
+      gemfile: gemfiles/rails_6.gemfile
+jobs:
   include:
-    - env: COMMAND='rake test'
-    - env: COMMAND=rubocop
+    - stage: Lint
+      script: bundle exec rubocop
+      rvm: 2.6
