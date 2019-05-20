@@ -64,81 +64,93 @@ RediSearch.configure do |config|
 end
 ```
 
+Most actions taken revolve around indices so we will start there.
+
 ### Index
 
-All actions revolve around indexes. To instantiate one:
 ```ruby
 RediSearch::Index.new(name_of_index, schema)
 ```
-The name is a string identifying the index and the schema is the argument is a hash that defines all the fields in an index. Each field can be one of four types: geo, numeric, tag, or text.
+`name_of_index` is a string or symbol identifying the index and the schema is a
+hash, with field names as the keys, defining fields and options in an index.
+Each field can be one of four types: geo, numeric, tag, or text. The supported
+options for each type are as follows:
 
-#### Text field options
-- *weight* (default: 1.0)
+##### Text field
+With no options: `{ name: :text }`
+
+- **weight** (default: 1.0)
   - Declares the importance of this field when calculating result accuracy. This is a multiplication factor.
   - Ex: `{ name: { text: { weight: 2 } } }`
-- *phonetic*
+- **phonetic**
   - Will perform phonetic matching on field in searches by default. The obligatory {matcher} argument specifies the phonetic algorithm and language used. The following matchers are supported:
     - dm:en - Double Metaphone for English
     - dm:fr - Double Metaphone for French
     - dm:pt - Double Metaphone for Portuguese
     - dm:es - Double Metaphone for Spanish
   - Ex: `{ name: { text: { phonetic: 'dm:en' } } }`
-- *sortable* (default: false)
+- **sortable** (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ name: { text: { sortable: true } } }`
-- *no_index* (default: false)
+- **no_index** (default: false)
   - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
   - Ex: `{ name: { text: { no_index: true } } }`
-- *no_stem* (default: false)
+- **no_stem** (default: false)
   - Disable stemming when indexing its values. This may be ideal for things like proper names.
   - Ex: `{ name: { text: { no_stem: true } } }`
 
-#### Numeric field options
-- *sortable* (default: false)
+##### Numeric field
+With no options: `{ name: :numeric }`
+- **sortable** (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ id: { numeric: { sortable: true } } }`
-- *no_index* (default: false)
+- **no_index** (default: false)
   - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
   - Ex: `{ id: { numeric: { no_index: true } } }`
 
-#### Tag field options
-- *sortable* (default: false)
+##### Tag field
+With no options: `{ tag: :tag }`
+- **sortable** (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ tag: { tag: { sortable: true } } }`
-- *no_index* (default: false)
+- **no_index** (default: false)
   - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
   - Ex: `{ tag: { tag: { no_index: true } } }`
-- *separator* (default: ",")
+- **separator** (default: ",")
   - Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.
   - Ex: `{ tag: { tag: { separator: ',' } } }`
 
-#### Geo field options
-- *sortable* (default: false)
+##### Geo field
+With no options: `{ place: :geo }`
+- **sortable** (default: false)
   -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
   - Ex: `{ place: { geo: { sortable: true } } }`
-- *no_index* (default: false)
+- **no_index** (default: false)
   - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
   - Ex: `{ place: { geo: { no_index: true } } }`
 
-Some of the commands that are available on an index are as follows:
-- *create*
-  - creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-- *drop*
-  - drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-- *exist?*
-  - Returns a boolean signifying indexes existence.
-- *info*  
-  - Returns a hash with all the information for the index
-- *fields*
-  - Returns an array of field names in the index
-- *add*
-  - Takes an object as the first argument and a second argument that is a score (a value between 0.0 and 1.0). The object passed must respond to all the fields in the schema. Has an accompanying bang method that will raise an exception upon failure.
-- *add_multiple!*
-  - Takes an array of objects that respond to all the fields in the schema. This provides a more performant way to add multiple documents to the index.
+#### Commands
+
+##### create
+  Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+##### drop
+  Drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+##### exist?
+  Returns a boolean signifying index existence.
+##### info
+  Returns an object with all the information about the index
+##### fields
+  Returns an array of the field names in the index
+##### add(record, score = 1.0)
+  Takes an object the responds to all the fields in the index and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
+##### add_multiple!(records)
+  Takes an array of objects that respond to all the fields in the schema. This provides a more performant way to add multiple documents to the index.
+##### del(record, delete_document: false)
+  Takes a record and remove it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance.
 
 ### Searching
 
-Searching is initiated off an `RediSearch::Index` object.
+Searching is initiated off an `RediSearch::Index` object and has a powerful query language.
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
 main ❯ index.search("john")
@@ -146,26 +158,26 @@ main ❯ index.search("john")
 => [#<RediSearch::Document:0x00007f862e241b78 first: "Gene", last: "Volkman", document_id: "10039">,
 #<RediSearch::Document:0x00007f862e2417b8 first: "Jeannie", last: "Ledner", document_id: "9998">]
 ```
-- Simple phrase query - hello AND world
+Simple phrase query - hello AND world
 ```ruby
 index.search("hello").and("world")
 ```
-- Exact phrase query - hello FOLLOWED BY world
+Exact phrase query - hello FOLLOWED BY world
 ```ruby
 index.search("hello world")
 ```
-- Union: documents containing either hello OR world
+Union: documents containing either hello OR world
 ```ruby
 index.search("hello").or("world")
 ```
-- Not: documents containing hello but not world
+Not: documents containing hello but not world
 ```ruby
 index.search("hello").and.not("world")
 ```
 
 All terms support a few options that can be applied.
 
-- Prefix Queries: match all terms starting with a prefix
+Prefix Queries: match all terms starting with a prefix
 ```ruby
 index.search("hel", prefix: true)
 index.search("hello worl", prefix: true)
@@ -173,17 +185,17 @@ index.search("hel", prefix: true).and("worl", prefix: true)
 index.search("hello").and.not("worl", prefix: true)
 ```
 
-- Optional terms with higher priority to ones containing more matches
+Optional terms with higher priority to ones containing more matches
 ```ruby
 index.search("foo").and("bar", optional: true).and("baz", optional: true)
 ```
 
-- Fuzzy matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
+Fuzzy matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
 ```ruby
 index.search("zuchini", fuzziness: 1)
 ```
 
-- Complex intersections and unions
+Complex intersections and unions
 ```ruby
 # Intersection of unions
 index.search(index.search("hello").or("halo")).and(index.search("world").or("werld"))
@@ -193,9 +205,25 @@ index.search("hello").and.not(index.search("world").or("werld"))
 index.search("hello").and(index.search("world").or("werld"))
 ```
 
+##### Query level options
+- **slop(level)**
+  - We allow a maximum of N intervening number of unmatched offsets between phrase terms. (i.e the slop for exact phrases is 0)
+- **in_order**
+  - Usually used in conjunction with SLOP, we make sure the query terms appear in the same order in the document as in the query, regardless of the offsets between them.
+- **no_content**
+  - Only return the document ids and not the content. This is useful if RediSearch is only an index on an external document collection.
+- **language**
+  - Stemmer to use for the supplied language during search for query expansion. If querying documents in Chinese, this should be set to chinese in order to properly tokenize the query terms. Defaults to English. If an unsupported language is sent, the command returns an error.
+- **sort_by(field, order: :asc)**
+  - If the supplied field is a sortable field, the results are ordered by the value of this field. This applies to both text and numeric fields. Available order is `:asc` or `:desc`
+- **limit(num, offset = 0)**
+  - Limit the results to the specified num at the offset. The default limit is 10. Note that you can use `limit(0)` to count the number of documents in the resultset without actually returning them.
+- **highlight(fields: [], tags: {})**
+  - Use this option to format occurrences of matched text. `fields` are an array of fields to be highlighted and `tags` should contain an `open` and `close` key that signifies the opening and closing tags when highlighting.
+
 ### Rails Integration
 
-Integration with Rails is on by default! All you have to do is add the following to the model you want to search:
+Integration with Rails is on by default! All you have to do is add the following to your model:
 ```ruby
 class User < ApplicationRecord
   redi_search schema: {
@@ -205,7 +233,7 @@ class User < ApplicationRecord
 end
 ```
 
-This will automatically add `User.search` and `User.reindex` methods. You can also use `User.redi_search_index` to get the `RediSearch::Index` instance. `User.reindex` will first `drop` the index if it exists, create the index with the given schema, and then add all the records to the index.
+This will automatically add `User.search` and `User.reindex` methods. You can also use `User.redi_search_index` to get the `RediSearch::Index` instance. `User.reindex` will first `drop` the index if it exists, `create` the index with the given schema, and then `add` all the records to the index.
 
 ## Development
 
@@ -215,7 +243,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/npezza93/redi_search. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on [GitHub](https://github.com/npezza93/redi_search). This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
