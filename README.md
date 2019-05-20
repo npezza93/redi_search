@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/npezza93/redi_search">
-    <img src="https://raw.githubusercontent.com/npezza93/redi_search/master/.github/logo.svg" width="350">
+    <img src="https://raw.githubusercontent.com/npezza93/redi_search/master/.github/logo.svg?sanitize=true" width="350">
   </a>
 </p>
 
