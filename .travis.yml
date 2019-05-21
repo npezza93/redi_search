@@ -18,15 +18,10 @@ after_script:
 rvm:
   - 2.6
   - 2.5
-  - 2.4
 gemfile:
   - gemfiles/rails_6.gemfile
   - gemfiles/rails_52.gemfile
   - gemfiles/rails_51.gemfile
-matrix:
-  exclude:
-    - rvm: 2.4
-      gemfile: gemfiles/rails_6.gemfile
 jobs:
   include:
     - stage: Lint
