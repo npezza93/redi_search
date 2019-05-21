@@ -45,7 +45,7 @@ module RediSearch
     def execute
       @loaded = true
 
-      RediSearch.client.call!(*command).then do |results|
+      RediSearch.client.call!(*command).yield_self do |results|
         @records = results
       end
     end

@@ -75,9 +75,9 @@ module RediSearch
     def execute
       @loaded = true
 
-      RediSearch.client.call!(*command).then do |results|
+      RediSearch.client.call!(*command).yield_self do |results|
         @records = Result::Collection.new(
-          index, results[0], results[1..-1].then do |docs|
+          index, results[0], results[1..-1].yield_self do |docs|
             next docs unless @no_content
 
             docs.zip([[]] * results[0]).flatten(1)

@@ -41,10 +41,10 @@ module RediSearch
       def stringify_query
         @term.to_s.
           tr("`", "\`").
-          then { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
-          then { |str| "#{optional_operator}#{str}" }.
-          then { |str| "#{str}#{prefix_operator}" }.
-          then { |str| "`#{str}`" }
+          yield_self { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
+          yield_self { |str| "#{optional_operator}#{str}" }.
+          yield_self { |str| "#{str}#{prefix_operator}" }.
+          yield_self { |str| "`#{str}`" }
       end
 
       def stringify_range
