@@ -13,8 +13,6 @@ before_script:
   - ./cc-test-reporter before-build
 before_install:
   - docker run -d -p 6379:6379 redislabs/redisearch:latest --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-  # - gem uninstall bundler
-  # - gem install bundler -v 1.17.3
 after_script:
   - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
 rvm:
