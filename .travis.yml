@@ -25,5 +25,5 @@ gemfile:
 jobs:
   include:
     - stage: Lint
-      script: bundle exec rubocop
+      script: bundle exec rubocop --config=./.rubocop.yml
       rvm: 2.6
