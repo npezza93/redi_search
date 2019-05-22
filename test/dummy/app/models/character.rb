@@ -2,6 +2,7 @@
 
 class Character < ApplicationRecord
   redi_search(
-    schema: { name: { text: { phonetic: "dm:en" } } }
+    schema: { name: { text: { phonetic: "dm:en" } } },
+    serializer: CharacterSerializer
   )
 end

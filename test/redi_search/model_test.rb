@@ -33,5 +33,11 @@ module RediSearch
         User.last.destroy
       end
     end
+
+    test "using a serializer" do
+      document = characters(:tywin).redi_search_document
+
+      assert_equal "Tywin Lannister", document.name
+    end
   end
 end

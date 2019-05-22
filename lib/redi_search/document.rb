@@ -3,9 +3,14 @@
 module RediSearch
   class Document
     class << self
-      def for_object(index, record)
+      def for_object(index, record, serializer: nil)
         field_values = index.schema.fields.map do |field|
-          [field.to_s, record.public_send(field)]
+          [field.to_s,
+           if serializer
+             serializer.new(record)
+           else
+             record
+           end.public_send(field)]
         end.to_h
 
         new(index, record.id, field_values)
