@@ -91,7 +91,7 @@ module RediSearch
           end
         end
         User.find_each do |user|
-          @index.add Name.new(user.first)
+          @index.add Document.for_object(@index, Name.new(user.first))
         end
 
         assert_nothing_raised do

@@ -42,29 +42,29 @@ module RediSearch
       client.call!("DROP", name).ok?
     end
 
-    def add(record, score = 1.0)
-      add!(record, score)
+    def add(document, score = 1.0)
+      add!(document, score)
     rescue Redis::CommandError
       false
     end
 
-    def add!(record, score = 1.0)
+    def add!(document, score = 1.0)
       client.call!(
-        "ADD", name, record.id, score, "REPLACE", "FIELDS",
-        Document::Converter.new(self, record).document.to_a
+        "ADD", name, document.document_id, score, "REPLACE", "FIELDS",
+        document.to_a
       )
     end
 
-    def add_multiple!(records)
+    def add_multiple!(documents)
       client.pipelined do
-        records.each do |record|
-          add!(record)
+        documents.each do |document|
+          add!(document)
         end
       end.ok?
     end
 
-    def del(record, delete_document: false)
-      client.call!("DEL", name, record.id, ("DD" if delete_document))
+    def del(document, delete_document: false)
+      client.call!("DEL", name, document.document_id, ("DD" if delete_document))
     end
 
     def exist?

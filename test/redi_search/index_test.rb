@@ -19,7 +19,7 @@ module RediSearch
       record = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(record)
+      assert @index.add(record.redi_search_document)
       assert_equal 1, @index.info["num_docs"].to_i
     end
 
@@ -41,7 +41,7 @@ module RediSearch
 
     test "#reindex" do
       assert_equal 0, @index.info["num_docs"].to_i
-      assert @index.reindex(User.all)
+      assert @index.reindex(User.all.map(&:redi_search_document))
       assert_equal User.count, @index.info["num_docs"].to_i
     end
 
@@ -49,13 +49,13 @@ module RediSearch
       record = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(record)
+      assert @index.add(record.redi_search_document)
       assert_equal 1, @index.search(record.first).count
 
       record_jr = record.dup
       record_jr.last = record_jr.last + " jr"
       record_jr.save
-      assert @index.add(record_jr)
+      assert @index.add(record_jr.redi_search_document)
       assert_equal 2, @index.search(record.first).count
     end
 

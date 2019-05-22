@@ -28,7 +28,7 @@ module RediSearch
       @record = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(@record)
+      assert @index.add(@record.redi_search_document)
 
       doc = RediSearch::Document.get(@index, @record.id)
       assert_equal @record.first, doc.first
@@ -45,11 +45,11 @@ module RediSearch
       @record1 = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(@record1)
+      assert @index.add(@record1.redi_search_document)
       @record2 = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(@record2)
+      assert @index.add(@record2.redi_search_document)
 
       docs = RediSearch::Document.mget(@index, @record1.id, @record2.id)
       assert_equal 2, docs.count
@@ -61,7 +61,7 @@ module RediSearch
       @record1 = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(@record1)
+      assert @index.add(@record1.redi_search_document)
 
       docs = RediSearch::Document.mget(@index, @record1.id, "rando")
       assert_equal 1, docs.count
@@ -73,7 +73,7 @@ module RediSearch
       @record = User.create(
         first: Faker::Name.first_name, last: Faker::Name.last_name
       )
-      assert @index.add(@record)
+      assert @index.add(@record.redi_search_document)
       assert_equal 1, @index.info["num_docs"].to_i
 
       doc = RediSearch::Document.get(@index, @record.id)
