@@ -3,6 +3,10 @@
 require "test_helper"
 require "redi_search"
 
+class Superpower < ActiveRecord::Base
+  redi_search index_prefix: :example
+end
+
 module RediSearch
   class ModelTest < ActiveSupport::TestCase
     teardown do
@@ -10,7 +14,7 @@ module RediSearch
     end
 
     test "index name" do
-      assert_equal "user_idx", User.redi_search_index.name
+      assert_equal "users_test", User.redi_search_index.name
     end
 
     test "reindex" do
@@ -38,6 +42,10 @@ module RediSearch
       document = characters(:tywin).redi_search_document
 
       assert_equal "Tywin Lannister", document.name
+    end
+
+    test "setting an index prefix" do
+      assert_equal "example_superpowers_test", Superpower.redi_search_index.name
     end
   end
 end

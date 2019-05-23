@@ -6,7 +6,7 @@ require "redi_search/document"
 module RediSearch
   class DocumentTest < ActiveSupport::TestCase
     setup do
-      @index = Index.new("user_idx", first: :text, last: :text)
+      @index = Index.new("users_test", first: :text, last: :text)
       @index.drop
       @index.create
     end

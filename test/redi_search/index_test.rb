@@ -6,7 +6,7 @@ require "redi_search/index"
 module RediSearch
   class IndexTest < ActiveSupport::TestCase
     setup do
-      @index = Index.new("user_idx", first: :text, last: :text)
+      @index = Index.new("users_test", first: :text, last: :text)
       @index.drop
       @index.create
     end
@@ -24,7 +24,7 @@ module RediSearch
     end
 
     test "create fails if the index already exists" do
-      dup_index = Index.new("user_idx", first: :text, last: :text)
+      dup_index = Index.new("users_test", first: :text, last: :text)
 
       refute dup_index.create
     end

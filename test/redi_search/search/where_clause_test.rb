@@ -6,7 +6,7 @@ module RediSearch
   class Search
     class WhereClauseTest < ActiveSupport::TestCase
       setup do
-        @index = Index.new("user_idx", name: :text)
+        @index = Index.new("users_test", name: :text)
         @index.drop
         @index.create
       end
@@ -19,7 +19,7 @@ module RediSearch
         query = @index.search.where(name: :foo)
 
         assert_equal(
-          "SEARCH user_idx (@name:`foo`)",
+          "SEARCH users_test (@name:`foo`)",
           query.to_redis
         )
       end
@@ -28,7 +28,7 @@ module RediSearch
         query = @index.search.where(name: @index.search("foo").or("bar"))
 
         assert_equal(
-          "SEARCH user_idx (@name:(`foo`|`bar`))",
+          "SEARCH users_test (@name:(`foo`|`bar`))",
           query.to_redis
         )
       end
@@ -37,7 +37,7 @@ module RediSearch
         query = @index.search.where(x: :foo).where.not(y: :bar)
 
         assert_equal(
-          "SEARCH user_idx (@x:`foo`) (-@y:`bar`)",
+          "SEARCH users_test (@x:`foo`) (-@y:`bar`)",
           query.to_redis
         )
       end
@@ -46,7 +46,7 @@ module RediSearch
         query = @index.search.where.not(x: @index.search("foo").or("bar"))
 
         assert_equal(
-          "SEARCH user_idx (-@x:(`foo`|`bar`))",
+          "SEARCH users_test (-@x:(`foo`|`bar`))",
           query.to_redis
         )
       end
@@ -55,7 +55,7 @@ module RediSearch
         query = @index.search.where(name: :john, prefix: true)
 
         assert_equal(
-          "SEARCH user_idx (@name:`john*`)",
+          "SEARCH users_test (@name:`john*`)",
           query.to_redis
         )
       end
@@ -64,7 +64,7 @@ module RediSearch
         query = @index.search.where(x: :foo).or.where(y: :bar)
 
         assert_equal(
-          "SEARCH user_idx (@x:`foo`)|(@y:`bar`)",
+          "SEARCH users_test (@x:`foo`)|(@y:`bar`)",
           query.to_redis
         )
       end
@@ -73,7 +73,7 @@ module RediSearch
         query = @index.search.where(num: 10..20)
 
         assert_equal(
-          "SEARCH user_idx (@num:[10 20])",
+          "SEARCH users_test (@num:[10 20])",
           query.to_redis
         )
       end
@@ -82,7 +82,7 @@ module RediSearch
         query = @index.search.where(num: 10..Float::INFINITY)
 
         assert_equal(
-          "SEARCH user_idx (@num:[10 +inf])",
+          "SEARCH users_test (@num:[10 +inf])",
           query.to_redis
         )
       end
@@ -91,7 +91,7 @@ module RediSearch
         query = @index.search.where(num: -Float::INFINITY..10)
 
         assert_equal(
-          "SEARCH user_idx (@num:[-inf 10])",
+          "SEARCH users_test (@num:[-inf 10])",
           query.to_redis
         )
       end
@@ -102,7 +102,7 @@ module RediSearch
                 or.where(num: 21..Float::INFINITY)
 
         assert_equal(
-          "SEARCH user_idx (@num:[-inf 9])|(@num:[21 +inf])",
+          "SEARCH users_test (@num:[-inf 9])|(@num:[21 +inf])",
           query.to_redis
         )
       end

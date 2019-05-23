@@ -7,13 +7,16 @@ module RediSearch
   module Model
     extend ActiveSupport::Concern
 
+    # rubocop:disable Metrics/BlockLength
     class_methods do
       attr_reader :redi_search_index, :redi_search_serializer
 
-      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       def redi_search(**options)
         @redi_search_index = Index.new(
-          options[:index_name] || "#{name.underscore}_idx", options[:schema],
+          [options[:index_prefix],
+           model_name.plural, RediSearch.env].compact.join("_"),
+          options[:schema],
           self
         )
         @redi_search_serializer = options[:serializer]
@@ -29,7 +32,7 @@ module RediSearch
           end
         end
       end
-      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       private
 
@@ -40,6 +43,7 @@ module RediSearch
           respond_to?(:after_destroy_commit)
       end
     end
+    # rubocop:enable Metrics/BlockLength
 
     def redi_search_document
       Document.for_object(

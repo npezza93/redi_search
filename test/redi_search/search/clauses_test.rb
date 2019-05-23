@@ -6,7 +6,7 @@ module RediSearch
   class Search
     class ClausesTest < ActiveSupport::TestCase
       setup do
-        @index = Index.new("user_idx", name: :text)
+        @index = Index.new("users_test", name: :text)
         @index.drop
         @index.create
       end
@@ -19,7 +19,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` SLOP 1", query.slop(1).to_redis
+          "SEARCH users_test `dr` SLOP 1", query.slop(1).to_redis
         )
       end
 
@@ -27,7 +27,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` INORDER", query.in_order.to_redis
+          "SEARCH users_test `dr` INORDER", query.in_order.to_redis
         )
       end
 
@@ -35,7 +35,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` LANGUAGE danish",
+          "SEARCH users_test `dr` LANGUAGE danish",
           query.language("danish").to_redis
         )
       end
@@ -44,7 +44,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` SORTBY first asc",
+          "SEARCH users_test `dr` SORTBY first asc",
           query.sort_by(:first).to_redis
         )
       end
@@ -53,7 +53,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` SORTBY first desc",
+          "SEARCH users_test `dr` SORTBY first desc",
           query.sort_by(:first, order: :desc).to_redis
         )
       end
@@ -70,7 +70,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` LIMIT 0 10",
+          "SEARCH users_test `dr` LIMIT 0 10",
           query.limit(10).to_redis
         )
       end
@@ -79,7 +79,7 @@ module RediSearch
         query = RediSearch::Search.new(@index, "dr")
 
         assert_equal(
-          "SEARCH user_idx `dr` LIMIT 5 10",
+          "SEARCH users_test `dr` LIMIT 5 10",
           query.limit(10, 5).to_redis
         )
       end

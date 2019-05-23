@@ -31,6 +31,10 @@ module RediSearch
     def client
       configuration.client
     end
+
+    def env
+      @env ||= ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+    end
   end
 end
 

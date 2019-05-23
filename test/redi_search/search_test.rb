@@ -6,7 +6,7 @@ require "redi_search/search"
 module RediSearch
   class SearchTest < ActiveSupport::TestCase
     setup do
-      @index = Index.new("user_idx", name: :text)
+      @index = Index.new("users_test", name: :text)
       @index.drop
       @index.create
     end
@@ -23,14 +23,14 @@ module RediSearch
     test "highlight command" do
       query = RediSearch::Search.new(@index, "dr")
 
-      assert_equal "SEARCH user_idx `dr` HIGHLIGHT", query.highlight.to_redis
+      assert_equal "SEARCH users_test `dr` HIGHLIGHT", query.highlight.to_redis
     end
 
     test "highlight command with tags" do
       query = RediSearch::Search.new(@index, "dr")
 
       assert_equal(
-        "SEARCH user_idx `dr` HIGHLIGHT TAGS b bb",
+        "SEARCH users_test `dr` HIGHLIGHT TAGS b bb",
         query.highlight(tags: { open: "b", close: "bb" }).to_redis
       )
     end
@@ -39,7 +39,7 @@ module RediSearch
       query = User.search(:hello, fuzziness: 1)
 
       assert_equal(
-        "SEARCH user_idx `%hello%`", query.to_redis
+        "SEARCH users_test `%hello%`", query.to_redis
       )
     end
 
@@ -47,7 +47,7 @@ module RediSearch
       query = User.search("hello").and("world")
 
       assert_equal(
-        "SEARCH user_idx \"`hello` `world`\"", query.to_redis
+        "SEARCH users_test \"`hello` `world`\"", query.to_redis
       )
     end
 
@@ -55,7 +55,7 @@ module RediSearch
       query = User.search("hello world")
 
       assert_equal(
-        "SEARCH user_idx \"`hello world`\"", query.to_redis
+        "SEARCH users_test \"`hello world`\"", query.to_redis
       )
     end
 
@@ -63,7 +63,7 @@ module RediSearch
       query = User.search("hello").or "world"
 
       assert_equal(
-        "SEARCH user_idx \"`hello`|`world`\"", query.to_redis
+        "SEARCH users_test \"`hello`|`world`\"", query.to_redis
       )
     end
 
@@ -71,7 +71,7 @@ module RediSearch
       query = User.search("hello").and "world"
 
       assert_equal(
-        "SEARCH user_idx \"`hello` `world`\"", query.to_redis
+        "SEARCH users_test \"`hello` `world`\"", query.to_redis
       )
     end
 
@@ -79,7 +79,7 @@ module RediSearch
       query = User.search("hello").and.not("world")
 
       assert_equal(
-        "SEARCH user_idx \"`hello` -`world`\"", query.to_redis
+        "SEARCH users_test \"`hello` -`world`\"", query.to_redis
       )
     end
 
@@ -99,7 +99,7 @@ module RediSearch
       query = User.search("hello").or.not "world"
 
       assert_equal(
-        "SEARCH user_idx \"`hello`|-`world`\"", query.to_redis
+        "SEARCH users_test \"`hello`|-`world`\"", query.to_redis
       )
     end
 
@@ -109,7 +109,7 @@ module RediSearch
       )
 
       assert_equal(
-        "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
+        "SEARCH users_test \"`hello` -(`world`|`werld`)\"", query.to_redis
       )
     end
 
@@ -119,7 +119,7 @@ module RediSearch
       )
 
       assert_equal(
-        "SEARCH user_idx \"`hello`|`halo` (`world`|`werld`)\"", query.to_redis
+        "SEARCH users_test \"`hello`|`halo` (`world`|`werld`)\"", query.to_redis
       )
     end
 
@@ -127,7 +127,7 @@ module RediSearch
     #   query = User.search("obama").or "barack", "barrack"
     #
     #   assert_equal(
-    #     "SEARCH user_idx \"`hello` -(`world`|`werld`)\"", query.to_redis
+    #     "SEARCH users_test \"`hello` -(`world`|`werld`)\"", query.to_redis
     #   )
     # end
   end
