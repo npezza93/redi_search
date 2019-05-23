@@ -15,7 +15,7 @@ module RediSearch
     end
 
     def search(term = nil, **term_options)
-      Search.new(self, term, model, **term_options)
+      Search.new(self, term, **term_options)
     end
 
     def spellcheck(query, distance: 1)

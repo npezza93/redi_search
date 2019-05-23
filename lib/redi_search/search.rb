@@ -10,9 +10,8 @@ module RediSearch
     include Enumerable
     include Clauses
 
-    def initialize(index, term = nil, model = nil, **term_options)
+    def initialize(index, term = nil, **term_options)
       @index = index
-      @model = model
       @loaded = false
       @no_content = false
       @clauses = []
@@ -42,7 +41,11 @@ module RediSearch
     end
 
     def results
-      model.where(id: to_a.map(&:document_id))
+      if index.model.present?
+        index.model.where(id: to_a.map(&:document_id))
+      else
+        to_a
+      end
     end
 
     delegate :count, :each, to: :to_a
@@ -66,7 +69,7 @@ module RediSearch
     private
 
     attr_reader :records
-    attr_accessor :index, :model, :clauses
+    attr_accessor :index, :clauses
 
     def command
       ["SEARCH", index.name, term_clause, *clauses]
