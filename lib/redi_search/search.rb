@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "redi_search/lazy_loadable"
+
 require "redi_search/search/clauses"
 require "redi_search/search/term"
 require "redi_search/search/highlight_clause"
@@ -9,35 +11,15 @@ module RediSearch
   class Search
     include Enumerable
     include Clauses
+    include LazyLoadable
 
     def initialize(index, term = nil, **term_options)
       @index = index
-      @loaded = false
       @no_content = false
       @clauses = []
 
       @term_clause = term.presence &&
         AndClause.new(self, term, nil, **term_options)
-    end
-
-    #:nocov:
-    def pretty_print(printer)
-      execute unless loaded?
-
-      printer.pp(documents)
-    rescue Redis::CommandError => e
-      printer.pp(e.message)
-    end
-    #:nocov:
-
-    def loaded?
-      @loaded
-    end
-
-    def to_a
-      execute unless loaded?
-
-      @documents
     end
 
     def results
@@ -75,18 +57,14 @@ module RediSearch
       ["SEARCH", index.name, term_clause, *clauses]
     end
 
-    def execute
-      @loaded = true
+    def parse_response(response)
+      @documents = Results.new(
+        index, response[0], response[1..-1].yield_self do |docs|
+          next docs unless @no_content
 
-      RediSearch.client.call!(*command).yield_self do |results|
-        @documents = Results.new(
-          index, results[0], results[1..-1].yield_self do |docs|
-            next docs unless @no_content
-
-            docs.zip([[]] * results[0]).flatten(1)
-          end
-        )
-      end
+          docs.zip([[]] * response[0]).flatten(1)
+        end
+      )
     end
   end
 end
