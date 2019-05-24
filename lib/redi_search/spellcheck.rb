@@ -1,34 +1,17 @@
 # frozen_string_literal: true
 
+require "redi_search/lazy_loadable"
+require "redi_search/spellcheck/result"
+
 module RediSearch
   class Spellcheck
+    include LazyLoadable
     include Enumerable
 
-    def initialize(index, query, distance: 1)
+    def initialize(index, terms, distance: 1)
       @index = index
-      @query = query
+      @terms = terms
       @distance = distance
-      @loaded = false
-    end
-
-    #:nocov:
-    def pretty_print(printer)
-      execute unless loaded?
-
-      printer.pp(documents)
-    rescue Redis::CommandError => e
-      printer.pp(e.message)
-    end
-    #:nocov:
-
-    def loaded?
-      @loaded
-    end
-
-    def to_a
-      execute unless loaded?
-
-      @documents
     end
 
     delegate :count, :each, to: :to_a
@@ -36,17 +19,19 @@ module RediSearch
     private
 
     attr_reader :documents
-    attr_accessor :index, :query, :distance
+    attr_accessor :index, :terms, :distance
 
     def command
-      ["SPELLCHECK", index.name, query, "DISTANCE", distance]
+      ["SPELLCHECK", index.name, terms, "DISTANCE", distance]
     end
 
-    def execute
-      @loaded = true
+    def parsed_terms
+      terms.split(Regexp.union(",.<>{}[]\"':;!@#$%^&*()-+=~\s".split("")))
+    end
 
-      RediSearch.client.call!(*command).yield_self do |results|
-        @documents = results
+    def parse_response(response)
+      @documents = response.map do |suggestion|
+        Result.new(*suggestion[1..2])
       end
     end
   end
