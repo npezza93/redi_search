@@ -3,9 +3,9 @@
 module RediSearch
   class Result
     class Collection < Array
-      def initialize(index, count, records)
+      def initialize(index, count, documents)
         @count = count
-        super(Hash[*records].map do |doc_id, fields|
+        super(Hash[*documents].map do |doc_id, fields|
           Document.new(index, doc_id, Hash[*fields])
         end)
       end

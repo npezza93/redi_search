@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "active_record/type"
-
 module RediSearch
   class Schema
     class TextField < Field

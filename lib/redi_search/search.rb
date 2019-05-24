@@ -24,7 +24,7 @@ module RediSearch
     def pretty_print(printer)
       execute unless loaded?
 
-      printer.pp(records)
+      printer.pp(documents)
     rescue Redis::CommandError => e
       printer.pp(e.message)
     end
@@ -37,7 +37,7 @@ module RediSearch
     def to_a
       execute unless loaded?
 
-      @records
+      @documents
     end
 
     def results
@@ -68,7 +68,7 @@ module RediSearch
 
     private
 
-    attr_reader :records
+    attr_reader :documents
     attr_accessor :index, :clauses
 
     def command
@@ -79,7 +79,7 @@ module RediSearch
       @loaded = true
 
       RediSearch.client.call!(*command).yield_self do |results|
-        @records = Result::Collection.new(
+        @documents = Result::Collection.new(
           index, results[0], results[1..-1].yield_self do |docs|
             next docs unless @no_content
 
