@@ -3,7 +3,7 @@
 require "redi_search/search/clauses"
 require "redi_search/search/term"
 require "redi_search/search/highlight_clause"
-require "redi_search/result/collection"
+require "redi_search/search/results"
 
 module RediSearch
   class Search
@@ -79,7 +79,7 @@ module RediSearch
       @loaded = true
 
       RediSearch.client.call!(*command).yield_self do |results|
-        @documents = Result::Collection.new(
+        @documents = Results.new(
           index, results[0], results[1..-1].yield_self do |docs|
             next docs unless @no_content
 
