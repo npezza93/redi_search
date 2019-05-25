@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
-require "redi_search/lazy_loadable"
+require "redi_search/lazily_load"
 require "redi_search/spellcheck/result"
 
 module RediSearch
   class Spellcheck
-    include LazyLoadable
-    include Enumerable
+    include LazilyLoad
 
     def initialize(index, terms, distance: 1)
       @index = index
       @terms = terms
       @distance = distance
     end
-
-    delegate :count, :each, to: :to_a
 
     private
 

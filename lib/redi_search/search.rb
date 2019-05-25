@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "redi_search/lazy_loadable"
+require "redi_search/lazily_load"
 
 require "redi_search/search/clauses"
 require "redi_search/search/term"
@@ -11,7 +11,7 @@ module RediSearch
   class Search
     include Enumerable
     include Clauses
-    include LazyLoadable
+    include LazilyLoad
 
     def initialize(index, term = nil, **term_options)
       @index = index

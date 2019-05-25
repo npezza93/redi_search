@@ -1,9 +1,19 @@
 # frozen_string_literal: true
 
 module RediSearch
-  module LazyLoadable
+  module LazilyLoad
+    extend ActiveSupport::Concern
+
+    include Enumerable
+
+    included do
+      delegate :count, :each, to: :to_a
+    end
+
     def loaded?
-      @loaded || false
+      @loaded = false unless defined? @loaded
+
+      @loaded
     end
 
     def to_a

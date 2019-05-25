@@ -15,9 +15,11 @@ module RediSearch
       end
 
       #:nocov:
-      def pretty_print(printer)
+      def pretty_print(printer) # rubocop:disable Metrics/MethodLength
         printer.object_address_group(self) do
-          printer.seplist(%w(term suggestions), proc { printer.text "," }) do |field_name|
+          printer.seplist(
+            %w(term suggestions), proc { printer.text "," }
+          ) do |field_name|
             printer.breakable " "
             printer.group(1) do
               printer.text field_name
