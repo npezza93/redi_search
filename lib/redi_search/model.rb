@@ -22,13 +22,15 @@ module RediSearch
         @redi_search_serializer = options[:serializer]
         register_redi_search_commit_hooks
 
+        scope :search_import, -> { all }
+
         class << self
           def search(term = nil, **term_options)
             redi_search_index.search(term, **term_options)
           end
 
           def reindex
-            redi_search_index.reindex(all.map(&:redi_search_document))
+            redi_search_index.reindex(search_import.map(&:redi_search_document))
           end
         end
       end
