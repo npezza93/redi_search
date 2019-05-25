@@ -6,7 +6,7 @@ class CharacterSerializer
   end
 
   def name
-    "#{object.first_name} #{object.last_name}"
+    "#{object.first} #{object.last}"
   end
 
   private

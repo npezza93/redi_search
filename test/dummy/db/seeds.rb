@@ -2,19 +2,23 @@
 
 require "faker"
 
-10_000.times do
-  User.create(first: Faker::Name.first_name, last: Faker::Name.last_name)
-end
-
-500.times do
-  Character.create(first_name: Faker::TvShows::GameOfThrones.dragon)
-end
-
-4_000.times do
-  Faker::TvShows::GameOfThrones.character.tap do |character|
-    Character.create(
-      first_name: character.split(" ")[0],
-      last_name: character.split(" ")[1..-1].join(" ")
-    )
+User.insert_all(
+  Array.new(200_000).map do
+    { first: Faker::Name.first_name, last: Faker::Name.last_name }
   end
-end
+)
+
+Character.insert_all(
+  Array.new(500).map do
+    { first: Faker::TvShows::GameOfThrones.dragon }
+  end
+)
+
+Character.insert_all(
+  Array.new(100_000).map do
+    Faker::TvShows::GameOfThrones.character.yield_self do |character|
+      { first: character.split(" ")[0],
+        last: character.split(" ")[1..-1].join(" ") }
+    end
+  end
+)
