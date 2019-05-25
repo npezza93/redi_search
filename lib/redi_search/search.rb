@@ -5,7 +5,7 @@ require "redi_search/lazily_load"
 require "redi_search/search/clauses"
 require "redi_search/search/term"
 require "redi_search/search/highlight_clause"
-require "redi_search/search/results"
+require "redi_search/search/result"
 
 module RediSearch
   class Search
@@ -58,7 +58,7 @@ module RediSearch
     end
 
     def parse_response(response)
-      @documents = Results.new(
+      @documents = Result.new(
         index, response[0], response[1..-1].yield_self do |docs|
           next docs unless @no_content
 

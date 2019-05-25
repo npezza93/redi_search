@@ -2,6 +2,7 @@
 
 require "test_helper"
 require "redi_search/search"
+require "redi_search/search/result"
 
 module RediSearch
   class SearchTest < ActiveSupport::TestCase
@@ -17,7 +18,7 @@ module RediSearch
 
     test "query execution" do
       query = RediSearch::Search.new(@index, "dr")
-      assert_equal RediSearch::Result::Collection, query.to_a.class
+      assert_equal RediSearch::Search::Result, query.to_a.class
     end
 
     test "highlight command" do
@@ -38,17 +39,13 @@ module RediSearch
     test "terms with options" do
       query = User.search(:hello, fuzziness: 1)
 
-      assert_equal(
-        "SEARCH users_test `%hello%`", query.to_redis
-      )
+      assert_equal("SEARCH users_test `%hello%`", query.to_redis)
     end
 
     test "simple phrase" do
       query = User.search("hello").and("world")
 
-      assert_equal(
-        "SEARCH users_test \"`hello` `world`\"", query.to_redis
-      )
+      assert_equal("SEARCH users_test \"`hello` `world`\"", query.to_redis)
     end
 
     test "exact phrase" do
