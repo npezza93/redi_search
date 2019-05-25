@@ -16,7 +16,7 @@ module RediSearch
 
     test "query execution" do
       query = RediSearch::Spellcheck.new(@index, "nic")
-      assert_equal RediSearch::Client::Response, query.to_a.class
+      assert_equal Array, query.to_a.class
     end
 
     test "something is returned" do
