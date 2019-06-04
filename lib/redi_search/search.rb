@@ -30,8 +30,6 @@ module RediSearch
       end
     end
 
-    delegate :count, :each, to: :to_a
-
     def to_redis
       command.map do |arg|
         if !arg.to_s.starts_with?(/\(-?@/) && arg.to_s.split(/\s|\|/).size > 1
