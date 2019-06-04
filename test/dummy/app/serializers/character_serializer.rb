@@ -5,6 +5,8 @@ class CharacterSerializer
     @object = object
   end
 
+  delegate :id, to: :object
+
   def name
     "#{object.first} #{object.last}"
   end
