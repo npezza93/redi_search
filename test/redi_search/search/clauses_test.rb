@@ -95,7 +95,7 @@ module RediSearch
         end
 
         assert_nothing_raised do
-          assert_not @index.search("*").no_content.to_a.empty?
+          assert_not @index.search("*").no_content.results.empty?
         end
       end
     end

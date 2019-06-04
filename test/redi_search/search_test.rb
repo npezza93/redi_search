@@ -18,7 +18,7 @@ module RediSearch
 
     test "query execution" do
       query = RediSearch::Search.new(@index, "dr")
-      assert_equal RediSearch::Search::Result, query.to_a.class
+      assert_equal RediSearch::Search::Result, query.results.class
     end
 
     test "highlight command" do
@@ -88,7 +88,7 @@ module RediSearch
 
     test "and not raises arg error without terms" do
       assert_raise ArgumentError do
-        User.search("hello").and.not.to_a
+        User.search("hello").and.not.results
       end
     end
 
