@@ -18,9 +18,7 @@ module RediSearch
         ].compact.join(" ")
       end
 
-      def inspect
-        to_s.inspect
-      end
+      delegate :inspect, to: :to_s
 
       def not(condition)
         @not = true

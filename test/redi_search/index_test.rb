@@ -26,7 +26,7 @@ module RediSearch
     test "create fails if the index already exists" do
       dup_index = Index.new("users_test", first: :text, last: :text)
 
-      refute dup_index.create
+      assert_not dup_index.create
     end
 
     test "info returns nothing if the index doesnt exist" do
@@ -62,7 +62,7 @@ module RediSearch
     test "#exists?" do
       assert @index.exist?
       assert @index.drop
-      refute @index.exist?
+      assert_not @index.exist?
     end
   end
 end

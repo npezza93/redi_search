@@ -12,6 +12,7 @@ gem "pry"
 gem "pry-rails"
 gem "rubocop"
 gem "rubocop-performance"
+gem "rubocop-rails"
 gem "simplecov"
 gem "sqlite3"
 

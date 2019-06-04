@@ -3,7 +3,7 @@
 require "test_helper"
 require "redi_search"
 
-class Superpower < ActiveRecord::Base
+class Superpower < ApplicationRecord
   redi_search index_prefix: :example
 end
 

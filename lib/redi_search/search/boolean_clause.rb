@@ -20,9 +20,7 @@ module RediSearch
         ].compact.join(operand)
       end
 
-      def inspect
-        to_s.inspect
-      end
+      delegate :inspect, to: :to_s
 
       def not(term, **term_options)
         @not = true

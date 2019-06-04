@@ -28,9 +28,7 @@ module RediSearch
       yield(configuration)
     end
 
-    def client
-      configuration.client
-    end
+    delegate :client, to: :configuration
 
     def env
       @env ||= ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
