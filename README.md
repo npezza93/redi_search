@@ -10,8 +10,8 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c6437acac5684de2549d/test_coverage)](https://codeclimate.com/github/npezza93/redi_search/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c6437acac5684de2549d/maintainability)](https://codeclimate.com/github/npezza93/redi_search/maintainability)
 
-A simple, but powerful Ruby wrapper around RediSearch,
-a search engine on top of Redis.
+A simple, but powerful Ruby wrapper around RediSearch, a search engine on top of
+Redis.
 
 ## Installation
 
@@ -37,7 +37,7 @@ After Redis and RediSearch are up and running, add this line to your application
 gem 'redi_search'
 ```
 
-And then execute:
+And then:
 ```bash
 ❯ bundle
 ````
@@ -79,55 +79,131 @@ options for each type are as follows:
 ##### Text field
 With no options: `{ name: :text }`
 
-- **weight** (default: 1.0)
-  - Declares the importance of this field when calculating result accuracy. This is a multiplication factor.
-  - Ex: `{ name: { text: { weight: 2 } } }`
-- **phonetic**
-  - Will perform phonetic matching on field in searches by default. The obligatory {matcher} argument specifies the phonetic algorithm and language used. The following matchers are supported:
-    - dm:en - Double Metaphone for English
-    - dm:fr - Double Metaphone for French
-    - dm:pt - Double Metaphone for Portuguese
-    - dm:es - Double Metaphone for Spanish
-  - Ex: `{ name: { text: { phonetic: 'dm:en' } } }`
-- **sortable** (default: false)
-  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
-  - Ex: `{ name: { text: { sortable: true } } }`
-- **no_index** (default: false)
-  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
-  - Ex: `{ name: { text: { no_index: true } } }`
-- **no_stem** (default: false)
-  - Disable stemming when indexing its values. This may be ideal for things like proper names.
-  - Ex: `{ name: { text: { no_stem: true } } }`
+<details>
+  <summary>Options</summary>
+  <ul>
+    <li>
+      <b>weight</b> (default: 1.0)
+      <ul>
+        <li>Declares the importance of this field when calculating result accuracy. This is a multiplication factor.</li>
+        <li>Ex: <code>{ name: { text: { weight: 2 } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>phonetic</b>
+      <ul>
+        <li>Will perform phonetic matching on field in searches by default. The obligatory {matcher} argument specifies the phonetic algorithm and language used. The following matchers are supported:
+          <ul>
+            <li>dm:en - Double Metaphone for English</li>
+            <li>dm:fr - Double Metaphone for French</li>
+            <li>dm:pt - Double Metaphone for Portuguese</li>
+            <li>dm:es - Double Metaphone for Spanish</li>
+          </ul>
+        </li>
+        <li>
+          Ex: <code>{ name: { text: { phonetic: 'dm:en' } } }</code>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <b>sortable</b> (default: false)
+      <ul>
+        <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
+        <li>Ex: <code>{ name: { text: { sortable: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>no_index</b> (default: false)
+      <ul>
+        <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
+        <li>Ex: <code>{ name: { text: { no_index: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>no_stem</b> (default: false)
+      <ul>
+        <li>Disable stemming when indexing its values. This may be ideal for things like proper names.</li>
+        <li>Ex: <code>{ name: { text: { no_stem: true } } }</code></li>
+      </ul>
+    </li>
+  </ul>
+</details>
 
 ##### Numeric field
 With no options: `{ name: :numeric }`
-- **sortable** (default: false)
-  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
-  - Ex: `{ id: { numeric: { sortable: true } } }`
-- **no_index** (default: false)
-  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
-  - Ex: `{ id: { numeric: { no_index: true } } }`
+
+<details>
+  <summary>Options</summary>
+  <ul>
+    <li>
+      <b>sortable</b> (default: false)
+      <ul>
+        <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
+        <li>Ex: <code>{ id: { numeric: { sortable: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>no_index</b> (default: false)
+      <ul>
+        <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
+        <li>Ex: <code>{ id: { numeric: { no_index: true } } }</code></li>
+      </ul>
+    </li>
+  </ul>
+</details>
 
 ##### Tag field
 With no options: `{ tag: :tag }`
-- **sortable** (default: false)
-  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
-  - Ex: `{ tag: { tag: { sortable: true } } }`
-- **no_index** (default: false)
-  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
-  - Ex: `{ tag: { tag: { no_index: true } } }`
-- **separator** (default: ",")
-  - Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.
-  - Ex: `{ tag: { tag: { separator: ',' } } }`
+
+<details>
+  <summary>Options</summary>
+  <ul>
+    <li>
+      <b>sortable</b> (default: false)
+      <ul>
+        <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
+        <li>Ex: <code>{ tag: { tag: { sortable: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>no_index</b> (default: false)
+      <ul>
+        <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
+        <li>Ex: <code>{ tag: { tag: { no_index: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>separator</b> (default: ",")
+      <ul>
+        <li>Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.</li>
+        <li>Ex: <code>{ tag: { tag: { separator: ',' } } }</code></li>
+      </ul>
+    </li>
+  </ul>
+</details>
 
 ##### Geo field
 With no options: `{ place: :geo }`
-- **sortable** (default: false)
-  -  Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).
-  - Ex: `{ place: { geo: { sortable: true } } }`
-- **no_index** (default: false)
-  - Field will not be indexed. This is useful in conjunction with `sortable`, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has `no_index` and doesn't have `sortable`, it will just be ignored by the index.
-  - Ex: `{ place: { geo: { no_index: true } } }`
+
+<details>
+  <summary>Options</summary>
+  <ul>
+    <li>
+      <b>sortable</b> (default: false)
+      <ul>
+        <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
+        <li>Ex: <code>{ place: { geo: { sortable: true } } }</code></li>
+      </ul>
+    </li>
+    <li>
+      <b>no_index</b> (default: false)
+      <ul>
+        <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
+        <li>Ex: <code>{ place: { geo: { no_index: true } } }</code></li>
+      </ul>
+    </li>
+  </ul>
+</details>
 
 #### Commands
 
