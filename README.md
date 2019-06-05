@@ -62,20 +62,45 @@ RediSearch.configure do |config|
 end
 ```
 
+## TL;DR
+```ruby
+RediSearch::Index.new(
+  :users_development, { first: :text, last: :text }
+).search("nick").or("jon")
+```
+**Rails**
+
+```ruby
+class User < ApplicationRecord
+  redi_search schema: { first: :text, last: :text }
+end
+
+User.search("nick").or("jon")
+```
+
+## Table of Contents
+   - [Preface](#preface)
+   - [Schema](#schema)
+   - [Index](#index)
+   - [Searching](#seraching)
+
+## Preface
+Search engines use search indexes to make searching a collection data easier. A search index is a body of structured data.
+"A search index is a body of structured data that a search engine refers to when looking for results that are relevant to a specific query"
 
 ## Usage
 
 Most actions taken revolve around indices so we will start there.
 
-### Index
+## Schema
 
+This defines the fields that and the properties on those fields in the index. A
+schema is a hash, with field names as the keys, defining fields and options in
+an index. Each field can be one of four types: geo, numeric, tag, or text. The
+supported options for each type are as follows:
 ```ruby
-RediSearch::Index.new(name_of_index, schema)
+{ first_name: :text, last_name: :text }
 ```
-`name_of_index` is a string or symbol identifying the index and the schema is a
-hash, with field names as the keys, defining fields and options in an index.
-Each field can be one of four types: geo, numeric, tag, or text. The supported
-options for each type are as follows:
 
 ##### Text field
 With no options: `{ name: :text }`
@@ -206,7 +231,15 @@ With no options: `{ place: :geo }`
   </ul>
 </details>
 
-#### Commands
+
+## Index
+
+To initialize an index, pass the name of the index as a string or symbol and the schema.
+```ruby
+RediSearch::Index.new(name_of_index, schema)
+```
+
+#### Available Commands
 
 ##### create
   Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
@@ -215,19 +248,19 @@ With no options: `{ place: :geo }`
 ##### exist?
   Returns a boolean signifying index existence.
 ##### info
-  Returns an object with all the information about the index
+  Returns an object with all the information about the index.
 ##### fields
-  Returns an array of the field names in the index
-##### add(record, score = 1.0)
-  Takes an object the responds to all the fields in the index and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
-##### add_multiple!(records)
-  Takes an array of objects that respond to all the fields in the schema. This provides a more performant way to add multiple documents to the index.
-##### del(record, delete_document: false)
-  Takes a record and remove it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance.
+  Returns an array of the field names in the index.
+##### add(document, score = 1.0)
+  Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
+##### add_multiple!(documents)
+  Takes an array of `Document` objects. This provides a more performant way to add multiple documents to the index.
+##### del(document, delete_document: false)
+  Takes a document and removes it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance vs just the index.
 
-### Searching
+## Searching
 
-Searching is initiated off an `RediSearch::Index` object and has a powerful query language.
+Searching is initiated off a `RediSearch::Index` instance and has a powerful query language.
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
 main ❯ index.search("john")
