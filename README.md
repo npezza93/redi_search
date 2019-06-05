@@ -52,9 +52,7 @@ and require it:
 require 'redi_search'
 ```
 
-## Usage
-
-### Configuration
+Once required you'll need to configure it with your Redis configuration. If you're on Rails, this should go in an initializer(`config/initializers/redi_search.rb`)
 ```ruby
 RediSearch.configure do |config|
   config.redis_config = {
@@ -63,6 +61,9 @@ RediSearch.configure do |config|
   }
 end
 ```
+
+
+## Usage
 
 Most actions taken revolve around indices so we will start there.
 
