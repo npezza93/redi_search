@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "redi_search/search/term"
+require "redi_search/search/clauses/slop"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -17,7 +18,7 @@ module RediSearch
       end
 
       def slop(slop)
-        clauses.push("SLOP", slop)
+        clauses.push(*Slop.new(slop: slop).clause)
 
         self
       end
