@@ -2,6 +2,7 @@
 
 require "redi_search/search/term"
 require "redi_search/search/clauses/slop"
+require "redi_search/search/clauses/in_order"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -24,7 +25,7 @@ module RediSearch
       end
 
       def in_order
-        clauses.push("INORDER")
+        clauses.push(*InOrder.new.clause)
 
         self
       end
