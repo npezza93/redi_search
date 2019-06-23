@@ -9,6 +9,7 @@ require "redi_search/search/clauses/limit"
 require "redi_search/search/clauses/no_content"
 require "redi_search/search/clauses/verbatim"
 require "redi_search/search/clauses/no_stop_words"
+require "redi_search/search/clauses/return"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -39,6 +40,10 @@ module RediSearch
       def no_content
         @no_content = true
         add_to_clause(NoContent.new)
+      end
+
+      def return(*fields)
+        add_to_clause(Return.new(fields: fields))
       end
 
       def language(language)

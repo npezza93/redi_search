@@ -114,6 +114,15 @@ module RediSearch
           assert_not @index.search("*").no_content.results.empty?
         end
       end
+
+      test "return on returns certain fields" do
+        query = RediSearch::Search.new(@index, "dr")
+
+        assert_equal(
+          "SEARCH users_test `dr` RETURN 1 name",
+          query.return(:name).to_redis
+        )
+      end
     end
   end
 end
