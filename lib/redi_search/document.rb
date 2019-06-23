@@ -37,18 +37,19 @@ module RediSearch
       end
     end
 
-    attr_reader :document_id
+    attr_reader :document_id, :attributes
 
     def initialize(index, document_id, fields)
       @index = index
       @document_id = document_id
-      @to_a = []
+      @attributes = fields
 
-      schema_fields.each do |field|
-        @to_a.push([field, fields[field]])
-        instance_variable_set(:"@#{field}", fields[field])
+      attributes.each do |field, value|
+        next if schema_fields.exclude? field
+
+        instance_variable_set(:"@#{field}", value)
         define_singleton_method field do
-          fields[field]
+          value
         end
       end
     end
@@ -61,7 +62,7 @@ module RediSearch
     def pretty_print(printer) # rubocop:disable Metrics/MethodLength
       printer.object_address_group(self) do
         printer.seplist(
-          schema_fields.append("document_id"), proc { printer.text "," }
+          attributes.keys + ["document_id"], proc { printer.text "," }
         ) do |field_name|
           printer.breakable " "
           printer.group(1) do
@@ -79,8 +80,8 @@ module RediSearch
       @schema_fields ||= index.schema.fields.map(&:to_s)
     end
 
-    def to_a
-      @to_a.flatten
+    def redis_attributes
+      attributes.to_a.flatten
     end
 
     private

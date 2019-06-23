@@ -50,8 +50,8 @@ module RediSearch
 
     def add!(document, score = 1.0)
       client.call!(
-        "ADD", name, document.document_id, score, "REPLACE", "FIELDS",
-        document.to_a
+        "add", name, document.document_id, score, "replace", "fields",
+        document.redis_attributes
       )
     end
 
