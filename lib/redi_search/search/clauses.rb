@@ -5,6 +5,7 @@ require "redi_search/search/clauses/slop"
 require "redi_search/search/clauses/in_order"
 require "redi_search/search/clauses/language"
 require "redi_search/search/clauses/sort_by"
+require "redi_search/search/clauses/limit"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -51,8 +52,8 @@ module RediSearch
         self
       end
 
-      def limit(num, offset = 0)
-        clauses.push("LIMIT", offset, num)
+      def limit(total, offset = 0)
+        clauses.push(*Limit.new(total: total, offset: offset).clause)
 
         self
       end
