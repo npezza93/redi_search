@@ -38,7 +38,6 @@ module RediSearch
       end
 
       def no_content
-        @no_content = true
         add_to_clause(NoContent.new)
       end
 
@@ -93,6 +92,7 @@ module RediSearch
       private
 
       def add_to_clause(clause)
+        used_clauses.add(clause.class.name.demodulize.underscore)
         clauses.push(*clause.clause)
 
         self

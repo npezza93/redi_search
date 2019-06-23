@@ -15,8 +15,8 @@ module RediSearch
 
     def initialize(index, term = nil, **term_options)
       @index = index
-      @no_content = false
       @clauses = []
+      @used_clauses = Set.new
 
       @term_clause = term.presence &&
         AndClause.new(self, term, nil, **term_options)
@@ -54,7 +54,7 @@ module RediSearch
 
     private
 
-    attr_reader :documents
+    attr_reader :documents, :used_clauses
     attr_accessor :index, :clauses
 
     def command
@@ -62,13 +62,7 @@ module RediSearch
     end
 
     def parse_response(response)
-      @documents = Result.new(
-        index, response[0], response[1..-1].yield_self do |docs|
-          next docs unless @no_content
-
-          docs.zip([[]] * response[0]).flatten(1)
-        end
-      )
+      @documents = Result.new(index, used_clauses, response[0], response[1..-1])
     end
   end
 end
