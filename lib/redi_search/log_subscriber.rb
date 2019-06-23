@@ -58,6 +58,10 @@ module RediSearch
       log_command(event, YELLOW)
     end
 
+    def explaincli(event)
+      log_command(event, BLUE)
+    end
+
     private
 
     def log_command(event, debug_color)

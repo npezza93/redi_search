@@ -36,6 +36,12 @@ module RediSearch
       )
     end
 
+    test "explain query" do
+      query = RediSearch::Search.new(@index, "dr")
+
+      assert_equal("UNION { dr +dr(expanded) }", query.explain)
+    end
+
     test "terms with options" do
       query = User.search(:hello, fuzziness: 1)
 

@@ -30,6 +30,12 @@ module RediSearch
       end
     end
 
+    def explain
+      RediSearch.client.call!(
+        "EXPLAINCLI", index.name, term_clause
+      ).join(" ").strip
+    end
+
     def to_redis
       command.map do |arg|
         if !arg.to_s.starts_with?(/\(-?@/) && arg.to_s.split(/\s|\|/).size > 1
