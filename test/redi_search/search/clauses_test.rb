@@ -39,6 +39,14 @@ module RediSearch
         )
       end
 
+      test "#no_stop_words clause" do
+        query = RediSearch::Search.new(@index, "dr")
+
+        assert_equal(
+          "SEARCH users_test `dr` NOSTOPWORDS", query.no_stop_words.to_redis
+        )
+      end
+
       test "#language clause" do
         query = RediSearch::Search.new(@index, "dr")
 
