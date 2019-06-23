@@ -7,6 +7,7 @@ require "redi_search/search/clauses/language"
 require "redi_search/search/clauses/sort_by"
 require "redi_search/search/clauses/limit"
 require "redi_search/search/clauses/no_content"
+require "redi_search/search/clauses/verbatim"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -24,6 +25,10 @@ module RediSearch
 
       def in_order
         add_to_clause(InOrder.new)
+      end
+
+      def verbatim
+        add_to_clause(Verbatim.new)
       end
 
       def no_content

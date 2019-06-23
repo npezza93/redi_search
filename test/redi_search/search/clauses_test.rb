@@ -31,6 +31,14 @@ module RediSearch
         )
       end
 
+      test "#verbatim clause" do
+        query = RediSearch::Search.new(@index, "dr")
+
+        assert_equal(
+          "SEARCH users_test `dr` VERBATIM", query.verbatim.to_redis
+        )
+      end
+
       test "#language clause" do
         query = RediSearch::Search.new(@index, "dr")
 
