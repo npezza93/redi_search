@@ -14,23 +14,15 @@ module RediSearch
   class Search
     module Clauses
       def highlight(fields: [], tags: {})
-        clauses.push(*HighlightClause.new(
-          fields: fields, tags: tags
-        ).clause)
-
-        self
+        add_to_clause(HighlightClause.new(fields: fields, tags: tags))
       end
 
       def slop(slop)
-        clauses.push(*Slop.new(slop: slop).clause)
-
-        self
+        add_to_clause(Slop.new(slop: slop))
       end
 
       def in_order
-        clauses.push(*InOrder.new.clause)
-
-        self
+        add_to_clause(InOrder.new)
       end
 
       def no_content
@@ -41,21 +33,15 @@ module RediSearch
       end
 
       def language(language)
-        clauses.push(*Language.new(language: language).clause)
-
-        self
+        add_to_clause(Language.new(language: language))
       end
 
       def sort_by(field, order: :asc)
-        clauses.push(*SortBy.new(field: field, order: order).clause)
-
-        self
+        add_to_clause(SortBy.new(field: field, order: order))
       end
 
       def limit(total, offset = 0)
-        clauses.push(*Limit.new(total: total, offset: offset).clause)
-
-        self
+        add_to_clause(Limit.new(total: total, offset: offset))
       end
 
       def where(**condition)
@@ -88,6 +74,14 @@ module RediSearch
         else
           self
         end
+      end
+
+      private
+
+      def add_to_clause(clause)
+        clauses.push(*clause.clause)
+
+        self
       end
     end
   end
