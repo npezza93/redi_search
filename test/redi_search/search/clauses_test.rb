@@ -75,6 +75,9 @@ module RediSearch
         )
       end
 
+      test "there are no duplicate clauses" do
+        assert_clause("WITHSCORES", stubbed_search.with_scores.with_scores)
+      end
 
       private
 

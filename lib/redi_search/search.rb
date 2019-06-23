@@ -58,7 +58,7 @@ module RediSearch
     attr_accessor :index, :clauses
 
     def command
-      ["SEARCH", index.name, term_clause, *clauses]
+      ["SEARCH", index.name, term_clause, *clauses.uniq]
     end
 
     def parse_response(response)
