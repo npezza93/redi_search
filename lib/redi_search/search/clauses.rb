@@ -4,6 +4,7 @@ require "redi_search/search/term"
 require "redi_search/search/clauses/slop"
 require "redi_search/search/clauses/in_order"
 require "redi_search/search/clauses/language"
+require "redi_search/search/clauses/sort_by"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -45,9 +46,7 @@ module RediSearch
       end
 
       def sort_by(field, order: :asc)
-        raise ArgumentError unless %i(asc desc).include?(order.to_sym)
-
-        clauses.push("SORTBY", field, order)
+        clauses.push(*SortBy.new(field: field, order: order).clause)
 
         self
       end

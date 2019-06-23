@@ -61,7 +61,7 @@ module RediSearch
       test "#sort_by arg error with bad order" do
         query = RediSearch::Search.new(@index, "dr")
 
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::ValidationError do
           query.sort_by(:first, order: :random)
         end
       end
