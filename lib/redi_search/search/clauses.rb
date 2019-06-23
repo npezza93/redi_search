@@ -6,6 +6,7 @@ require "redi_search/search/clauses/in_order"
 require "redi_search/search/clauses/language"
 require "redi_search/search/clauses/sort_by"
 require "redi_search/search/clauses/limit"
+require "redi_search/search/clauses/no_content"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -27,9 +28,7 @@ module RediSearch
 
       def no_content
         @no_content = true
-        clauses.push("NOCONTENT")
-
-        self
+        add_to_clause(NoContent.new)
       end
 
       def language(language)
