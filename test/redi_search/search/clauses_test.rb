@@ -71,8 +71,16 @@ module RediSearch
         assert_clause("RETURN 1 name", stubbed_search.return(:name))
       end
 
-        assert_equal(
-        )
+      test "#with_scores clause" do
+        assert_clause("WITHSCORES", stubbed_search.with_scores)
+      end
+
+      test "#with_scores includes the score" do
+        index_all_users
+
+        query = RediSearch::Search.new(@index, User.first.first).with_scores
+
+        assert query.first.score > 0.0
       end
 
       test "there are no duplicate clauses" do

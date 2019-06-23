@@ -10,6 +10,7 @@ require "redi_search/search/clauses/no_content"
 require "redi_search/search/clauses/verbatim"
 require "redi_search/search/clauses/no_stop_words"
 require "redi_search/search/clauses/return"
+require "redi_search/search/clauses/with_scores"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -35,6 +36,10 @@ module RediSearch
 
       def no_stop_words
         add_to_clause(NoStopWords.new)
+      end
+
+      def with_scores
+        add_to_clause(WithScores.new)
       end
 
       def no_content
