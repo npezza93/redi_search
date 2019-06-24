@@ -82,22 +82,21 @@ User.search("nick").or("jon")
    - [Preface](#preface)
    - [Schema](#schema)
    - [Index](#index)
-   - [Searching](#seraching)
+   - [Searching](#searching)
 
 ## Preface
-Search engines use search indexes to make searching a collection data easier. A search index is a body of structured data.
-"A search index is a body of structured data that a search engine refers to when looking for results that are relevant to a specific query"
-
-## Usage
-
-Most actions taken revolve around indices so we will start there.
+Most things in RediSearch revolve around a search index, so lets start with
+defining what a search index is. A search index according to [Switype](https://swiftype.com) is:
+> A search index is a body of structured data that a search engine refers to when looking for results that are relevant to a specific query. Indexes are a critical piece of any search system, since they must be tailored to the specific information retrieval method of the search engine’s algorithm. In this manner, the algorithm and the index are inextricably linked to one another. Index can also be used as a verb (indexing), referring to the process of collecting unstructured website data in a structured format that is tailored for the search engine algorithm.
+>
+> One way to think about indices is to consider the following analogy between a search infrastructure and an office filing system. Imagine you hand an intern a stack of thousands of pieces of paper (documents) and tell them to organize these pieces of paper in a filing cabinet (index) to help the company find information more efficiently. The intern will first have to sort through the papers and get a sense of all the information contained within them, then they will have to decide on a system for arranging them in the filing cabinet, then finally they’ll need to decide what is the most effective manner for searching through and selecting from the files once they are in the cabinet. In this example, the process of organizing and filing the papers corresponds to the process of indexing website content, and the method for searching across these organized files and finding those that are most relevant corresponds to the search algorithm.
 
 ## Schema
 
-This defines the fields that and the properties on those fields in the index. A
-schema is a hash, with field names as the keys, defining fields and options in
-an index. Each field can be one of four types: geo, numeric, tag, or text. The
-supported options for each type are as follows:
+This defines the fields and the properties of those fields in the index. A
+schema is a hash, with field names as the keys, and the field type as the value.
+Each field can be one of four types: geo, numeric, tag, or text. The supported
+options for each type are as follows:
 ```ruby
 { first_name: :text, last_name: :text }
 ```
@@ -268,19 +267,19 @@ main ❯ index.search("john")
 => [#<RediSearch::Document:0x00007f862e241b78 first: "Gene", last: "Volkman", document_id: "10039">,
 #<RediSearch::Document:0x00007f862e2417b8 first: "Jeannie", last: "Ledner", document_id: "9998">]
 ```
-Simple phrase query - hello AND world
+**Simple phrase query** - `hello AND world`
 ```ruby
 index.search("hello").and("world")
 ```
-Exact phrase query - hello FOLLOWED BY world
+**Exact phrase query** - `hello FOLLOWED BY world`
 ```ruby
 index.search("hello world")
 ```
-Union: documents containing either hello OR world
+**Union query** - `hello OR world`
 ```ruby
 index.search("hello").or("world")
 ```
-Not: documents containing hello but not world
+**Negation query** - `hello AND NOT world`
 ```ruby
 index.search("hello").and.not("world")
 ```
