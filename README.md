@@ -86,7 +86,7 @@ User.search("nick").or("jon")
 
 ## Preface
 Most things in RediSearch revolve around a search index, so lets start with
-defining what a search index is. A search index according to [Switype](https://swiftype.com) is:
+defining what a search index is. According to [Switype](https://swiftype.com):
 > A search index is a body of structured data that a search engine refers to when looking for results that are relevant to a specific query. Indexes are a critical piece of any search system, since they must be tailored to the specific information retrieval method of the search engine’s algorithm. In this manner, the algorithm and the index are inextricably linked to one another. Index can also be used as a verb (indexing), referring to the process of collecting unstructured website data in a structured format that is tailored for the search engine algorithm.
 >
 > One way to think about indices is to consider the following analogy between a search infrastructure and an office filing system. Imagine you hand an intern a stack of thousands of pieces of paper (documents) and tell them to organize these pieces of paper in a filing cabinet (index) to help the company find information more efficiently. The intern will first have to sort through the papers and get a sense of all the information contained within them, then they will have to decide on a system for arranging them in the filing cabinet, then finally they’ll need to decide what is the most effective manner for searching through and selecting from the files once they are in the cabinet. In this example, the process of organizing and filing the papers corresponds to the process of indexing website content, and the method for searching across these organized files and finding those that are most relevant corresponds to the search algorithm.
@@ -95,11 +95,13 @@ defining what a search index is. A search index according to [Switype](https://s
 
 This defines the fields and the properties of those fields in the index. A
 schema is a hash, with field names as the keys, and the field type as the value.
-Each field can be one of four types: geo, numeric, tag, or text. The supported
-options for each type are as follows:
+Each field can be one of four types: geo, numeric, tag, or text and can have
+many options. A simple example of a schema is:
 ```ruby
 { first_name: :text, last_name: :text }
 ```
+
+The supported options for each type are as follows:
 
 ##### Text field
 With no options: `{ name: :text }`
@@ -240,26 +242,30 @@ RediSearch::Index.new(name_of_index, schema)
 
 #### Available Commands
 
-##### create
+`create`
   Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-##### drop
+`drop`
   Drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-##### exist?
+`exist?`
   Returns a boolean signifying index existence.
-##### info
+`info`
   Returns an object with all the information about the index.
-##### fields
+`fields`
   Returns an array of the field names in the index.
-##### add(document, score = 1.0)
+`add(document, score = 1.0)`
   Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
-##### add_multiple!(documents)
+`add_multiple!(documents)`
   Takes an array of `Document` objects. This provides a more performant way to add multiple documents to the index.
-##### del(document, delete_document: false)
+`del(document, delete_document: false)`
   Takes a document and removes it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance vs just the index.
 
 ## Searching
 
-Searching is initiated off a `RediSearch::Index` instance and has a powerful query language.
+Searching is initiated off a `RediSearch::Index` instance with clauses that can
+be chained together. When search an array of `Document`s is always returned
+which has attr_readers for all the schema fields and a `document_id` method
+which returns the id of the document.
+
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
 main ❯ index.search("john")
@@ -284,27 +290,7 @@ index.search("hello").or("world")
 index.search("hello").and.not("world")
 ```
 
-All terms support a few options that can be applied.
-
-Prefix Queries: match all terms starting with a prefix
-```ruby
-index.search("hel", prefix: true)
-index.search("hello worl", prefix: true)
-index.search("hel", prefix: true).and("worl", prefix: true)
-index.search("hello").and.not("worl", prefix: true)
-```
-
-Optional terms with higher priority to ones containing more matches
-```ruby
-index.search("foo").and("bar", optional: true).and("baz", optional: true)
-```
-
-Fuzzy matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
-```ruby
-index.search("zuchini", fuzziness: 1)
-```
-
-Complex intersections and unions
+Complex intersections and unions:
 ```ruby
 # Intersection of unions
 index.search(index.search("hello").or("halo")).and(index.search("world").or("werld"))
@@ -314,21 +300,71 @@ index.search("hello").and.not(index.search("world").or("werld"))
 index.search("hello").and(index.search("world").or("werld"))
 ```
 
-##### Query level options
-- **slop(level)**
+All terms support a few options that can be applied.
+
+**Prefix terms**: match all terms starting with a prefix. (Akin to `like term%` in SQL)
+```ruby
+index.search("hel", prefix: true)
+index.search("hello worl", prefix: true)
+index.search("hel", prefix: true).and("worl", prefix: true)
+index.search("hello").and.not("worl", prefix: true)
+```
+
+**Optional terms**: documents containing the optional terms will rank higher than those without
+```ruby
+index.search("foo").and("bar", optional: true).and("baz", optional: true)
+```
+
+**Fuzzy terms**: matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
+```ruby
+index.search("zuchini", fuzziness: 1)
+```
+
+Search terms can also be scoped to specific fields using a `where` clause:
+```ruby
+# Simple field specific query
+index.search.where(name: "john")
+# Using where with options
+index.search.where(first: "jon", fuzziness: 1)
+# Using where with more complex query
+index.search.where(first: index.search("bill").or("bob"))
+```
+
+Searching for numeric fields takes a range:
+```ruby
+index.search.where(number: 0..100)
+# Searching to infinity
+index.search.where(number: 0..Float::INFINITY)
+index.search.where(number: -Float::INFINITY..0)
+```
+
+##### Query level clauses
+- `slop(level)`
   - We allow a maximum of N intervening number of unmatched offsets between phrase terms. (i.e the slop for exact phrases is 0)
-- **in_order**
+- `in_order`
   - Usually used in conjunction with SLOP, we make sure the query terms appear in the same order in the document as in the query, regardless of the offsets between them.
-- **no_content**
-  - Only return the document ids and not the content. This is useful if RediSearch is only an index on an external document collection.
-- **language**
+- `no_content`
+  - Only return the document ids and not the content. This is useful if RediSearch is being used on a Rails model where the attributes don't matter.
+- `language(language)`
   - Stemmer to use for the supplied language during search for query expansion. If querying documents in Chinese, this should be set to chinese in order to properly tokenize the query terms. Defaults to English. If an unsupported language is sent, the command returns an error.
-- **sort_by(field, order: :asc)**
+- `sort_by(field, order: :asc)`
   - If the supplied field is a sortable field, the results are ordered by the value of this field. This applies to both text and numeric fields. Available order is `:asc` or `:desc`
-- **limit(num, offset = 0)**
-  - Limit the results to the specified num at the offset. The default limit is 10. Note that you can use `limit(0)` to count the number of documents in the resultset without actually returning them.
-- **highlight(fields: [], tags: {})**
-  - Use this option to format occurrences of matched text. `fields` are an array of fields to be highlighted and `tags` should contain an `open` and `close` key that signifies the opening and closing tags when highlighting.
+- `limit(num, offset = 0)`
+  - Limit the results to the specified `num` at the `offset`. The default limit is 10. Note that you can use `limit(0)` to count the number of documents in the resultset without actually returning them.
+- `highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")`
+  - Use this option to format occurrences of matched text. `fields` are an array of fields to be highlighted.
+- `verbatim`
+  - Do not try to use stemming for query expansion but search the query terms verbatim.
+- `no_stop_words`
+  - Do not filter stopwords from the query.
+- `with_scores`
+  - Include the relative internal score of each document. This can be used to merge results from multiple instances. This will add a `score` method to the returned `Document` instances.
+- `return(*fields)`
+  - Limit which fields from the document are returned.
+- `explain`
+  - Returns the execution plan for a complex query but formatted for easier reading. In the returned response, a + on a term is an indication of stemming.
+- `to_redis`
+  - Returns the command to query without executing it.
 
 ### Rails Integration
 
