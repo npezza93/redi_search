@@ -11,6 +11,7 @@ require "redi_search/search/clauses/verbatim"
 require "redi_search/search/clauses/no_stop_words"
 require "redi_search/search/clauses/return"
 require "redi_search/search/clauses/with_scores"
+require "redi_search/search/clauses/highlight"
 require "redi_search/search/and_clause"
 require "redi_search/search/or_clause"
 require "redi_search/search/where_clause"
@@ -19,7 +20,7 @@ module RediSearch
   class Search
     module Clauses
       def highlight(fields: [], tags: {})
-        add_to_clause(HighlightClause.new(fields: fields, tags: tags))
+        add_to_clause(Highlight.new(fields: fields, tags: tags))
       end
 
       def slop(slop)
