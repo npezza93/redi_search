@@ -12,9 +12,9 @@ require "redi_search/search/clauses/no_stop_words"
 require "redi_search/search/clauses/return"
 require "redi_search/search/clauses/with_scores"
 require "redi_search/search/clauses/highlight"
-require "redi_search/search/and_clause"
-require "redi_search/search/or_clause"
-require "redi_search/search/where_clause"
+require "redi_search/search/clauses/and"
+require "redi_search/search/clauses/or"
+require "redi_search/search/clauses/where"
 
 module RediSearch
   class Search
@@ -66,7 +66,7 @@ module RediSearch
       end
 
       def where(**condition)
-        @term_clause = WhereClause.new(self, condition, @term_clause)
+        @term_clause = Where.new(self, condition, @term_clause)
 
         if condition.blank?
           @term_clause
@@ -76,8 +76,7 @@ module RediSearch
       end
 
       def and(new_term = nil, **term_options)
-        @term_clause =
-          AndClause.new(self, new_term, @term_clause, **term_options)
+        @term_clause = And.new(self, new_term, @term_clause, **term_options)
 
         if new_term.blank?
           @term_clause
@@ -87,8 +86,7 @@ module RediSearch
       end
 
       def or(new_term = nil, **term_options)
-        @term_clause =
-          OrClause.new(self, new_term, @term_clause, **term_options)
+        @term_clause = Or.new(self, new_term, @term_clause, **term_options)
 
         if new_term.blank?
           @term_clause

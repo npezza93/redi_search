@@ -18,7 +18,7 @@ module RediSearch
       @used_clauses = Set.new
 
       @term_clause = term.presence &&
-        AndClause.new(self, term, nil, **term_options)
+        And.new(self, term, nil, **term_options)
     end
 
     def results
