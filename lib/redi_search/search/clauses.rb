@@ -19,8 +19,10 @@ require "redi_search/search/where_clause"
 module RediSearch
   class Search
     module Clauses
-      def highlight(fields: [], tags: {})
-        add_to_clause(Highlight.new(fields: fields, tags: tags))
+      def highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")
+        add_to_clause(Highlight.new(
+          fields: fields, opening_tag: opening_tag, closing_tag: closing_tag
+        ))
       end
 
       def slop(slop)

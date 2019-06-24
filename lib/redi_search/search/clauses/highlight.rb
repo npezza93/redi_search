@@ -4,9 +4,10 @@ module RediSearch
   class Search
     module Clauses
       class Highlight
-        def initialize(fields: [], tags: {})
+        def initialize(fields: [], opening_tag: "<b>", closing_tag: "</b>")
           @fields = fields
-          @tags = tags.to_h
+          @opening_tag = opening_tag
+          @closing_tag = closing_tag
         end
 
         def clause
@@ -19,22 +20,22 @@ module RediSearch
 
         private
 
-        attr_reader :options, :tags_args, :fields_args
+        attr_reader :fields, :opening_tag, :closing_tag
 
         def tags_clause
-          return if @tags.empty?
+          return if opening_tag.blank? && closing_tag.blank?
 
-          if @tags[:open].present? && @tags[:close].present?
-            ["TAGS", @tags[:open], @tags[:close]]
+          if opening_tag.present? && closing_tag.present?
+            ["TAGS", opening_tag, closing_tag]
           else
             arg_error("Missing opening or closing tag")
           end
         end
 
         def fields_clause
-          return if @fields.empty?
+          return if fields.empty?
 
-          ["FIELDS", @fields.size, @fields]
+          ["FIELDS", fields.size, fields]
         end
 
         def arg_error(msg)

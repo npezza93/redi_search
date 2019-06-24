@@ -24,7 +24,10 @@ module RediSearch
     test "highlight command" do
       query = RediSearch::Search.new(@index, "dr")
 
-      assert_equal "SEARCH users_test `dr` HIGHLIGHT", query.highlight.to_redis
+      assert_equal(
+        "SEARCH users_test `dr` HIGHLIGHT TAGS <b> </b>",
+        query.highlight.to_redis
+      )
     end
 
     test "highlight command with tags" do
@@ -32,7 +35,7 @@ module RediSearch
 
       assert_equal(
         "SEARCH users_test `dr` HIGHLIGHT TAGS b bb",
-        query.highlight(tags: { open: "b", close: "bb" }).to_redis
+        query.highlight(opening_tag: "b", closing_tag: "bb").to_redis
       )
     end
 
