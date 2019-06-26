@@ -242,22 +242,22 @@ RediSearch::Index.new(name_of_index, schema)
 
 #### Available Commands
 
-`create`
-  Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-`drop`
-  Drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
-`exist?`
-  Returns a boolean signifying index existence.
-`info`
-  Returns an object with all the information about the index.
-`fields`
-  Returns an array of the field names in the index.
-`add(document, score = 1.0)`
-  Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
-`add_multiple!(documents)`
-  Takes an array of `Document` objects. This provides a more performant way to add multiple documents to the index.
-`del(document, delete_document: false)`
-  Takes a document and removes it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance vs just the index.
+- `create`
+  - Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+- `drop`
+  - Drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+- `exist?`
+  - Returns a boolean signifying index existence.
+- `info`
+  - Returns an object with all the information about the index.
+- `fields`
+  - Returns an array of the field names in the index.
+- `add(document, score = 1.0)`
+  - Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
+- `add_multiple!(documents)`
+  - Takes an array of `Document` objects. This provides a more performant way to add multiple documents to the index.
+- `del(document, delete_document: false)`
+  - Takes a document and removes it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance vs just the index.
 
 ## Searching
 
