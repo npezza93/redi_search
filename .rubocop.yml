@@ -564,10 +564,6 @@ Lint/StringConversionInInterpolation:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-to-s
   Enabled: true
 
-Lint/Syntax:
-  Description: Checks syntax error
-  Enabled: true
-
 Lint/UnderscorePrefixedVariableName:
   Description: Do not use prefix `_` for a variable that is used.
   Enabled: true
