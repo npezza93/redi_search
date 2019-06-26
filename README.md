@@ -73,6 +73,7 @@ User.search("nick").or("jon")
    - [Schema](#schema)
    - [Index](#index)
    - [Searching](#searching)
+   - [Rails Integration](#rails-integration)
 
 ## Preface
 Most things in RediSearch revolve around a search index, so lets start with
@@ -356,7 +357,7 @@ index.search.where(number: -Float::INFINITY..0)
 - `to_redis`
   - Returns the command to query without executing it.
 
-### Rails Integration
+## Rails Integration
 
 Integration with Rails is on by default! All you have to do is add the following to your model:
 ```ruby
@@ -369,6 +370,40 @@ end
 ```
 
 This will automatically add `User.search` and `User.reindex` methods. You can also use `User.redi_search_index` to get the `RediSearch::Index` instance. `User.reindex` will first `drop` the index if it exists, `create` the index with the given schema, and then `add` all the records to the index.
+
+The `redi_search` class method also takes an optional `serializer` argument which takes the name of a serializer. The serializer must respond to all the fields in a schema.
+
+```ruby
+class User < ApplicationRecord
+  redi_search schema: {
+    first: { text: { phonetic: "dm:en" } },
+    last: { text: { phonetic: "dm:en" } }
+  }, serializer: UserSerializer
+end
+```
+
+You can create a scope on the model if you want to eager load relationships when
+indexing or limit the records to index.
+
+```ruby
+class User < ApplicationRecord
+  scope :search_import, -> { includes(:posts) }
+end
+```
+
+The default index name for model indexes is `#{model_name.plural}_#{RediSearch.env}`. the `redi_search` method also takes an optional `index_prefix` argument to prepend to the index name:
+
+```ruby
+class User < ApplicationRecord
+  redi_search schema: {
+    first: { text: { phonetic: "dm:en" } },
+    last: { text: { phonetic: "dm:en" } }
+  }, index_prefix: 'prefix'
+end
+
+User.redi_search_index.name
+# => prefix_users_development
+```
 
 ## Development
 
