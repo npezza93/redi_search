@@ -19,17 +19,7 @@ Firstly, Redis and RediSearch need to be installed.
 
 You can download Redis from https://redis.io/download, and check out installation instructions [here](https://github.com/antirez/redis#installing-redis). Alternatively, on macOS or Linux you can install via Homebrew.
 
-To install RediSearch:
-1. `git clone https://github.com/RedisLabsModules/RediSearch.git`
-1. `cd RediSearch`
-1. `mkdir build`
-1. `cd build`
-1. `cmake .. -DCMAKE_BUILD_TYPE=RelWithDebInfo`
-1. `make`
-1. `redis-server --loadmodule ./redisearch.so or load the module in your redis.conf`
-
-You can also checkout [here](https://oss.redislabs.com/redisearch/Quick_Start.html) for more detailed installation instructions. If you already have a redis-server running you can also update your redis.conf file to always load the redisearch module. (On macOS the redis.conf file can be found `/usr/local/etc/redis.conf`)
-
+To install RediSearch check out, [https://oss.redislabs.com/redisearch/Quick_Start.html](https://oss.redislabs.com/redisearch/Quick_Start.html). Once you have RediSearch built, you can update your redis.conf file to always load the redisearch module with `loadmodule /path/to/redisearch.so`. (On macOS the redis.conf file can be found `/usr/local/etc/redis.conf`)
 
 After Redis and RediSearch are up and running, add this line to your application's Gemfile:
 
