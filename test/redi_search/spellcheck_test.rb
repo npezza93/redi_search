@@ -23,5 +23,11 @@ module RediSearch
       query = @index.spellcheck("nic")
       assert_equal 1, query.to_a.size
     end
+
+    test "raises validation error when distance is wrong" do
+      assert_raises ActiveModel::ValidationError do
+        @index.spellcheck("nic", distance: 10).to_a
+      end
+    end
   end
 end
