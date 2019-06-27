@@ -17,11 +17,19 @@ Redis.
 
 Firstly, Redis and RediSearch need to be installed.
 
-You can download Redis from https://redis.io/download, and check out installation instructions [here](https://github.com/antirez/redis#installing-redis). Alternatively, on macOS or Linux you can install via Homebrew.
+You can download Redis from https://redis.io/download, and check out
+installation instructions
+[here](https://github.com/antirez/redis#installing-redis). Alternatively, on
+macOS or Linux you can install via Homebrew.
 
-To install RediSearch check out, [https://oss.redislabs.com/redisearch/Quick_Start.html](https://oss.redislabs.com/redisearch/Quick_Start.html). Once you have RediSearch built, you can update your redis.conf file to always load the redisearch module with `loadmodule /path/to/redisearch.so`. (On macOS the redis.conf file can be found `/usr/local/etc/redis.conf`)
+To install RediSearch check out,
+[https://oss.redislabs.com/redisearch/Quick_Start.html](https://oss.redislabs.com/redisearch/Quick_Start.html).
+Once you have RediSearch built, you can update your redis.conf file to always
+load the redisearch module with `loadmodule /path/to/redisearch.so`. (On macOS
+the redis.conf file can be found `/usr/local/etc/redis.conf`)
 
-After Redis and RediSearch are up and running, add this line to your application's Gemfile:
+After Redis and RediSearch are up and running, add this line to your
+application's Gemfile:
 
 ```ruby
 gem 'redi_search'
@@ -42,7 +50,10 @@ and require it:
 require 'redi_search'
 ```
 
-Once required you'll need to configure it with your Redis configuration. If you're on Rails, this should go in an initializer(`config/initializers/redi_search.rb`)
+Once required you'll need to configure it with your Redis configuration. If
+you're on Rails, this should go in an initializer
+(`config/initializers/redi_search.rb`)
+
 ```ruby
 RediSearch.configure do |config|
   config.redis_config = {
@@ -73,6 +84,7 @@ User.search("nick").or("jon")
    - [Schema](#schema)
    - [Index](#index)
    - [Searching](#searching)
+   - [Spellcheck](#spellcheck)
    - [Rails Integration](#rails-integration)
 
 ## Preface
@@ -226,7 +238,9 @@ With no options: `{ place: :geo }`
 
 ## Index
 
-To initialize an index, pass the name of the index as a string or symbol and the schema.
+To initialize an index, pass the name of the index as a string or symbol and the
+schema.
+
 ```ruby
 RediSearch::Index.new(name_of_index, schema)
 ```
@@ -253,7 +267,7 @@ RediSearch::Index.new(name_of_index, schema)
 ## Searching
 
 Searching is initiated off a `RediSearch::Index` instance with clauses that can
-be chained together. When search an array of `Document`s is always returned
+be chained together. When searching, an array of `Document`s is always returned
 which has attr_readers for all the schema fields and a `document_id` method
 which returns the id of the document.
 
@@ -357,6 +371,28 @@ index.search.where(number: -Float::INFINITY..0)
 - `to_redis`
   - Returns the command to query without executing it.
 
+## Spellcheck
+
+Spellchecking is initiated off a `RediSearch::Index` instance and provides
+suggestions for misspelled search terms. It takes an optional `distance` named
+argument which is the maximal Levenshtein distance for spelling suggestions. It
+returns an array where each element contains suggestions for each search term.
+
+```ruby
+main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
+main ❯ index.spellcheck("jimy")
+  RediSearch (1.1ms)  FT.SPELLCHECK user_idx jimy DISTANCE 1
+  => [#<RediSearch::Spellcheck::Result:0x00007f805591c670
+    term: "jimy",
+    suggestions:
+     [#<struct RediSearch::Spellcheck::Suggestion score=0.0006849315068493151, suggestion="jimmy">,
+      #<struct RediSearch::Spellcheck::Suggestion score=0.00019569471624266145, suggestion="jim">]>]
+main ❯ index.spellcheck("jimy", distance: 2).first.suggestions
+  RediSearch (0.5ms)  FT.SPELLCHECK user_idx jimy DISTANCE 2
+=> [#<struct RediSearch::Spellcheck::Suggestion score=0.0006849315068493151, suggestion="jimmy">,
+ #<struct RediSearch::Spellcheck::Suggestion score=0.00019569471624266145, suggestion="jim">]
+```
+
 ## Rails Integration
 
 Integration with Rails is on by default! All you have to do is add the following to your model:
@@ -369,9 +405,14 @@ class User < ApplicationRecord
 end
 ```
 
-This will automatically add `User.search` and `User.reindex` methods. You can also use `User.redi_search_index` to get the `RediSearch::Index` instance. `User.reindex` will first `drop` the index if it exists, `create` the index with the given schema, and then `add` all the records to the index.
+This will automatically add `User.search` and `User.reindex` methods. You can
+also use `User.redi_search_index` to get the `RediSearch::Index` instance.
+`User.reindex` will first `drop` the index if it exists, `create` the index with
+the given schema, and then `add` all the records to the index.
 
-The `redi_search` class method also takes an optional `serializer` argument which takes the name of a serializer. The serializer must respond to all the fields in a schema.
+The `redi_search` class method also takes an optional `serializer` argument
+which takes the name of a serializer. The serializer must respond to all the
+fields in a schema.
 
 ```ruby
 class User < ApplicationRecord
@@ -391,7 +432,9 @@ class User < ApplicationRecord
 end
 ```
 
-The default index name for model indexes is `#{model_name.plural}_#{RediSearch.env}`. the `redi_search` method also takes an optional `index_prefix` argument to prepend to the index name:
+The default index name for model indexes is
+`#{model_name.plural}_#{RediSearch.env}`. the `redi_search` method also takes an
+optional `index_prefix` argument to prepend to the index name:
 
 ```ruby
 class User < ApplicationRecord
@@ -405,9 +448,16 @@ User.redi_search_index.name
 # => prefix_users_development
 ```
 
+Integrating RediSearch into a model will also add `User.spellcheck` which
+behaves the same as the [spellcheck method](#spellcheck) on `RediSearch::Index`
+
+
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment. You can also start a rails console if you `cd` into `test/dummy`.
+After checking out the repo, run `bin/setup` to install dependencies. Then, run
+`rake test` to run the tests. You can also run `bin/console` for an interactive
+prompt that will allow you to experiment. You can also start a rails console if
+you `cd` into `test/dummy`.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, execute `bin/publish (major|minor|patch)` which will update the version number in `version.rb`, create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 

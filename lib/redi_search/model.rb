@@ -29,6 +29,10 @@ module RediSearch
             redi_search_index.search(term, **term_options)
           end
 
+          def spellcheck(term, distance: 1)
+            redi_search_index.spellcheck(term, distance: distance)
+          end
+
           def reindex
             redi_search_index.reindex(search_import.map(&:redi_search_document))
           end
