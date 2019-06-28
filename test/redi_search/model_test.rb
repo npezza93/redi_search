@@ -58,7 +58,7 @@ module RediSearch
       user = users(:nick)
       search_results = User.search("nick")
 
-      assert search_results.count > 0
+      assert search_results.count.positive?
       assert_includes search_results.results, user
     end
   end
