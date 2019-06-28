@@ -34,6 +34,10 @@ module RediSearch
 
     private
 
+    def command
+      raise NotImplementedError, "included class did not define #{__method__}"
+    end
+
     def execute
       @loaded = true
 
@@ -43,7 +47,7 @@ module RediSearch
     end
 
     def parse_response(_response)
-      raise NotImplementedError
+      raise NotImplementedError, "included class did not define #{__method__}"
     end
   end
 end
