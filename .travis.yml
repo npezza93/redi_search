@@ -6,7 +6,7 @@ sudo: false
 language: ruby
 cache:
   directories:
-   - vendor/bundle
+   - gemfiles/vendor/bundle
    - /home/travis/.rvm/
 
 rvm: 2.6.3
