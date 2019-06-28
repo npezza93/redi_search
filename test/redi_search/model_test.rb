@@ -47,5 +47,10 @@ module RediSearch
     test "setting an index prefix" do
       assert_equal "example_superpowers_test", Superpower.redi_search_index.name
     end
+
+    test "responds to spellcheck" do
+      assert User.reindex
+      assert_equal 1, User.spellcheck("fli").count
+    end
   end
 end
