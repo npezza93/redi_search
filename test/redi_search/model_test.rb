@@ -52,5 +52,14 @@ module RediSearch
       assert User.reindex
       assert_equal 1, User.spellcheck("fli").count
     end
+
+    test "calling results on search results looks up AR records" do
+      assert User.reindex
+      user = users(:nick)
+      search_results = User.search("nick")
+
+      assert_equal 1, search_results.count
+      assert_includes search_results.results, user
+    end
   end
 end

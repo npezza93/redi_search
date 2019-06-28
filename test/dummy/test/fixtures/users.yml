@@ -60,5 +60,5 @@ user19:
 user20:
   first: <%= Faker::Name.first_name %>
   last: <%= Faker::Name.last_name %>
-spellcheck:
+nick:
   first: nick
