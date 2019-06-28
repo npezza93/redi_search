@@ -23,6 +23,14 @@ module RediSearch
       assert_equal 1, @index.info["num_docs"].to_i
     end
 
+    test "#document_count" do
+      record = User.create(
+        first: Faker::Name.first_name, last: Faker::Name.last_name
+      )
+      assert @index.add(record.redi_search_document)
+      assert_equal @index.info["num_docs"].to_i, @index.document_count
+    end
+
     test "create fails if the index already exists" do
       dup_index = Index.new("users_test", first: :text, last: :text)
 

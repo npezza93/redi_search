@@ -91,6 +91,10 @@ module RediSearch
       add_multiple! docs
     end
 
+    def document_count
+      info["num_docs"].to_i
+    end
+
     private
 
     def client
