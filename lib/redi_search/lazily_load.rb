@@ -7,7 +7,7 @@ module RediSearch
     include Enumerable
 
     included do
-      delegate :count, :each, to: :to_a
+      delegate :size, :count, :each, to: :to_a
     end
 
     def loaded?

@@ -59,6 +59,16 @@ module RediSearch
       assert_equal 2, @index.search(record.first).count
     end
 
+    test "Results#size is aliased to count" do
+      record = User.create(
+        first: Faker::Name.first_name, last: Faker::Name.last_name
+      )
+      assert @index.add(record.redi_search_document)
+      assert_equal(
+        @index.search(record.first).count, @index.search(record.first).size
+      )
+    end
+
     test "#exists?" do
       assert @index.exist?
       assert @index.drop
