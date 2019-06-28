@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "redi_search/add"
 require "redi_search/schema"
 require "redi_search/search"
 require "redi_search/spellcheck"
@@ -43,16 +44,11 @@ module RediSearch
     end
 
     def add(document, score = 1.0)
-      add!(document, score)
-    rescue Redis::CommandError
-      false
+      Add.new(self, document, score: score).call
     end
 
     def add!(document, score = 1.0)
-      client.call!(
-        "add", name, document.document_id, score, "replace", "fields",
-        document.redis_attributes
-      )
+      Add.new(self, document, score: score).call!
     end
 
     def add_multiple!(documents)

@@ -8,6 +8,7 @@ gemspec
 
 gem "faker"
 gem "minitest", "~> 5.0"
+gem "mocha"
 gem "pry"
 gem "pry-rails"
 gem "rubocop"

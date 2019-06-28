@@ -9,6 +9,7 @@ end
 require "minitest/pride"
 require "pry"
 require "faker"
+require "mocha/minitest"
 
 # Configure Rails Environment
 ENV["RAILS_ENV"] = "test"
