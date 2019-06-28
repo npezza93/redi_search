@@ -4,7 +4,11 @@ env:
     - CC_TEST_REPORTER_ID=fec34310f03fd2cc767a85fa23d5102f3dca67b9cc967a48d9940027731394e8
 sudo: false
 language: ruby
-cache: bundler
+cache:
+  directories:
+   - vendor/bundle
+   - /home/travis/.rvm/
+
 rvm: 2.6.3
 services: docker
 before_script:
