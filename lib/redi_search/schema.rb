@@ -31,8 +31,13 @@ module RediSearch
       raw.keys
     end
 
+    def alter(field_name, options)
+      raw[field_name] = options
+      self
+    end
+
     private
 
-    attr_reader :raw
+    attr_accessor :raw
   end
 end

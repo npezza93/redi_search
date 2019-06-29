@@ -5,6 +5,7 @@ require "redi_search/create"
 require "redi_search/schema"
 require "redi_search/search"
 require "redi_search/spellcheck"
+require "redi_search/alter"
 
 module RediSearch
   class Index
@@ -77,7 +78,7 @@ module RediSearch
     end
 
     def fields
-      @fields ||= schema.fields.map(&:to_s)
+      schema.fields.map(&:to_s)
     end
 
     def reindex(docs)
@@ -88,6 +89,10 @@ module RediSearch
 
     def document_count
       info["num_docs"].to_i
+    end
+
+    def alter(field_name, schema)
+      Alter.new(self, field_name, schema).call!
     end
 
     private
