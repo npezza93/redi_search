@@ -4,7 +4,7 @@ require "test_helper"
 require "redi_search"
 
 class Superpower < ApplicationRecord
-  redi_search index_prefix: :example
+  redi_search schema: { power: :text }, index_prefix: :example
 end
 
 module RediSearch
