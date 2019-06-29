@@ -16,18 +16,24 @@ module RediSearch
     end
 
     test "#add" do
-      record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(record.redi_search_document)
-      assert_equal 1, @index.info["num_docs"].to_i
+      assert_difference -> { User.redi_search_index.document_count } do
+        @index.add(users(:nick).redi_search_document)
+      end
+    end
+
+    test "#add!" do
+      assert_difference -> { User.redi_search_index.document_count } do
+        @index.add(users(:nick).redi_search_document)
+      end
+
+      assert_raises Redis::CommandError do
+        @index.add!(users(:nick).redi_search_document)
+      end
     end
 
     test "#document_count" do
-      record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(record.redi_search_document)
+      @index.add(users(:nick).redi_search_document)
+
       assert_equal @index.info["num_docs"].to_i, @index.document_count
     end
 
@@ -62,26 +68,32 @@ module RediSearch
     end
 
     test "#search" do
-      record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(record.redi_search_document)
-      assert_equal 1, @index.search(record.first).count
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
 
-      record_jr = record.dup
-      record_jr.last = record_jr.last + " jr"
-      record_jr.save
-      assert @index.add(record_jr.redi_search_document)
-      assert_equal 2, @index.search(record.first).count
+      assert_equal 1, @index.search(@record.first).count
+
+      @record_jr = @record.dup
+      @record_jr.last = @record_jr.last + " jr"
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record_jr.save
+      end
+
+      assert_equal 2, @index.search(@record.first).count
     end
 
     test "Results#size is aliased to count" do
-      record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(record.redi_search_document)
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
+
       assert_equal(
-        @index.search(record.first).count, @index.search(record.first).size
+        @index.search(@record.first).count, @index.search(@record.first).size
       )
     end
 

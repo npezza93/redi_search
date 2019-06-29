@@ -25,10 +25,11 @@ module RediSearch
     end
 
     test ".get" do
-      @record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(@record.redi_search_document)
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
 
       doc = RediSearch::Document.get(@index, @record.id)
       assert_equal @record.first, doc.first
@@ -42,14 +43,14 @@ module RediSearch
     end
 
     test ".mget" do
-      @record1 = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(@record1.redi_search_document)
-      @record2 = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(@record2.redi_search_document)
+      assert_difference -> { User.redi_search_index.document_count }, 2 do
+        @record1 = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+        @record2 = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
 
       docs = RediSearch::Document.mget(@index, @record1.id, @record2.id)
       assert_equal 2, docs.count
@@ -58,10 +59,11 @@ module RediSearch
     end
 
     test ".mget when a doc doesnt exist" do
-      @record1 = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(@record1.redi_search_document)
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record1 = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
 
       docs = RediSearch::Document.mget(@index, @record1.id, "rando")
       assert_equal 1, docs.count
@@ -70,13 +72,13 @@ module RediSearch
     end
 
     test "#del" do
-      @record = User.create(
-        first: Faker::Name.first_name, last: Faker::Name.last_name
-      )
-      assert @index.add(@record.redi_search_document)
-      assert_equal 1, @index.info["num_docs"].to_i
+      assert_difference -> { User.redi_search_index.document_count } do
+        @record1 = User.create(
+          first: Faker::Name.first_name, last: Faker::Name.last_name
+        )
+      end
 
-      doc = RediSearch::Document.get(@index, @record.id)
+      doc = RediSearch::Document.get(@index, @record1.id)
       assert doc.del
       assert_equal 0, @index.info["num_docs"].to_i
     end
