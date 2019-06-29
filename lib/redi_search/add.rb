@@ -17,7 +17,7 @@ module RediSearch
         "replace",
         "fields",
         document.redis_attributes
-      )
+      ).ok?
     end
 
     def call
