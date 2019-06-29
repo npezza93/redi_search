@@ -46,7 +46,7 @@ module RediSearch
       @score = score
 
       attributes.each do |field, value|
-        next if schema_fields.exclude? field
+        next unless schema_fields.include? field
 
         instance_variable_set(:"@#{field}", value)
         define_singleton_method(field) { value }
