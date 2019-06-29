@@ -1,0 +1,16 @@
+model_3:
+  make: Tesla
+  model: Model 3
+  color: white
+model_s:
+  make: Tesla
+  model: Model S
+  color: white
+model_x:
+  make: Tesla
+  model: Model X
+  color: white
+model_y:
+  make: Tesla
+  model: Model Y
+  color: white
