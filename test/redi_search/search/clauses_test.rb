@@ -52,11 +52,11 @@ module RediSearch
       end
 
       test "#limit clause defaults to 0 offset" do
-        assert_clause("LIMIT 0 10", stubbed_search.limit(10))
+        assert_clause("LIMIT [0, 10]", stubbed_search.limit(10))
       end
 
       test "#limit clause with custom offset" do
-        assert_clause("LIMIT 5 10", stubbed_search.limit(10, 5))
+        assert_clause("LIMIT [5, 10]", stubbed_search.limit(10, 5))
       end
 
       test "no_content just returns docs with ids" do
