@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "redi_search/add"
+require "redi_search/create"
 require "redi_search/schema"
 require "redi_search/search"
 require "redi_search/spellcheck"
@@ -23,14 +24,12 @@ module RediSearch
       Spellcheck.new(self, query, distance: distance)
     end
 
-    def create
-      create!
-    rescue Redis::CommandError
-      false
+    def create(**options)
+      Create.new(self, schema, options).call
     end
 
-    def create!
-      client.call!("CREATE", name, "SCHEMA", schema.to_a).ok?
+    def create!(**options)
+      Create.new(self, schema, options).call!
     end
 
     def drop

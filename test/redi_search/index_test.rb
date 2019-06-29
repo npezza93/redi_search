@@ -37,6 +37,14 @@ module RediSearch
       assert_not dup_index.create
     end
 
+    test "create! raises exception if the index already exists" do
+      dup_index = Index.new("users_test", first: :text, last: :text)
+
+      assert_raises Redis::CommandError do
+        dup_index.create!
+      end
+    end
+
     test "info returns nothing if the index doesnt exist" do
       rando_idx = Index.new("rando_idx", first: :text, last: :text)
 
