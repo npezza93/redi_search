@@ -8,8 +8,6 @@ cache:
   directories:
    - gemfiles/vendor/bundle
    - /home/travis/.rvm/
-
-rvm: 2.6.3
 services: docker
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
