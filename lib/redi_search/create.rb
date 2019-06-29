@@ -8,7 +8,7 @@ module RediSearch
       no_highlight: "NOHL",
       no_fields: "NOFIELDS",
       no_frequencies: "NOFREQS"
-    }
+    }.freeze
 
     def initialize(index, schema, options)
       @index = index

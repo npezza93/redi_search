@@ -17,7 +17,7 @@ module RediSearch
     test "creates index" do
       creator = RediSearch::Create.new(@index, @index.schema, {})
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call
       assert @index.exist?
     end
@@ -26,9 +26,9 @@ module RediSearch
       creator = RediSearch::Create.new(@index, @index.schema, {})
       creator.stubs(:call!).raises(Redis::CommandError)
 
-      refute @index.exist?
-      refute creator.call
-      refute @index.exist?
+      assert_not @index.exist?
+      assert_not creator.call
+      assert_not @index.exist?
     end
 
     test "#call! raises the error to the consumer" do
@@ -45,7 +45,7 @@ module RediSearch
         @index, @index.schema, max_text_fields: true
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -59,7 +59,7 @@ module RediSearch
         @index, @index.schema, no_offsets: true
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -73,7 +73,7 @@ module RediSearch
         @index, @index.schema, temporary: 2000
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       # assert_includes(
       #   @index.info.index_options,
@@ -87,7 +87,7 @@ module RediSearch
         @index, @index.schema, no_highlight: true
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       # assert_includes(
       #   @index.info.index_options,
@@ -101,7 +101,7 @@ module RediSearch
         @index, @index.schema, no_fields: true
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -115,7 +115,7 @@ module RediSearch
         @index, @index.schema, no_frequencies: true
       )
 
-      refute @index.exist?
+      assert_not @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
