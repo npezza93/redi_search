@@ -87,6 +87,21 @@ module RediSearch
         assert_clause("WITHSCORES", stubbed_search.with_scores.with_scores)
       end
 
+      test "#count when loaded" do
+        search = stubbed_search
+        search.load
+
+        assert search.is_a? Search
+        assert search.count >= 0
+      end
+
+      test "#count when loaded on the result set" do
+        results = stubbed_search.load
+
+        assert results.is_a? Search::Result
+        assert results.count >= 0
+      end
+
       private
 
       Name = Struct.new(:name) do

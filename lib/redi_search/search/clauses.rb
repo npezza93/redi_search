@@ -65,6 +65,16 @@ module RediSearch
         add_to_clause(Limit.new(total: total, offset: offset))
       end
 
+      def count
+        if @loaded
+          to_a.size
+        else
+          RediSearch.client.call!(
+            "SEARCH", index.name, term_clause, *Limit.new(total: 0).clause
+          ).first
+        end
+      end
+
       def where(**condition)
         @term_clause = Where.new(self, condition, @term_clause)
 

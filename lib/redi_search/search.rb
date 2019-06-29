@@ -9,8 +9,8 @@ require "redi_search/search/result"
 module RediSearch
   class Search
     include Enumerable
-    include Clauses
     include LazilyLoad
+    include Clauses
 
     def initialize(index, term = nil, **term_options)
       @index = index

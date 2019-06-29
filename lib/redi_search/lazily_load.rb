@@ -7,7 +7,7 @@ module RediSearch
     include Enumerable
 
     included do
-      delegate :size, :count, :each, to: :to_a
+      delegate :size, :each, to: :to_a
     end
 
     def loaded?
@@ -22,6 +22,8 @@ module RediSearch
       @documents
     end
 
+    alias load to_a
+
     #:nocov:
     def pretty_print(printer)
       execute unless loaded?
@@ -31,6 +33,10 @@ module RediSearch
       printer.pp(e.message)
     end
     #:nocov:
+
+    def count
+      to_a.size
+    end
 
     private
 
