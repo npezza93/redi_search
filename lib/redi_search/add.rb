@@ -2,10 +2,10 @@
 
 module RediSearch
   class Add
-    def initialize(index, document, score: 1.0)
+    def initialize(index, document, **options)
       @index = index
       @document = document
-      @score = score
+      @options = options
     end
 
     def call!
@@ -28,6 +28,10 @@ module RediSearch
 
     private
 
-    attr_reader :index, :document, :score
+    attr_reader :index, :document, :options
+
+    def score
+      options[:score] || 1.0
+    end
   end
 end
