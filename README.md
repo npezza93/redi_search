@@ -10,7 +10,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c6437acac5684de2549d/test_coverage)](https://codeclimate.com/github/npezza93/redi_search/test_coverage)
 [![Maintainability](https://api.codeclimate.com/v1/badges/c6437acac5684de2549d/maintainability)](https://codeclimate.com/github/npezza93/redi_search/maintainability)
 
-A simple, but powerful Ruby wrapper around RediSearch, a search engine on top of
+A simple, but powerful, Ruby wrapper around RediSearch, a search engine on top of
 Redis.
 
 ## Installation
@@ -63,43 +63,48 @@ RediSearch.configure do |config|
 end
 ```
 
-## TL;DR
-```ruby
-RediSearch::Index.new(
-  :users_development, { first: :text, last: :text }
-).search("nick").or("jon")
-```
-**Rails**
-
-```ruby
-class User < ApplicationRecord
-  redi_search schema: { first: :text, last: :text }
-end
-
-User.search("nick").or("jon")
-```
-
 ## Table of Contents
    - [Preface](#preface)
    - [Schema](#schema)
+   - [Document](#document)
    - [Index](#index)
    - [Searching](#searching)
    - [Spellcheck](#spellcheck)
    - [Rails Integration](#rails-integration)
 
 ## Preface
-Most things in RediSearch revolve around a search index, so lets start with
+RediSearch revolves around a search index, so lets start with
 defining what a search index is. According to [Switype](https://swiftype.com):
-> A search index is a body of structured data that a search engine refers to when looking for results that are relevant to a specific query. Indexes are a critical piece of any search system, since they must be tailored to the specific information retrieval method of the search engine’s algorithm. In this manner, the algorithm and the index are inextricably linked to one another. Index can also be used as a verb (indexing), referring to the process of collecting unstructured website data in a structured format that is tailored for the search engine algorithm.
+> A search index is a body of structured data that a search engine refers to
+> when looking for results that are relevant to a specific query. Indexes are a
+> critical piece of any search system, since they must be tailored to the
+> specific information retrieval method of the search engine’s algorithm. In
+> this manner, the algorithm and the index are inextricably linked to one
+> another. Index can also be used as a verb (indexing), referring to the process
+> of collecting unstructured website data in a structured format that is
+> tailored for the search engine algorithm.
 >
-> One way to think about indices is to consider the following analogy between a search infrastructure and an office filing system. Imagine you hand an intern a stack of thousands of pieces of paper (documents) and tell them to organize these pieces of paper in a filing cabinet (index) to help the company find information more efficiently. The intern will first have to sort through the papers and get a sense of all the information contained within them, then they will have to decide on a system for arranging them in the filing cabinet, then finally they’ll need to decide what is the most effective manner for searching through and selecting from the files once they are in the cabinet. In this example, the process of organizing and filing the papers corresponds to the process of indexing website content, and the method for searching across these organized files and finding those that are most relevant corresponds to the search algorithm.
+> One way to think about indices is to consider the following analogy between a
+> search infrastructure and an office filing system. Imagine you hand an intern
+> a stack of thousands of pieces of paper (documents) and tell them to organize
+> these pieces of paper in a filing cabinet (index) to help the company find
+> information more efficiently. The intern will first have to sort through the
+> papers and get a sense of all the information contained within them, then they
+> will have to decide on a system for arranging them in the filing cabinet, then
+> finally they’ll need to decide what is the most effective manner for searching
+> through and selecting from the files once they are in the cabinet. In this
+> example, the process of organizing and filing the papers corresponds to the
+> process of indexing website content, and the method for searching across these
+> organized files and finding those that are most relevant corresponds to the
+> search algorithm.
+
 
 ## Schema
 
 This defines the fields and the properties of those fields in the index. A
-schema is a hash, with field names as the keys, and the field type as the value.
-Each field can be one of four types: geo, numeric, tag, or text and can have
-many options. A simple example of a schema is:
+schema is a hash, with field names as the keys, and the field type(and options)
+as the value. Each field can be one of four types: geo, numeric, tag, or text
+and can have many options. A simple example of a schema is:
 ```ruby
 { first_name: :text, last_name: :text }
 ```
@@ -160,7 +165,7 @@ With no options: `{ name: :text }`
 </details>
 
 ##### Numeric field
-With no options: `{ name: :numeric }`
+With no options: `{ price: :numeric }`
 
 <details>
   <summary>Options</summary>
@@ -235,6 +240,9 @@ With no options: `{ place: :geo }`
   </ul>
 </details>
 
+## Document
+
+
 
 ## Index
 
@@ -248,31 +256,70 @@ RediSearch::Index.new(name_of_index, schema)
 #### Available Commands
 
 - `create`
-  - Creates the index in the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+  - Creates the index in the Redis instance, returns a boolean. Has an
+    accompanying bang method that will raise an exception upon failure. Will
+    return `false` if the index already exists. Accepts a few options:
+      - `max_text_fields: true`
+        - For efficiency, RediSearch encodes indexes differently if they are
+          created with less than 32 text fields. This option forces RediSearch
+          to encode indexes as if there were more than 32 text fields, which
+          allows you to add additional fields (beyond 32) using `ALTER`.
+      - `no_offsets: true`
+        - If set, we do not store term offsets for documents (saves memory, does
+          not allow exact searches or highlighting). Implies `no_highlight`.
+      - `temporary: #{seconds}`
+        - Create a lightweight temporary index which will expire after `seconds`
+          seconds of inactivity. The internal idle timer is reset
+          whenever the index is searched or added to. Because such indexes are
+          lightweight, you can create thousands of such indexes without negative
+          performance implications.
+      - `no_highlight: true`
+        - Conserves storage space and memory by disabling highlighting support.
+          If set, we do not store corresponding byte offsets for term positions.
+          `no_highlight` is also implied by `no_offsets`.
+      - `no_fields: true`
+        - If set, we do not store field bits for each term. Saves memory, does
+          not allow filtering by specific fields.
+      - `no_frequencies: true`
+        - If set, we avoid saving the term frequencies in the index. This saves
+          memory but does not allow sorting based on the frequencies of a given
+          term within the document.
 - `drop`
-  - Drops the index from the Redis instance, returns a boolean. Has an accompanying bang method that will raise an exception upon failure.
+  - Drops the index from the Redis instance, returns a boolean. Has an
+    accompanying bang method that will raise an exception upon failure. Will
+    return `false` if the index has already been dropped.
 - `exist?`
   - Returns a boolean signifying index existence.
 - `info`
-  - Returns an object with all the information about the index.
+  - Returns a struct object with all the information about the index.
 - `fields`
   - Returns an array of the field names in the index.
 - `add(document, score = 1.0)`
-  - Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an accompanying bang method that will raise an exception upon failure.
+  - Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an
+    accompanying bang method that will raise an exception upon failure.
 - `add_multiple!(documents)`
-  - Takes an array of `Document` objects. This provides a more performant way to add multiple documents to the index.
+  - Takes an array of `Document` objects. This provides a more performant way to
+    add multiple documents to the index.
 - `del(document, delete_document: false)`
-  - Takes a document and removes it from the index. `delete_document` signifies whether the document should be completely removed from the Redis instance vs just the index.
+  - Takes a document and removes it from the index. `delete_document` signifies
+    whether the document should be completely removed from the Redis instance vs
+    just the index.
+- `document_count`
+  - Returns the number of documents in the index
+- `alter(field_name, schema)`
+  - Adds a new field to the index. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
 
 ## Searching
 
 Searching is initiated off a `RediSearch::Index` instance with clauses that can
-be chained together. When searching, an array of `Document`s is always returned
+be chained together. When searching, an array of `Document`s is returned
 which has attr_readers for all the schema fields and a `document_id` method
 which returns the id of the document.
 
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
+main ❯ index.add RediSearch::Document.for_object(index, User.new("10039", "Gene", "Volkman"))
+main ❯ index.add RediSearch::Document.for_object(index, User.new("9998", "Jeannie", "Ledner"))
 main ❯ index.search("john")
   RediSearch (1.1ms)  FT.SEARCH user_idx `john`
 => [#<RediSearch::Document:0x00007f862e241b78 first: "Gene", last: "Volkman", document_id: "10039">,
@@ -307,7 +354,8 @@ index.search("hello").and(index.search("world").or("werld"))
 
 All terms support a few options that can be applied.
 
-**Prefix terms**: match all terms starting with a prefix. (Akin to `like term%` in SQL)
+**Prefix terms**: match all terms starting with a prefix.
+(Akin to `like term%` in SQL)
 ```ruby
 index.search("hel", prefix: true)
 index.search("hello worl", prefix: true)
@@ -315,12 +363,14 @@ index.search("hel", prefix: true).and("worl", prefix: true)
 index.search("hello").and.not("worl", prefix: true)
 ```
 
-**Optional terms**: documents containing the optional terms will rank higher than those without
+**Optional terms**: documents containing the optional terms will rank higher
+than those without
 ```ruby
 index.search("foo").and("bar", optional: true).and("baz", optional: true)
 ```
 
-**Fuzzy terms**: matches are performed based on Levenshtein distance (LD). The maximum Levenshtein distance supported is 3.
+**Fuzzy terms**: matches are performed based on Levenshtein distance (LD). The
+maximum Levenshtein distance supported is 3.
 ```ruby
 index.search("zuchini", fuzziness: 1)
 ```
@@ -345,38 +395,59 @@ index.search.where(number: -Float::INFINITY..0)
 
 ##### Query level clauses
 - `slop(level)`
-  - We allow a maximum of N intervening number of unmatched offsets between phrase terms. (i.e the slop for exact phrases is 0)
+  - We allow a maximum of N intervening number of unmatched offsets between
+  phrase terms. (i.e the slop for exact phrases is 0)
 - `in_order`
-  - Usually used in conjunction with SLOP, we make sure the query terms appear in the same order in the document as in the query, regardless of the offsets between them.
+  - Usually used in conjunction with SLOP. We make sure the query terms appear
+    in the same order in the document as in the query, regardless of the offsets
+    between them.
 - `no_content`
-  - Only return the document ids and not the content. This is useful if RediSearch is being used on a Rails model where the attributes don't matter.
+  - Only return the document ids and not the content. This is useful if
+    RediSearch is being used on a Rails model where the document attributes
+    don't matter.
 - `language(language)`
-  - Stemmer to use for the supplied language during search for query expansion. If querying documents in Chinese, this should be set to chinese in order to properly tokenize the query terms. Defaults to English. If an unsupported language is sent, the command returns an error.
+  - Stemmer to use for the supplied language during search for query expansion.
+    If querying documents in Chinese, this should be set to chinese in order to
+    properly tokenize the query terms. Defaults to English. If an unsupported
+    language is sent, the command returns an error.
 - `sort_by(field, order: :asc)`
-  - If the supplied field is a sortable field, the results are ordered by the value of this field. This applies to both text and numeric fields. Available order is `:asc` or `:desc`
+  - If the supplied field is a sortable field, the results are ordered by the
+    value of this field. This applies to both text and numeric fields. Available
+    orders are `:asc` or `:desc`
 - `limit(num, offset = 0)`
-  - Limit the results to the specified `num` at the `offset`. The default limit is 10. Note that you can use `limit(0)` to count the number of documents in the resultset without actually returning them.
+  - Limit the results to the specified `num` at the `offset`. The default limit
+    is 10.
+- `count`
+  - Returns the number of documents found in the search query
 - `highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")`
-  - Use this option to format occurrences of matched text. `fields` are an array of fields to be highlighted.
+  - Use this option to format occurrences of matched text. `fields` are an
+    array of fields to be highlighted.
 - `verbatim`
-  - Do not try to use stemming for query expansion but search the query terms verbatim.
+  - Do not try to use stemming for query expansion but search the query terms
+    verbatim.
 - `no_stop_words`
   - Do not filter stopwords from the query.
 - `with_scores`
-  - Include the relative internal score of each document. This can be used to merge results from multiple instances. This will add a `score` method to the returned `Document` instances.
+  - Include the relative internal score of each document. This can be used to
+    merge results from multiple instances. This will add a `score` method to the
+    returned `Document` instances.
 - `return(*fields)`
   - Limit which fields from the document are returned.
 - `explain`
-  - Returns the execution plan for a complex query but formatted for easier reading. In the returned response, a + on a term is an indication of stemming.
+  - Returns the execution plan for a complex query but formatted for easier
+    reading. In the returned response, a + on a term is an indication of
+    stemming.
 - `to_redis`
-  - Returns the command to query without executing it.
+  - Returns the command to be executed without executing it.
+
 
 ## Spellcheck
 
 Spellchecking is initiated off a `RediSearch::Index` instance and provides
 suggestions for misspelled search terms. It takes an optional `distance` named
 argument which is the maximal Levenshtein distance for spelling suggestions. It
-returns an array where each element contains suggestions for each search term.
+returns an array where each element contains suggestions for each search term
+and a normalized score based on its occurrences in the index.
 
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
@@ -395,7 +466,9 @@ main ❯ index.spellcheck("jimy", distance: 2).first.suggestions
 
 ## Rails Integration
 
-Integration with Rails is on by default! All you have to do is add the following to your model:
+Integration with Rails is super easy! All you have to do is call `redi_search`
+with the schema keyword arg from inside your model. Ex:
+
 ```ruby
 class User < ApplicationRecord
   redi_search schema: {
@@ -405,14 +478,17 @@ class User < ApplicationRecord
 end
 ```
 
-This will automatically add `User.search` and `User.reindex` methods. You can
-also use `User.redi_search_index` to get the `RediSearch::Index` instance.
-`User.reindex` will first `drop` the index if it exists, `create` the index with
-the given schema, and then `add` all the records to the index.
+This will automatically add `User.search` and `User.spellcheck`
+methods which behave the same as if you called them on an `Index` instance.
+You can also use `User.redi_search_index` to get the `RediSearch::Index`
+instance. `User.reindex` is also added and when called, will first `drop` the
+index if it exists, `create` the index with the given schema, and then `add` all
+the records to the index.
 
 The `redi_search` class method also takes an optional `serializer` argument
-which takes the name of a serializer. The serializer must respond to all the
-fields in a schema.
+which takes the class name of a serializer. The serializer must respond to all
+the fields in a schema as methods. We don't serialize to a JSON object since
+RediSearch doesn't serialize documents that way.
 
 ```ruby
 class User < ApplicationRecord
@@ -423,8 +499,8 @@ class User < ApplicationRecord
 end
 ```
 
-You can create a scope on the model if you want to eager load relationships when
-indexing or limit the records to index.
+You can create a scope on the model to eager load relationships when indexing or
+it can be used to limit the records to index.
 
 ```ruby
 class User < ApplicationRecord
@@ -433,8 +509,8 @@ end
 ```
 
 The default index name for model indexes is
-`#{model_name.plural}_#{RediSearch.env}`. the `redi_search` method also takes an
-optional `index_prefix` argument to prepend to the index name:
+`#{model_name.plural}_#{RediSearch.env}`. The `redi_search` method takes an
+optional `index_prefix` argument which gets prepended to the index name:
 
 ```ruby
 class User < ApplicationRecord
@@ -448,8 +524,16 @@ User.redi_search_index.name
 # => prefix_users_development
 ```
 
-Integrating RediSearch into a model will also add `User.spellcheck` which
-behaves the same as the [spellcheck method](#spellcheck) on `RediSearch::Index`
+When integrating RediSearch into a model records will automatically be indexed
+after creating and updating and will be removed from the index upon destruction.
+
+There are few more convenience methods that publicly available:
+- `redi_search_document`
+  - Returns the record as a `RediSearch::Document` instance
+- `redi_search_delete_document`
+  - Removes the record from the index
+- `redi_search_add_document`
+  - Adds the record to the index
 
 
 ## Development
@@ -459,16 +543,27 @@ After checking out the repo, run `bin/setup` to install dependencies. Then, run
 prompt that will allow you to experiment. You can also start a rails console if
 you `cd` into `test/dummy`.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, execute `bin/publish (major|minor|patch)` which will update the version number in `version.rb`, create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+To install this gem onto your local machine, run `bundle exec rake install`. To
+release a new version, execute `bin/publish (major|minor|patch)` which will
+update the version number in `version.rb`, create a git tag for the version,
+push git commits and tags, and push the `.gem` file to
+[rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on [GitHub](https://github.com/npezza93/redi_search). This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on
+[GitHub](https://github.com/npezza93/redi_search). This project is intended to
+be a safe, welcoming space for collaboration, and contributors are expected to
+adhere to the [Contributor Covenant](http://contributor-covenant.org) code of
+conduct.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the RediSearch project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/npezza93/redi_search/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the RediSearch project’s codebases, issue trackers, chat
+rooms and mailing lists is expected to follow the [code of
+conduct](https://github.com/npezza93/redi_search/blob/master/CODE_OF_CONDUCT.md).
