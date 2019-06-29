@@ -41,5 +41,15 @@ module RediSearch
         adder.call!
       end
     end
+
+    test "validation fails if score is not correct" do
+      ["thing", -1, 1.5].each do |score|
+        adder = RediSearch::Add.new(@index, @document, score: score)
+
+        assert_raises ActiveModel::ValidationError do
+          adder.call
+        end
+      end
+    end
   end
 end

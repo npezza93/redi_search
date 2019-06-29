@@ -2,22 +2,23 @@
 
 module RediSearch
   class Add
-    def initialize(index, document, **options)
+    include ActiveModel::Validations
+
+    validates :score, numericality: {
+      greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0
+    }
+
+    def initialize(index, document, score: 1.0, **options)
       @index = index
       @document = document
+      @score = score || 1.0
       @options = options
     end
 
     def call!
-      RediSearch.client.call!(
-        "add",
-        index.name,
-        document.document_id,
-        score,
-        "replace",
-        "fields",
-        document.redis_attributes
-      ).ok?
+      validate!
+
+      RediSearch.client.call!(*command).ok?
     end
 
     def call
@@ -28,10 +29,24 @@ module RediSearch
 
     private
 
-    attr_reader :index, :document, :options
+    attr_reader :index, :document, :score, :options
 
-    def score
-      options[:score] || 1.0
+    def command
+      [
+        "ADD",
+        index.name,
+        document.document_id,
+        score,
+        *extract_options,
+        "FIELDS",
+        document.redis_attributes
+      ].compact
+    end
+
+    def extract_options
+      opts = []
+      opts << "NOSAVE" if options[:no_save]
+      opts
     end
   end
 end

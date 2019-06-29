@@ -43,12 +43,12 @@ module RediSearch
       client.call!("DROP", name).ok?
     end
 
-    def add(document, **options)
-      Add.new(self, document, **options).call
+    def add(document, score: 1.0, **options)
+      Add.new(self, document, score: score, **options).call
     end
 
-    def add!(document, **options)
-      Add.new(self, document, **options).call!
+    def add!(document, score: 1.0, **options)
+      Add.new(self, document, score: score, **options).call!
     end
 
     def add_multiple!(documents)
