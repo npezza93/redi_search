@@ -294,12 +294,21 @@ RediSearch::Index.new(name_of_index, schema)
   - Returns a struct object with all the information about the index.
 - `fields`
   - Returns an array of the field names in the index.
-- `add(document, score = 1.0)`
-  - Takes a `Document` object and a score (a value between 0.0 and 1.0). Has an
+- `add(document, score: 1.0, replace: {}, language: nil, no_save: false)`
+  - Takes a `Document` object and options. Has an
     accompanying bang method that will raise an exception upon failure.
-- `add_multiple!(documents)`
+    - `score` -> The document's rank, a value between 0.0 and 1.0
+    - `language` -> Use a stemmer for the supplied language during indexing.
+    - `no_save` -> Don't save the actual document in the database and only index it.
+    - `replace` -> Accepts a boolean or a hash. If a truthy value is passed, we
+      will do an UPSERT style insertion - and delete an older version of the
+      document if it exists.
+    - `replace: { partial: true }` -> Allows you to not have to specify all
+      fields for reindexing. Fields not given to the command will be loaded from
+      the current version of the document.
+- `add_multiple!(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
   - Takes an array of `Document` objects. This provides a more performant way to
-    add multiple documents to the index.
+    add multiple documents to the index. Accepts the same arguments as `add`.
 - `del(document, delete_document: false)`
   - Takes a document and removes it from the index. `delete_document` signifies
     whether the document should be completely removed from the Redis instance vs
