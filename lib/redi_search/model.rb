@@ -33,8 +33,10 @@ module RediSearch
             redi_search_index.spellcheck(term, distance: distance)
           end
 
-          def reindex
-            redi_search_index.reindex(search_import.map(&:redi_search_document))
+          def reindex(**options)
+            redi_search_index.reindex(
+              search_import.map(&:redi_search_document), **options
+            )
           end
         end
       end
