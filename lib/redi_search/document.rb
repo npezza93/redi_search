@@ -19,7 +19,9 @@ module RediSearch
       end
 
       def get(index, document_id)
-        response = RediSearch.client.call!("GET", index.name, document_id)
+        response = RediSearch.client.call!(
+          "GET", index.name, prepend_document_id(index, document_id)
+        )
 
         return if response.blank?
 
@@ -27,17 +29,28 @@ module RediSearch
       end
 
       def mget(index, *document_ids)
+        unique_document_ids = document_ids.map do |id|
+          prepend_document_id(index, id)
+        end
         document_ids.zip(
-          RediSearch.client.call!("MGET", index.name, *document_ids)
+          RediSearch.client.call!("MGET", index.name, *unique_document_ids)
         ).map do |document|
           next if document[1].blank?
 
           new(index, document[0], Hash[*document[1]])
         end.compact
       end
+
+      def prepend_document_id(index, document_id)
+        if document_id.to_s.starts_with? index.name
+          document_id
+        else
+          "#{index.name}#{document_id}"
+        end
+      end
     end
 
-    attr_reader :document_id, :attributes, :score
+    attr_reader :attributes, :score
 
     def initialize(index, document_id, fields, score = nil)
       @index = index
@@ -89,6 +102,18 @@ module RediSearch
 
     def redis_attributes
       attributes.to_a.flatten
+    end
+
+    def document_id
+      self.class.prepend_document_id(index, @document_id)
+    end
+
+    def document_id_without_index
+      if @document_id.to_s.starts_with? index.name
+        @document_id.gsub(index.name, "")
+      else
+        @document_id
+      end
     end
 
     private

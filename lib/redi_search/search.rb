@@ -23,7 +23,7 @@ module RediSearch
 
     def results
       if index.model.present?
-        index.model.where(id: to_a.map(&:document_id))
+        index.model.where(id: to_a.map(&:document_id_without_index))
       else
         to_a
       end

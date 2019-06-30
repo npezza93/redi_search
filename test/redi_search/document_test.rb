@@ -21,7 +21,8 @@ module RediSearch
       )
       assert_equal "F", doc.first
       assert_equal "L", doc.last
-      assert_equal "100", doc.document_id
+      assert_equal "#{@index.name}100", doc.document_id
+      assert_equal "100", doc.document_id_without_index
     end
 
     test ".get" do
@@ -34,7 +35,8 @@ module RediSearch
       doc = RediSearch::Document.get(@index, @record.id)
       assert_equal @record.first, doc.first
       assert_equal @record.last, doc.last
-      assert_equal @record.id, doc.document_id
+      assert_equal @record.id, doc.document_id_without_index
+      assert_equal "users_test#{@record.id}", doc.document_id
     end
 
     test ".get when doc doesnt exist" do
@@ -54,8 +56,8 @@ module RediSearch
 
       docs = RediSearch::Document.mget(@index, @record1.id, @record2.id)
       assert_equal 2, docs.count
-      assert_equal @record1.id, docs.first.document_id
-      assert_equal @record2.id, docs.second.document_id
+      assert_equal @record1.id, docs.first.document_id_without_index
+      assert_equal @record2.id, docs.second.document_id_without_index
     end
 
     test ".mget when a doc doesnt exist" do
@@ -67,7 +69,7 @@ module RediSearch
 
       docs = RediSearch::Document.mget(@index, @record1.id, "rando")
       assert_equal 1, docs.count
-      assert_equal @record1.id, docs.first.document_id
+      assert_equal @record1.id, docs.first.document_id_without_index
       assert_nil docs.second
     end
 
@@ -81,6 +83,14 @@ module RediSearch
       doc = RediSearch::Document.get(@index, @record1.id)
       assert doc.del
       assert_equal 0, @index.info["num_docs"].to_i
+    end
+
+    test "#document_id with index name" do
+      attrs = { first: Faker::Name.first_name, last: Faker::Name.last_name }
+
+      document = RediSearch::Document.new(@index, @index.name + "100", attrs)
+
+      assert_equal "users_test100", document.document_id
     end
   end
 end
