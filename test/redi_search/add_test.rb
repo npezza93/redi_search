@@ -51,5 +51,21 @@ module RediSearch
         end
       end
     end
+
+    test "partially replaces document" do
+      adder = RediSearch::Add.new(@index, @document, replace: { partial: true })
+
+      assert_difference -> { @index.document_count }, 1 do
+        adder.call
+      end
+    end
+
+    test "does not save document" do
+      adder = RediSearch::Add.new(@index, @document, no_save: true)
+
+      assert_difference -> { @index.document_count }, 1 do
+        adder.call
+      end
+    end
   end
 end

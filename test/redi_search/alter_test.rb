@@ -22,7 +22,7 @@ module RediSearch
 
       index.alter(:color, :text)
       assert_equal %w(make model color), index.fields
-      index.add(Document.for_object(index, @car))
+      index.add(Document.for_object(index, @car), replace: true)
       assert index.search("3").first.respond_to? :color
     end
   end

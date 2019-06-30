@@ -8,11 +8,14 @@ module RediSearch
       greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0
     }
 
-    def initialize(index, document, score: 1.0, **options)
+    def initialize(index, document, score: 1.0, replace: {}, language: nil,
+                   no_save: false)
       @index = index
       @document = document
       @score = score || 1.0
-      @options = options
+      @replace = replace
+      @language = language
+      @no_save = no_save
     end
 
     def call!
@@ -29,7 +32,7 @@ module RediSearch
 
     private
 
-    attr_reader :index, :document, :score, :options
+    attr_reader :index, :document, :score, :replace, :language, :no_save
 
     def command
       [
@@ -45,8 +48,23 @@ module RediSearch
 
     def extract_options
       opts = []
-      opts << "NOSAVE" if options[:no_save]
+      opts << ["LANGUAGE", language] if language
+      opts << "NOSAVE" if no_save
+      opts << replace_options if replace?
       opts
+    end
+
+    def replace?
+      replace.present?
+    end
+
+    def replace_options
+      ["REPLACE"].tap do |replace_option|
+        if replace.is_a?(Hash)
+          replace_option << "PARTIAL" if replace[:partial]
+          # replace_option << "NOCREATE" if replace[:no_create]
+        end
+      end
     end
   end
 end
