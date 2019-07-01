@@ -317,6 +317,10 @@ RediSearch::Index.new(name_of_index, schema)
   - Returns the number of documents in the index
 - `alter(field_name, schema)`
   - Adds a new field to the index. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
+- `reindex(documents, recreate: false, **options)`
+   - If recreate is `true` the index will be dropped and recreated
+   - `options` accepts the same options as `add`
+
 
 ## Searching
 
@@ -490,9 +494,13 @@ end
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
 You can also use `User.redi_search_index` to get the `RediSearch::Index`
-instance. `User.reindex` is also added and when called, will first `drop` the
-index if it exists, `create` the index with the given schema, and then `add` all
-the records to the index.
+instance.
+
+`User.reindex` is also added and behaves similarly to `RediSearch::Index#reindex`. Some of the differences include:
+  - By default does an upsert for all documents added.
+  - `Document`s do not to be passed as the first parameter. The `search_import` scope is automatically called and all the records are converted to `Document`s.
+  - Accepts an optional `only` parameter where you can specify a limited number of fields to update. Useful if you alter the schema and only need to update that fields values in the index.
+
 
 The `redi_search` class method also takes an optional `serializer` argument
 which takes the class name of a serializer. The serializer must respond to all
