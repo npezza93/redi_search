@@ -33,10 +33,13 @@ module RediSearch
             redi_search_index.spellcheck(term, distance: distance)
           end
 
-          def reindex(**options)
-            redi_search_index.reindex(
-              search_import.map(&:redi_search_document), **options
-            )
+          def reindex(only: [], **options)
+            search_import.find_in_batches.all? do |group|
+              redi_search_index.reindex(
+                group.map { |record| record.redi_search_document(only: only) },
+                **options.deep_merge(replace: { partial: true })
+              )
+            end
           end
         end
       end
@@ -53,10 +56,10 @@ module RediSearch
     end
     # rubocop:enable Metrics/BlockLength
 
-    def redi_search_document
+    def redi_search_document(only: [])
       Document.for_object(
         self.class.redi_search_index, self,
-        serializer: self.class.redi_search_serializer
+        only: only, serializer: self.class.redi_search_serializer
       )
     end
 

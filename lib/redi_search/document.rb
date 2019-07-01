@@ -3,15 +3,12 @@
 module RediSearch
   class Document
     class << self
-      def for_object(index, record, serializer: nil)
-        object_to_serialize =
-          if serializer
-            serializer.new(record)
-          else
-            record
-          end
+      def for_object(index, record, serializer: nil, only: [])
+        object_to_serialize = serializer&.new(record) || record
 
         field_values = index.schema.fields.map do |field|
+          next if only.present? && !only.include?(field.to_sym)
+
           [field.to_s, object_to_serialize.public_send(field)]
         end.to_h
 
