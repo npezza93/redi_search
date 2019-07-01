@@ -10,7 +10,7 @@ module RediSearch
           next if only.present? && !only.include?(field.to_sym)
 
           [field.to_s, object_to_serialize.public_send(field)]
-        end.to_h
+        end.compact.to_h
 
         new(index, object_to_serialize.id, field_values)
       end
