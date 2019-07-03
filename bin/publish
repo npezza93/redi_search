@@ -7,6 +7,7 @@ require_relative "../lib/redi_search/version"
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("..", __dir__)
+GITHUB_HOST = "https://rubygems.pkg.github.com/npezza93"
 MASTER_CHECK = <<~MASTER_CHECK
   if [ $(git symbolic-ref --short -q HEAD) != 'master' ];
     then exit 1;
@@ -36,23 +37,27 @@ when "patch"
   current_version[2] += 1
 end
 
+joined_version = current_version.join(".")
+
 FileUtils.chdir APP_ROOT do
   contents = <<~FILE
     # frozen_string_literal: true
 
     module RediSearch
-      VERSION = "#{current_version.join('.')}"
+      VERSION = "#{joined_version}"
     end
   FILE
 
-  puts "== Updating version to #{current_version.join('.')} =="
+  puts "== Updating version to #{joined_version} =="
   File.write("lib/redi_search/version.rb", contents)
 
   system! "git add lib/redi_search/version.rb"
 
   puts "== Committing updated files =="
-  system! "git commit -m 'Version bump to #{current_version.join('.')}'"
+  system! "git commit -m 'Version bump to #{joined_version}'"
 
   puts "== Tagging release =="
   system! "bundle exec rake release"
+
+  system! "RUBYGEMS_HOST=#{GITHUB_HOST} bundle exec release:rubygem_push"
 end

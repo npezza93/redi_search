@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.files         = Dir["*.{md,txt}", "{lib}/**/*"]
   spec.require_path  = "lib"
 
+  spec.metadata["github_repo"] = "ssh://github.com/npezza93/redi_search"
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
   spec.metadata["changelog_uri"] =
