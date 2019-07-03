@@ -68,6 +68,14 @@ module RediSearch
     end
 
     #:nocov:
+    def inspect
+      inspection = pretty_print_attributes.map do |field_name|
+        "#{field_name}: #{public_send(field_name)}"
+      end.compact.join(", ")
+
+      "#<#{self.class} #{inspection}>"
+    end
+
     def pretty_print(printer) # rubocop:disable Metrics/MethodLength
       printer.object_address_group(self) do
         printer.seplist(

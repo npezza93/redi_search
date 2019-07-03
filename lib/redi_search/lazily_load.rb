@@ -25,6 +25,12 @@ module RediSearch
     alias load to_a
 
     #:nocov:
+    def inspect
+      execute unless loaded?
+
+      to_a
+    end
+
     def pretty_print(printer)
       execute unless loaded?
 
