@@ -31,6 +31,14 @@ module RediSearch
       end
     end
 
+    test "#del" do
+      @index.add(users(:nick).redi_search_document)
+
+      assert_difference -> { User.redi_search_index.document_count }, -1 do
+        assert @index.del(users(:nick).redi_search_document)
+      end
+    end
+
     test "#document_count" do
       @index.add(users(:nick).redi_search_document)
 

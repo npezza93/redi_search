@@ -60,7 +60,7 @@ module RediSearch
     end
 
     def del(document, delete_document: false)
-      client.call!("DEL", name, document.document_id, ("DD" if delete_document))
+      document.del(delete_document: delete_document)
     end
 
     def exist?

@@ -63,8 +63,10 @@ module RediSearch
       end
     end
 
-    def del
-      client.call!("DEL", index.name, document_id).ok?
+    def del(delete_document: false)
+      client.call!(
+        "DEL", index.name, document_id, ("DD" if delete_document)
+      ) == 1
     end
 
     #:nocov:
