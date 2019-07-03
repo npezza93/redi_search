@@ -59,5 +59,6 @@ FileUtils.chdir APP_ROOT do
   puts "== Tagging release =="
   system! "bundle exec rake release"
 
-  system! "RUBYGEMS_HOST=#{GITHUB_HOST} bundle exec release:rubygem_push"
+  github_push_command = "gem push --key github --host #{GITHUB_HOST}"
+  system! "#{github_push_command} pkg/redi_search-#{joined_version}.gem"
 end
