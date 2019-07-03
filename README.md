@@ -71,6 +71,7 @@ end
    - [Spellcheck](#spellcheck)
    - [Rails Integration](#rails-integration)
 
+
 ## Preface
 RediSearch revolves around a search index, so lets start with
 defining what a search index is. According to [Switype](https://swiftype.com):
@@ -241,6 +242,34 @@ With no options: `{ place: :geo }`
 
 ## Document
 
+A `Document` is the Ruby representation of a RediSearch document.
+
+You can fetch a `Document` using `.get` or `mget` class methods.
+- `get(index, document_id)` fetches a single document in an `Index` for a given
+`document_id`.
+- `mget(index, *document_ids)` fetches a collection of `Document`s
+in an `Index` for the given `document_ids`.
+
+You can also make a `Document` instance using the
+`.for_object(index, record, serializer: nil, only: [])` class method. It takes
+an `Index` instance and a ruby object. That object must respond to all the
+fields specified in the indexes schema or pass a serializer class that accepts
+the object and responds to all the fields specified in the indexes schema.
+`only` accepts an array of fields from the schema and limits the fields that are
+passed to the `Document`.
+
+Once you have an instance of a `Document`, it responds to all the fields
+specified in the indexes schema as methods and `document_id`. `document_id` is
+automatically prepended with the indexes names unless it already is to ensure
+uniqueness. We prepend the index name because if you have two documents with the
+same id in different indexes we don't want the documents to override each other.
+There is also a `#document_id_without_index` method which removes the prepended
+index name.
+
+Finally there is a `#del` method that will remove the document from the index.
+It optionally accepts a `delete_document` named argument that signifies whether
+the document should be completely removed from the Redis instance vs just the
+index.
 
 
 ## Index
