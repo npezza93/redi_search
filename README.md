@@ -28,8 +28,7 @@ Once you have RediSearch built, you can update your redis.conf file to always
 load the redisearch module with `loadmodule /path/to/redisearch.so`. (On macOS
 the redis.conf file can be found `/usr/local/etc/redis.conf`)
 
-After Redis and RediSearch are up and running, add this line to your
-application's Gemfile:
+After Redis and RediSearch are up and running, add this line to your Gemfile:
 
 ```ruby
 gem 'redi_search'
@@ -40,7 +39,7 @@ And then:
 ❯ bundle
 ````
 
-Or install it yourself as:
+Or install it yourself:
 ```bash
 ❯ gem install redi_search
 ```
@@ -50,8 +49,8 @@ and require it:
 require 'redi_search'
 ```
 
-Once required you'll need to configure it with your Redis configuration. If
-you're on Rails, this should go in an initializer
+Once the gem is installed and required you'll need to configure it with your
+Redis configuration. If you're on Rails, this should go in an initializer
 (`config/initializers/redi_search.rb`)
 
 ```ruby
@@ -259,28 +258,28 @@ RediSearch::Index.new(name_of_index, schema)
   - Creates the index in the Redis instance, returns a boolean. Has an
     accompanying bang method that will raise an exception upon failure. Will
     return `false` if the index already exists. Accepts a few options:
-      - `max_text_fields: true`
+      - `max_text_fields: #{true || false}`
         - For efficiency, RediSearch encodes indexes differently if they are
           created with less than 32 text fields. This option forces RediSearch
           to encode indexes as if there were more than 32 text fields, which
-          allows you to add additional fields (beyond 32) using `ALTER`.
-      - `no_offsets: true`
+          allows you to add additional fields (beyond 32) using `alter`.
+      - `no_offsets: #{true || false}`
         - If set, we do not store term offsets for documents (saves memory, does
           not allow exact searches or highlighting). Implies `no_highlight`.
       - `temporary: #{seconds}`
         - Create a lightweight temporary index which will expire after `seconds`
-          seconds of inactivity. The internal idle timer is reset
-          whenever the index is searched or added to. Because such indexes are
-          lightweight, you can create thousands of such indexes without negative
-          performance implications.
-      - `no_highlight: true`
+          seconds of inactivity. The internal idle timer is reset whenever the
+          index is searched or added to. Because such indexes are lightweight,
+          you can create thousands of such indexes without negative performance
+          implications.
+      - `no_highlight: #{true || false}`
         - Conserves storage space and memory by disabling highlighting support.
           If set, we do not store corresponding byte offsets for term positions.
           `no_highlight` is also implied by `no_offsets`.
-      - `no_fields: true`
+      - `no_fields: #{true || false}`
         - If set, we do not store field bits for each term. Saves memory, does
           not allow filtering by specific fields.
-      - `no_frequencies: true`
+      - `no_frequencies: #{true || false}`
         - If set, we avoid saving the term frequencies in the index. This saves
           memory but does not allow sorting based on the frequencies of a given
           term within the document.
@@ -308,17 +307,17 @@ RediSearch::Index.new(name_of_index, schema)
       the current version of the document.
 - `add_multiple!(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
   - Takes an array of `Document` objects. This provides a more performant way to
-    add multiple documents to the index. Accepts the same arguments as `add`.
+    add multiple documents to the index. Accepts the same options as `add`.
 - `del(document, delete_document: false)`
-  - Takes a document and removes it from the index. `delete_document` signifies
-    whether the document should be completely removed from the Redis instance vs
-    just the index.
+  - Removes a document from the index. `delete_document` signifies whether the
+    document should be completely removed from the Redis instance vs just the
+    index.
 - `document_count`
   - Returns the number of documents in the index
 - `alter(field_name, schema)`
   - Adds a new field to the index. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
 - `reindex(documents, recreate: false, **options)`
-   - If recreate is `true` the index will be dropped and recreated
+   - If `recreate` is `true` the index will be dropped and recreated
    - `options` accepts the same options as `add`
 
 
@@ -326,8 +325,8 @@ RediSearch::Index.new(name_of_index, schema)
 
 Searching is initiated off a `RediSearch::Index` instance with clauses that can
 be chained together. When searching, an array of `Document`s is returned
-which has attr_readers for all the schema fields and a `document_id` method
-which returns the id of the document.
+which has public reader methods for all the schema fields and a `document_id`
+method which returns the id of the document prefixed with the index name.
 
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
@@ -411,25 +410,25 @@ index.search.where(number: -Float::INFINITY..0)
   - We allow a maximum of N intervening number of unmatched offsets between
   phrase terms. (i.e the slop for exact phrases is 0)
 - `in_order`
-  - Usually used in conjunction with SLOP. We make sure the query terms appear
+  - Usually used in conjunction with `slop`. We make sure the query terms appear
     in the same order in the document as in the query, regardless of the offsets
     between them.
 - `no_content`
   - Only return the document ids and not the content. This is useful if
     RediSearch is being used on a Rails model where the document attributes
-    don't matter.
+    don't matter and it's being converted into ActiveRecord objects.
 - `language(language)`
   - Stemmer to use for the supplied language during search for query expansion.
     If querying documents in Chinese, this should be set to chinese in order to
-    properly tokenize the query terms. Defaults to English. If an unsupported
-    language is sent, the command returns an error.
+    properly tokenize the query terms. If an unsupported language is sent, the
+    command returns an error.
 - `sort_by(field, order: :asc)`
   - If the supplied field is a sortable field, the results are ordered by the
     value of this field. This applies to both text and numeric fields. Available
     orders are `:asc` or `:desc`
 - `limit(num, offset = 0)`
   - Limit the results to the specified `num` at the `offset`. The default limit
-    is 10.
+    is set to `10`.
 - `count`
   - Returns the number of documents found in the search query
 - `highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")`
@@ -447,9 +446,8 @@ index.search.where(number: -Float::INFINITY..0)
 - `return(*fields)`
   - Limit which fields from the document are returned.
 - `explain`
-  - Returns the execution plan for a complex query but formatted for easier
-    reading. In the returned response, a + on a term is an indication of
-    stemming.
+  - Returns the execution plan for a complex query. In the returned response,
+    a + on a term is an indication of stemming.
 - `to_redis`
   - Returns the command to be executed without executing it.
 
@@ -457,7 +455,7 @@ index.search.where(number: -Float::INFINITY..0)
 ## Spellcheck
 
 Spellchecking is initiated off a `RediSearch::Index` instance and provides
-suggestions for misspelled search terms. It takes an optional `distance` named
+suggestions for misspelled search terms. It takes an optional `distance`
 argument which is the maximal Levenshtein distance for spelling suggestions. It
 returns an array where each element contains suggestions for each search term
 and a normalized score based on its occurrences in the index.
@@ -477,10 +475,11 @@ main ❯ index.spellcheck("jimy", distance: 2).first.suggestions
  #<struct RediSearch::Spellcheck::Suggestion score=0.00019569471624266145, suggestion="jim">]
 ```
 
+
 ## Rails Integration
 
-Integration with Rails is super easy! All you have to do is call `redi_search`
-with the schema keyword arg from inside your model. Ex:
+Integration with Rails is super easy! Call `redi_search` with the schema keyword
+arg from inside your model. Ex:
 
 ```ruby
 class User < ApplicationRecord
@@ -493,13 +492,16 @@ end
 
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
-You can also use `User.redi_search_index` to get the `RediSearch::Index`
-instance.
 
-`User.reindex` is also added and behaves similarly to `RediSearch::Index#reindex`. Some of the differences include:
-  - By default does an upsert for all documents added.
-  - `Document`s do not to be passed as the first parameter. The `search_import` scope is automatically called and all the records are converted to `Document`s.
-  - Accepts an optional `only` parameter where you can specify a limited number of fields to update. Useful if you alter the schema and only need to update that fields values in the index.
+`User.reindex(only: [], **options)` is also added and behaves similarly to `RediSearch::Index#reindex`. Some of the differences include:
+  - By default does an upsert for all documents added using the
+    option `replace: { partial: true }`.
+  - `Document`s do not to be passed as the first parameter. The `search_import`
+    scope is automatically called and all the records are converted
+    to `Document`s.
+  - Accepts an optional `only` parameter where you can specify a limited number
+    of fields to update. Useful if you alter the schema and only need to index a
+    particular field.
 
 
 The `redi_search` class method also takes an optional `serializer` argument
@@ -510,9 +512,14 @@ RediSearch doesn't serialize documents that way.
 ```ruby
 class User < ApplicationRecord
   redi_search schema: {
-    first: { text: { phonetic: "dm:en" } },
-    last: { text: { phonetic: "dm:en" } }
+    name: { text: { phonetic: "dm:en" } }
   }, serializer: UserSerializer
+end
+
+class UserSerializer < SimpleDelegator
+  def name
+    "#{first_name} #{last_name}"
+  end
 end
 ```
 
@@ -541,16 +548,18 @@ User.redi_search_index.name
 # => prefix_users_development
 ```
 
-When integrating RediSearch into a model records will automatically be indexed
+When integrating RediSearch into a model, records will automatically be indexed
 after creating and updating and will be removed from the index upon destruction.
 
-There are few more convenience methods that publicly available:
+There are few more convenience methods that are publicly available:
 - `redi_search_document`
   - Returns the record as a `RediSearch::Document` instance
 - `redi_search_delete_document`
   - Removes the record from the index
 - `redi_search_add_document`
   - Adds the record to the index
+- `redi_search_index`
+  - Returns the `RediSearch::Index` instance
 
 
 ## Development
