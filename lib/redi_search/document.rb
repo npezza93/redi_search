@@ -1,7 +1,12 @@
 # frozen_string_literal: true
 
+require "redi_search/document/display"
+require "redi_search/document/finder"
+
 module RediSearch
   class Document
+    include Display
+
     class << self
       def for_object(index, record, serializer: nil, only: [])
         object_to_serialize = serializer&.new(record) || record
@@ -16,34 +21,11 @@ module RediSearch
       end
 
       def get(index, document_id)
-        response = RediSearch.client.call!(
-          "GET", index.name, prepend_document_id(index, document_id)
-        )
-
-        return if response.blank?
-
-        new(index, document_id, Hash[*response])
+        Finder.new(index, document_id).find
       end
 
       def mget(index, *document_ids)
-        unique_document_ids = document_ids.map do |id|
-          prepend_document_id(index, id)
-        end
-        document_ids.zip(
-          RediSearch.client.call!("MGET", index.name, *unique_document_ids)
-        ).map do |document|
-          next if document[1].blank?
-
-          new(index, document[0], Hash[*document[1]])
-        end.compact
-      end
-
-      def prepend_document_id(index, document_id)
-        if document_id.to_s.starts_with? index.name
-          document_id
-        else
-          "#{index.name}#{document_id}"
-        end
+        Finder.new(index, *document_ids).find
       end
     end
 
@@ -59,44 +41,8 @@ module RediSearch
     end
 
     def del(delete_document: false)
-      client.call!(
-        "DEL", index.name, document_id, ("DD" if delete_document)
-      ).ok?
+      call!("DEL", index.name, document_id, ("DD" if delete_document)).ok?
     end
-
-    #:nocov:
-    def inspect
-      inspection = pretty_print_attributes.map do |field_name|
-        "#{field_name}: #{public_send(field_name)}"
-      end.compact.join(", ")
-
-      "#<#{self.class} #{inspection}>"
-    end
-
-    def pretty_print(printer) # rubocop:disable Metrics/MethodLength
-      printer.object_address_group(self) do
-        printer.seplist(
-          pretty_print_attributes , proc { printer.text "," }
-        ) do |field_name|
-          printer.breakable " "
-          printer.group(1) do
-            printer.text field_name
-            printer.text ":"
-            printer.breakable
-            printer.pp public_send(field_name)
-          end
-        end
-      end
-    end
-
-    def pretty_print_attributes
-      pp_attrs = attributes.keys.dup
-      pp_attrs.push("document_id")
-      pp_attrs.push("score") if score.present?
-
-      pp_attrs.compact
-    end
-    #:nocov:
 
     def schema_fields
       @schema_fields ||= index.schema.fields.map(&:to_s)
@@ -107,7 +53,11 @@ module RediSearch
     end
 
     def document_id
-      self.class.prepend_document_id(index, @document_id)
+      if @document_id.to_s.start_with? index.name
+        @document_id
+      else
+        "#{index.name}#{@document_id}"
+      end
     end
 
     def document_id_without_index
@@ -122,8 +72,8 @@ module RediSearch
 
     attr_reader :index
 
-    def client
-      RediSearch.client
+    def call!(*command)
+      RediSearch.client.call!(*command)
     end
 
     def load_attributes
