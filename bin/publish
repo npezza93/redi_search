@@ -7,7 +7,6 @@ require_relative "../lib/redi_search/version"
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("..", __dir__)
-GITHUB_HOST = "https://rubygems.pkg.github.com/npezza93"
 MASTER_CHECK = <<~MASTER_CHECK
   if [ $(git symbolic-ref --short -q HEAD) != 'master' ];
     then exit 1;
@@ -56,9 +55,13 @@ FileUtils.chdir APP_ROOT do
   puts "== Committing updated files =="
   system! "git commit -m 'Version bump to #{joined_version}'"
 
-  puts "== Tagging release =="
-  system! "bundle exec rake release"
+  puts "== Building gem =="
+  system! "bundle exec rake build"
 
-  github_push_command = "gem push --key github --host #{GITHUB_HOST}"
-  system! "#{github_push_command} pkg/redi_search-#{joined_version}.gem"
+  puts "== Publishing gem =="
+  built_gem_path = "pkg/redi_search-#{joined_version}.gem"
+  github_host = "https://rubygems.pkg.github.com/npezza93"
+
+  system! "gem push --key github --host #{github_host} #{built_gem_path}"
+  system! "gem push #{built_gem_path}"
 end
