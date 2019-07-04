@@ -66,13 +66,11 @@ module RediSearch
       end
 
       def count
-        if @loaded
-          to_a.size
-        else
-          RediSearch.client.call!(
-            "SEARCH", index.name, term_clause, *Limit.new(total: 0).clause
-          ).first
-        end
+        return to_a.size if loaded?
+
+        call!(
+          "SEARCH", index.name, term_clause, *Limit.new(total: 0).clause
+        ).first
       end
 
       def where(**condition)

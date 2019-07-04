@@ -37,11 +37,7 @@ module RediSearch
 
     def to_redis
       command.map do |arg|
-        if !arg.to_s.starts_with?(/\(-?@/) && arg.to_s.split(/\s|\|/).size > 1
-          arg.inspect
-        else
-          arg
-        end
+        inspect_command_arg(arg)
       end.join(" ")
     end
 
@@ -62,6 +58,14 @@ module RediSearch
 
     def parse_response(response)
       @documents = Result.new(index, used_clauses, response[0], response[1..-1])
+    end
+
+    def inspect_command_arg(arg)
+      if !arg.to_s.starts_with?(/\(-?@/) && arg.to_s.split(/\s|\|/).size > 1
+        arg.inspect
+      else
+        arg
+      end
     end
   end
 end

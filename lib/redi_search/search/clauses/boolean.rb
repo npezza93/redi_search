@@ -9,16 +9,13 @@ module RediSearch
           @prior_clause = prior_clause
           @not = false
 
-          initialize_term(term, **term_options)
+          initialize_term(term, **term_options) if term.present?
         end
 
         def to_s
           raise ArgumentError, "missing query terms" if term.blank?
 
-          [
-            prior_clause.presence,
-            queryify_term.dup.prepend(not_operator)
-          ].compact.join(operand)
+          [prior_clause.presence, queryify_term].compact.join(operand)
         end
 
         delegate :inspect, to: :to_s
@@ -26,7 +23,7 @@ module RediSearch
         def not(term, **term_options)
           @not = true
 
-          initialize_term(term, **term_options)
+          initialize_term(term, **term_options) if term.present?
 
           search
         end
@@ -46,29 +43,31 @@ module RediSearch
         end
 
         def initialize_term(term, **term_options)
-          return if term.blank?
-
-          @term =
-            if term.is_a? RediSearch::Search
-              term
-            else
-              Term.new(term, term_options)
-            end
+          @term = if term.is_a? RediSearch::Search
+                    term
+                  else
+                    Term.new(term, term_options)
+                  end
         end
 
         def queryify_term
-          if group_term_clause?
-            "(#{term.term_clause})"
-          elsif term.is_a?(RediSearch::Search)
-            term.term_clause
+          if term_is_search?
+            queryify_search
           else
             term
-          end.to_s
+          end.to_s.dup.prepend(not_operator)
         end
 
-        def group_term_clause?
-          term.is_a?(RediSearch::Search) &&
-            !term.term_clause.is_a?(RediSearch::Search::Clauses::Where)
+        def term_is_search?
+          term.is_a? RediSearch::Search
+        end
+
+        def queryify_search
+          if !term.term_clause.is_a?(RediSearch::Search::Clauses::Where)
+            "(#{term.term_clause})"
+          else
+            term.term_clause
+          end
         end
       end
     end

@@ -10,9 +10,7 @@ module RediSearch
 
       def find
         if multi?
-          document_ids.map.with_index do |document_id, index|
-            parse_document(document_id, response[index])
-          end.compact
+          parse_multi_documents
         else
           parse_document(document_ids.first, response)
         end
@@ -44,18 +42,28 @@ module RediSearch
 
       def prepended_document_ids
         document_ids.map do |document_id|
-          if document_id.to_s.start_with? index.name
-            document_id
-          else
-            "#{index.name}#{document_id}"
-          end
+          prepend_document_id(document_id)
         end
       end
 
-      def parse_document(document_id, response)
-        return if response.blank?
+      def prepend_document_id(id)
+        if id.to_s.start_with? index.name
+          id
+        else
+          "#{index.name}#{id}"
+        end
+      end
 
-        Document.new(index, document_id, Hash[*response])
+      def parse_multi_documents
+        document_ids.map.with_index do |document_id, index|
+          parse_document(document_id, response[index])
+        end.compact
+      end
+
+      def parse_document(document_id, document_response)
+        return if document_response.blank?
+
+        Document.new(index, document_id, Hash[*document_response])
       end
     end
   end
