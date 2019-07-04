@@ -18,11 +18,7 @@ module RediSearch
 
     def call!
       RediSearch.client.call!(
-        "CREATE",
-        index.name,
-        *extract_options.compact,
-        "SCHEMA",
-        schema.to_a
+        "CREATE", index.name, *extract_options.compact, "SCHEMA", schema.to_a
       ).ok?
     end
 

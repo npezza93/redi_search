@@ -1,31 +1,10 @@
 # frozen_string_literal: true
 
 require "redis"
+require "redi_search/client/response"
 
 module RediSearch
   class Client
-    class Response < SimpleDelegator
-      def initialize(response)
-        @response = response
-
-        super(response)
-      end
-
-      def ok?
-        if response.is_a? String
-          response == "OK"
-        elsif response.is_a? Array
-          response.all? { |pipeline_response| pipeline_response == "OK" }
-        else
-          response
-        end
-      end
-
-      private
-
-      attr_reader :response
-    end
-
     def initialize(redis_config)
       @redis = Redis.new(redis_config)
     end
@@ -52,16 +31,11 @@ module RediSearch
       Response.new(redis.call("FT.#{command}", *params))
     end
 
-    def instrument(action, payload)
-      block =
-        if block_given?
-          Proc.new
-        else
-          proc {}
-        end
-
+    def instrument(action, payload, &block)
       ActiveSupport::Notifications.instrument(
-        "#{action}.redi_search", { name: "RediSearch" }.merge(payload), &block
+        "#{action}.redi_search",
+        { name: "RediSearch" }.merge(payload),
+        &Proc.new(&(block || proc {}))
       )
     end
   end

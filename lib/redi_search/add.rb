@@ -35,15 +35,8 @@ module RediSearch
     attr_reader :index, :document, :score, :replace, :language, :no_save
 
     def command
-      [
-        "ADD",
-        index.name,
-        document.document_id,
-        score,
-        *extract_options,
-        "FIELDS",
-        document.redis_attributes
-      ].compact
+      ["ADD", index.name, document.document_id, score, *extract_options,
+       "FIELDS", document.redis_attributes].compact
     end
 
     def extract_options

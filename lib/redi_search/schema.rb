@@ -12,9 +12,7 @@ module RediSearch
       schema, options = options.to_a.flatten
 
       "RediSearch::Schema::#{schema.to_s.capitalize}Field".
-        constantize.
-        new(field_name, **options.to_h).
-        to_a
+        constantize.new(field_name, **options.to_h).to_a
     end
 
     def initialize(raw)

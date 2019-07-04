@@ -53,12 +53,15 @@ module RediSearch
           condition, *options = condition.to_a
 
           @field = condition[0]
-          @term =
-            if condition[1].is_a? RediSearch::Search
-              condition[1]
-            else
-              Term.new(condition[1], **options.to_h)
-            end
+          @term = make_term(condition, options)
+        end
+
+        def make_term(condition, options)
+          if condition[1].is_a? RediSearch::Search
+            condition[1]
+          else
+            Term.new(condition[1], **options.to_h)
+          end
         end
       end
     end

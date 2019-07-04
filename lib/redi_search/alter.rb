@@ -10,12 +10,9 @@ module RediSearch
 
     def call!
       index.schema.alter(field_name, raw_schema)
+
       RediSearch.client.call!(
-        "ALTER",
-        index.name,
-        "SCHEMA",
-        "ADD",
-        *field_schema
+        "ALTER", index.name, "SCHEMA", "ADD", *field_schema
       ).ok?
     end
 

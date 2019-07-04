@@ -68,17 +68,19 @@ module RediSearch
       self.class.runtime += event.duration
       return unless logger.debug?
 
-      payload = event.payload
-      name = "#{payload[:name]} (#{event.duration.round(1)}ms)"
-      command = command_string(payload)
+      command = command_string(event)
 
-      debug "  #{color(name, RED, true)}  #{color(command, debug_color, true)}"
+      debug "  #{log_name(event)}  #{color(command, debug_color, true)}"
     end
 
-    def command_string(payload)
-      payload[:query].flatten.map.with_index do |arg, i|
+    def log_name(event)
+      color("#{event.payload[:name]} (#{event.duration.round(1)}ms)", RED, true)
+    end
+
+    def command_string(event)
+      event.payload[:query].flatten.map.with_index do |arg, i|
         arg = "FT.#{arg}" if prepend_ft?(arg, i)
-        arg = arg.inspect if inspect_arg?(payload, arg)
+        arg = arg.inspect if inspect_arg?(event.payload, arg)
         arg
       end.join(" ")
     end

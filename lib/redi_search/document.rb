@@ -55,18 +55,13 @@ module RediSearch
       @attributes = fields
       @score = score
 
-      attributes.each do |field, value|
-        next unless schema_fields.include? field
-
-        instance_variable_set(:"@#{field}", value)
-        define_singleton_method(field) { value }
-      end
+      load_attributes
     end
 
     def del(delete_document: false)
       client.call!(
         "DEL", index.name, document_id, ("DD" if delete_document)
-      ) == 1
+      ).ok?
     end
 
     #:nocov:
@@ -129,6 +124,15 @@ module RediSearch
 
     def client
       RediSearch.client
+    end
+
+    def load_attributes
+      attributes.each do |field, value|
+        next unless schema_fields.include? field
+
+        instance_variable_set(:"@#{field}", value)
+        define_singleton_method(field) { value }
+      end
     end
   end
 end
