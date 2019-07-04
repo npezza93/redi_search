@@ -3,11 +3,19 @@
 module RediSearch
   class Search
     class Term
+      include ActiveModel::Validations
+
+      validates :fuzziness, numericality: {
+        only_integer: true, less_than: 4, greater_than: 0, allow_blank: true
+      }
+      validates :option, inclusion: { in: %i(fuzziness optional prefix) },
+                         allow_nil: true
+
       def initialize(term, **options)
         @term = term
         @options = options
 
-        validate_options
+        validate!
       end
 
       def to_s
@@ -23,7 +31,7 @@ module RediSearch
       attr_accessor :term, :options
 
       def fuzziness
-        @fuzziness ||= options[:fuzziness].to_i
+        @fuzziness ||= options[:fuzziness]
       end
 
       def optional_operator
@@ -38,10 +46,14 @@ module RediSearch
         "*"
       end
 
+      def fuzzy_operator
+        "%" * fuzziness.to_i
+      end
+
       def stringify_query
         @term.to_s.
           tr("`", "\`").
-          yield_self { |str| "#{'%' * fuzziness}#{str}#{'%' * fuzziness}" }.
+          yield_self { |str| "#{fuzzy_operator}#{str}#{fuzzy_operator}" }.
           yield_self { |str| "#{optional_operator}#{str}" }.
           yield_self { |str| "#{str}#{prefix_operator}" }.
           yield_self { |str| "`#{str}`" }
@@ -55,17 +67,8 @@ module RediSearch
         "[#{first} #{last}]"
       end
 
-      def validate_options
-        unsupported_options =
-          (options.keys.map(&:to_s) - %w(fuzziness optional prefix)).join(", ")
-
-        if unsupported_options.present?
-          raise(ArgumentError,
-                "#{unsupported_options} are unsupported term options")
-        end
-
-        raise(ArgumentError, "fuzziness can only be between 0 and 3") if
-          fuzziness.negative? || fuzziness > 3
+      def option
+        options.keys.first&.to_sym
       end
     end
   end

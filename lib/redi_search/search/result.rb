@@ -7,13 +7,7 @@ module RediSearch
         @count = count
         @used_clauses = used_clauses
 
-        super(documents.each_slice(response_slice).map do |slice|
-          document_id = slice[0]
-          fields = slice.last unless no_content?
-          score = slice[1].to_f if with_scores?
-
-          Document.new(index, document_id, Hash[*fields.to_a], score)
-        end)
+        super(parse_results(index, documents))
       end
 
       def count
@@ -40,6 +34,16 @@ module RediSearch
 
       def no_content?
         @used_clauses.include? "no_content"
+      end
+
+      def parse_results(index, documents)
+        documents.each_slice(response_slice).map do |slice|
+          document_id = slice[0]
+          fields = slice.last unless no_content?
+          score = slice[1].to_f if with_scores?
+
+          Document.new(index, document_id, Hash[*fields.to_a], score)
+        end
       end
     end
   end

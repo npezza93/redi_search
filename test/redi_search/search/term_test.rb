@@ -14,10 +14,10 @@ module RediSearch
       end
 
       test "fuzziness < 0 || > 3 throws error" do
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::ValidationError do
           Term.new("term", fuzziness: -1).to_s
         end
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::ValidationError do
           Term.new("term", fuzziness: 4).to_s
         end
       end
@@ -27,7 +27,7 @@ module RediSearch
       end
 
       test "unsupported options throw error" do
-        assert_raise ArgumentError do
+        assert_raise ActiveModel::ValidationError do
           Term.new("term", random: true)
         end
       end
