@@ -54,6 +54,7 @@ FileUtils.chdir APP_ROOT do
 
   puts "== Committing updated files =="
   system! "git commit -m 'Version bump to #{joined_version}'"
+  system! "git push"
 
   puts "== Building gem =="
   system! "bundle exec rake build"
