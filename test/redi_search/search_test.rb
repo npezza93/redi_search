@@ -108,5 +108,11 @@ module RediSearch
         "SEARCH users_test \"`hello`|-`world`\"", query.to_redis
       )
     end
+
+    test "searching without terms returns the search instance" do
+      assert User.search.inspect.start_with? "#<RediSearch::Search:"
+      assert User.search.inspect.is_a? String
+      assert User.search("hellow").inspect.is_a? Array
+    end
   end
 end

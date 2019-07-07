@@ -19,24 +19,26 @@ module RediSearch
     def to_a
       execute unless loaded?
 
-      @documents
+      documents
     end
 
     alias load to_a
 
     #:nocov:
     def inspect
-      execute unless loaded?
+      execute_and_rescue_inspection do
+        return super unless valid?
 
-      to_a
+        documents
+      end
     end
 
     def pretty_print(printer)
-      execute unless loaded?
+      execute_and_rescue_inspection do
+        return super(inspect) unless valid?
 
-      printer.pp(documents)
-    rescue Redis::CommandError => e
-      printer.pp(e.message)
+        printer.pp(documents)
+      end
     end
     #:nocov:
 
@@ -51,6 +53,8 @@ module RediSearch
     end
 
     def execute
+      return unless valid?
+
       @loaded = true
 
       call!(*command).yield_self do |response|
@@ -65,5 +69,19 @@ module RediSearch
     def parse_response(_response)
       raise NotImplementedError, "included class did not define #{__method__}"
     end
+
+    def valid?
+      true
+    end
+
+    #:nocov:
+    def execute_and_rescue_inspection
+      execute unless loaded?
+
+      yield
+    rescue Redis::CommandError => e
+      e.message
+    end
+    #:nocov:
   end
 end

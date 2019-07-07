@@ -67,5 +67,9 @@ module RediSearch
         arg
       end
     end
+
+    def valid?
+      term_clause.present?
+    end
   end
 end
