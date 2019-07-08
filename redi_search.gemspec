@@ -13,8 +13,10 @@ Gem::Specification.new do |spec|
   spec.summary       = %q(RediSearch ruby wrapper that can integrate with Rails)
   spec.homepage      = "https://github.com/npezza93/redi_search"
   spec.license       = "MIT"
-  spec.files         = Dir["*.{md,txt}", "{lib}/**/*"]
   spec.require_path  = "lib"
+  spec.files         = Dir.chdir(File.expand_path(__dir__)) do
+    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test)/}) }
+  end
 
   spec.metadata["github_repo"] = "ssh://github.com/npezza93/redi_search"
   spec.metadata["homepage_uri"] = spec.homepage
