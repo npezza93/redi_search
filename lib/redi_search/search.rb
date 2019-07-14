@@ -8,7 +8,6 @@ require "redi_search/search/result"
 
 module RediSearch
   class Search
-    include Enumerable
     include LazilyLoad
     include Clauses
 

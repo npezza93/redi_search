@@ -2,23 +2,38 @@
 
 module RediSearch
   class Search
-    class Result < Array
+    class Result
+      include Enumerable
+
       def initialize(index, used_clauses, count, documents)
         @count = count
         @used_clauses = used_clauses
-
-        super(parse_results(index, documents))
+        @results = parse_results(index, documents)
       end
 
       def count
-        @count || super
+        @count || results.count
       end
 
       def size
-        @count || super
+        @count || results.size
       end
 
+      delegate :each, :empty?, to: :results
+
+      #:nocov:
+      def inspect
+        results
+      end
+
+      def pretty_print(printer)
+        printer.pp(results)
+      end
+      #:nocov:
+
       private
+
+      attr_reader :results
 
       def response_slice
         slice_length = 2
