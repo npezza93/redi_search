@@ -20,7 +20,7 @@ module RediSearch
         @count || results.size
       end
 
-      def_delegators :results, :each, :empty?
+      def_delegators :results, :each, :empty?, :[], :last
 
       #:nocov:
       def inspect

@@ -7,7 +7,7 @@ module RediSearch
 
     include Enumerable
 
-    def_delegators :to_a, :size, :each
+    def_delegators :to_a, :size, :each, :empty?, :[], :last
 
     def loaded?
       @loaded = false unless defined? @loaded
