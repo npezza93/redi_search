@@ -3,8 +3,7 @@
 require "redis"
 require "active_support"
 require "active_model"
-require "active_support/core_ext/object"
-require "active_support/core_ext/module/delegation"
+require "active_support/core_ext/object/blank"
 
 require "redi_search/configuration"
 
@@ -15,6 +14,8 @@ require "redi_search/document"
 
 module RediSearch
   class << self
+    extend Forwardable
+
     attr_writer :configuration
 
     def configuration
@@ -29,7 +30,7 @@ module RediSearch
       yield(configuration)
     end
 
-    delegate :client, to: :configuration
+    def_delegator :configuration, :client
 
     def env
       @env ||= ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"

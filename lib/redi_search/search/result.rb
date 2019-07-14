@@ -3,6 +3,7 @@
 module RediSearch
   class Search
     class Result
+      extend Forwardable
       include Enumerable
 
       def initialize(index, used_clauses, count, documents)
@@ -19,7 +20,7 @@ module RediSearch
         @count || results.size
       end
 
-      delegate :each, :empty?, to: :results
+      def_delegators :results, :each, :empty?
 
       #:nocov:
       def inspect

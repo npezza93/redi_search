@@ -4,6 +4,8 @@ module RediSearch
   class Search
     module Clauses
       class Where
+        extend Forwardable
+
         def initialize(search, condition, prior_clause = nil)
           @search = search
           @prior_clause = prior_clause
@@ -19,7 +21,7 @@ module RediSearch
           ].compact.join(" ")
         end
 
-        delegate :inspect, to: :to_s
+        def_delegator :to_s, :inspect
 
         def not(condition)
           @not = true

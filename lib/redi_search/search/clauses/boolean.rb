@@ -4,6 +4,8 @@ module RediSearch
   class Search
     module Clauses
       class Boolean
+        extend Forwardable
+
         def initialize(search, term, prior_clause = nil, **term_options)
           @search = search
           @prior_clause = prior_clause
@@ -18,7 +20,7 @@ module RediSearch
           [prior_clause.presence, queryify_term].compact.join(operand)
         end
 
-        delegate :inspect, to: :to_s
+        def_delegator :to_s, :inspect
 
         def not(term, **term_options)
           @not = true

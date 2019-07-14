@@ -3,12 +3,11 @@
 module RediSearch
   module LazilyLoad
     extend ActiveSupport::Concern
+    extend Forwardable
 
     include Enumerable
 
-    included do
-      delegate :size, :each, to: :to_a
-    end
+    def_delegators :to_a, :size, :each
 
     def loaded?
       @loaded = false unless defined? @loaded
