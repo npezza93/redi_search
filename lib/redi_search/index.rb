@@ -12,7 +12,7 @@ module RediSearch
     attr_reader :name, :schema, :model
 
     def initialize(name, schema, model = nil)
-      @name = name
+      @name = name.to_s
       @schema = Schema.new(schema)
       @model = model
     end
