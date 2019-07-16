@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-require "simplecov"
+if ENV["COV"]
+  require "simplecov"
 
-SimpleCov.start do
-  add_filter "/test/"
+  SimpleCov.start do
+    add_filter "/test/"
+  end
 end
 
 require "minitest/pride"
