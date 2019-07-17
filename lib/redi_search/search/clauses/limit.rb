@@ -7,9 +7,9 @@ module RediSearch
     module Clauses
       class Limit < ApplicationClause
         clause_term :total, presence: true,
-                            numericality: { greater_than_or_equal_to: 0 }
+                            numericality: { within: 0..Float::INFINITY }
         clause_term :offset, presence: true,
-                             numericality: { greater_than_or_equal_to: 0 }
+                             numericality: { within: 0..Float::INFINITY }
 
         def initialize(total:, offset: 0)
           @total = total

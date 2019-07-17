@@ -2,7 +2,6 @@
 
 require "redis"
 require "active_support"
-require "active_model"
 require "active_support/core_ext/object/blank"
 
 require "redi_search/configuration"

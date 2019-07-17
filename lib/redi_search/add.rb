@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+require "redi_search/validatable"
+
 module RediSearch
   class Add
-    include ActiveModel::Validations
+    include Validatable
 
-    validates :score, numericality: {
-      greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0
-    }
+    validates_numericality_of :score, within: 0.0..1.0
 
     def initialize(index, document, score: 1.0, replace: {}, language: nil,
                    no_save: false)

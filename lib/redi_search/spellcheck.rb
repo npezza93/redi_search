@@ -2,15 +2,14 @@
 
 require "redi_search/lazily_load"
 require "redi_search/spellcheck/result"
+require "redi_search/validatable"
 
 module RediSearch
   class Spellcheck
     include LazilyLoad
-    include ActiveModel::Validations
+    include Validatable
 
-    validates :distance, numericality: {
-      greater_than: 0, less_than: 5
-    }
+    validates_numericality_of :distance, within: 1..4, only_integer: true
 
     def initialize(index, terms, distance: 1)
       @index = index

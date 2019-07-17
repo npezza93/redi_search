@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
+require "redi_search/validatable"
+
 module RediSearch
   class Search
     class Term
-      include ActiveModel::Validations
+      include Validatable
 
-      validates :fuzziness, numericality: {
-        only_integer: true, less_than: 4, greater_than: 0, allow_blank: true
-      }
-      validates :option, inclusion: { in: %i(fuzziness optional prefix) },
-                         allow_nil: true
+      validates_numericality_of :fuzziness, within: 1..3, only_integer: true, allow_nil: true
+      validates_inclusion_of :option, within: %i(fuzziness optional prefix), allow_nil: true
 
       def initialize(term, **options)
         @term = term
