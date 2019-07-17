@@ -4,19 +4,21 @@ require "test_helper"
 require "redi_search/index"
 
 module RediSearch
-  class AddTest < ActiveSupport::TestCase
-    setup do
+  class AddTest < Minitest::Test
+    include ActiveSupport::Testing::Assertions
+
+    def setup
       @index = Index.new("users_test", first: :text, last: :text)
       @index.drop
       @index.create
-      @document = RediSearch::Document.for_object(@index, users(:user1))
+      @document = RediSearch::Document.for_object(@index, users(index: 0))
     end
 
-    teardown do
+    def teardown
       @index.drop
     end
 
-    test "adds document to index" do
+    def test_adds_document_to_index
       adder = RediSearch::Add.new(@index, @document)
 
       assert_difference -> { @index.document_count }, 1 do
@@ -24,16 +26,16 @@ module RediSearch
       end
     end
 
-    test "if call fails false is returned" do
+    def test_if_call_fails_false_is_returned
       adder = RediSearch::Add.new(@index, @document)
       adder.stubs(:call!).raises(Redis::CommandError)
 
       assert_no_difference -> { @index.document_count }, 1 do
-        assert_not adder.call
+        refute adder.call
       end
     end
 
-    test "#call! raises the error to the consumer" do
+    def test_all_bang_raises_the_error_to_the_consumer
       adder = RediSearch::Add.new(@index, @document)
       RediSearch::Client.any_instance.stubs(:call!).raises(Redis::CommandError)
 
@@ -42,17 +44,17 @@ module RediSearch
       end
     end
 
-    test "validation fails if score is not correct" do
+    def test_validation_fails_if_score_is_not_correct
       ["thing", -1, 1.5].each do |score|
         adder = RediSearch::Add.new(@index, @document, score: score)
 
-        assert_raises ActiveModel::ValidationError do
+        assert_raises RediSearch::ValidationError do
           adder.call
         end
       end
     end
 
-    test "partially replaces document" do
+    def test_partially_replaces_document
       adder = RediSearch::Add.new(@index, @document, replace: { partial: true })
 
       assert_difference -> { @index.document_count }, 1 do
@@ -60,7 +62,7 @@ module RediSearch
       end
     end
 
-    test "does not save document" do
+    def test_does_not_save_document
       adder = RediSearch::Add.new(@index, @document, no_save: true)
 
       assert_difference -> { @index.document_count }, 1 do

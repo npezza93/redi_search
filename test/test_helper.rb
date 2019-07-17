@@ -8,12 +8,15 @@ if ENV["COV"]
   end
 end
 
+require "minitest"
 require "minitest/pride"
 require "pry"
 require "faker"
 require "mocha/minitest"
+require "redi_search"
 
-# Configure Rails Environment
+require "active_support/testing/assertions"
+
 ENV["RAILS_ENV"] = "test"
 
 require_relative "../test/dummy/config/environment"
@@ -32,4 +35,13 @@ if ActiveSupport::TestCase.respond_to?(:fixture_path=)
   ActionDispatch::IntegrationTest.fixture_path =
     ActiveSupport::TestCase.fixture_path
   ActiveSupport::TestCase.fixtures :all
+
+User = Struct.new(:id, :first, :last)
+
+def users(index:)
+  @users ||= Array.new(10).map.with_index(1) do |_el, i|
+    User.new(i, "first_name#{i}", "last_name#{i}")
+  end
+
+  @users[index]
 end
