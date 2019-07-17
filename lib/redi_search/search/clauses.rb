@@ -76,7 +76,7 @@ module RediSearch
       def where(**condition)
         @term_clause = Where.new(self, condition, @term_clause)
 
-        if condition.blank?
+        if condition.nil?
           @term_clause
         else
           self
@@ -86,7 +86,7 @@ module RediSearch
       def and(new_term = nil, **term_options)
         @term_clause = And.new(self, new_term, @term_clause, **term_options)
 
-        if new_term.blank?
+        if new_term.nil?
           @term_clause
         else
           self
@@ -96,7 +96,7 @@ module RediSearch
       def or(new_term = nil, **term_options)
         @term_clause = Or.new(self, new_term, @term_clause, **term_options)
 
-        if new_term.blank?
+        if new_term.nil?
           @term_clause
         else
           self

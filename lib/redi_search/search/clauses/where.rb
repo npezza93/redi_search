@@ -16,7 +16,7 @@ module RediSearch
 
         def to_s
           [
-            prior_clause.presence,
+            prior_clause,
             "(#{not_operator}@#{field}:#{queryify_term})"
           ].compact.join(" ")
         end
@@ -50,7 +50,7 @@ module RediSearch
         end
 
         def initialize_term(condition)
-          return if condition.blank?
+          return if (condition.respond_to?(:empty?) ? !!condition.empty? : !condition)
 
           condition, *options = condition.to_a
 

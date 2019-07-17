@@ -11,13 +11,13 @@ module RediSearch
           @prior_clause = prior_clause
           @not = false
 
-          initialize_term(term, **term_options) if term.present?
+          initialize_term(term, **term_options) if term
         end
 
         def to_s
-          raise ArgumentError, "missing query terms" if term.blank?
+          raise ArgumentError, "missing query terms" unless term
 
-          [prior_clause.presence, queryify_term].compact.join(operand)
+          [prior_clause, queryify_term].compact.join(operand)
         end
 
         def_delegator :to_s, :inspect
@@ -25,7 +25,7 @@ module RediSearch
         def not(term, **term_options)
           @not = true
 
-          initialize_term(term, **term_options) if term.present?
+          initialize_term(term, **term_options) if term
 
           search
         end
