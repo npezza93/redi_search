@@ -17,8 +17,8 @@ module RediSearch
     end
 
     def test_and_not_multiple_phrase
-      query = User.search("hello").and.not(
-        User.search("world").or("werld")
+      query = @index.search("hello").and.not(
+        @index.search("world").or("werld")
       )
 
       assert_equal(
@@ -27,8 +27,8 @@ module RediSearch
     end
 
     def test_intersection_of_unions
-      query = User.search("hello").or("halo").and(
-        User.search("world").or("werld")
+      query = @index.search("hello").or("halo").and(
+        @index.search("world").or("werld")
       )
 
       assert_equal(
@@ -37,7 +37,7 @@ module RediSearch
     end
 
     def test_union_inside_phrase
-      query = User.search("obama").and(User.search("barack").or("barrack"))
+      query = @index.search("obama").and(@index.search("barack").or("barrack"))
 
       assert_equal(
         "SEARCH users_test \"`obama` (`barack`|`barrack`)\"", query.to_redis
@@ -45,7 +45,7 @@ module RediSearch
     end
 
     def test_multiple_optional_terms_with_higher_priority
-      query = User.search("obama").and("barack", optional: true).and(
+      query = @index.search("obama").and("barack", optional: true).and(
         "michelle", optional: true
       )
 
@@ -56,7 +56,7 @@ module RediSearch
 
     def test_exact_phrase_in_one_field_one_word_in_another_field
       query =
-        User.search.where(title: "barack obama").where(job: "president")
+        @index.search.where(title: "barack obama").where(job: "president")
 
       assert_equal(
         "SEARCH users_test (@title:`barack obama`) (@job:`president`)",
@@ -65,11 +65,11 @@ module RediSearch
     end
 
     def test_combined_and_or_with_field_specifiers
-      query = User.search("world").where(title: "hello").where(
-        body: User.search("foo").and("bar")
-      ).where(category: User.search("articles").or("biographies"))
+      query = @index.search("world").where(title: "hello").where(
+        body: @index.search("foo").and("bar")
+      ).where(category: @index.search("articles").or("biographies"))
 
-      expected = <<~CLAUSE.squish
+      expected = <<~CLAUSE.tr("\n", " ").strip
         `world` (@title:`hello`) (@body:(`foo` `bar`))
         (@category:(`articles`|`biographies`))
       CLAUSE

@@ -7,10 +7,13 @@ require "redi_search/document/finder"
 module RediSearch
   class Document
     class FinderTest < Minitest::Test
+      include ActiveSupport::Testing::Assertions
+
       def setup
-        @index = Index.new("users_test", first: :text, last: :text)
-        @index.drop
-        @index.create
+        @index = Index.new(:users_test, first: :text, last: :text)
+        @record = users(index: 0)
+
+        @index.reindex([Document.for_object(@index, @record)], recreate: true)
       end
 
       def teardown
@@ -18,12 +21,6 @@ module RediSearch
       end
 
       def test_get_with_id_already_prepended
-        assert_difference -> { User.redi_search_index.document_count } do
-          @record = User.create(
-            first: Faker::Name.first_name, last: Faker::Name.last_name
-          )
-        end
-
         doc = RediSearch::Document::Finder.new(
           @index,
           "#{@index.name}#{@record.id}"
@@ -36,12 +33,6 @@ module RediSearch
       end
 
       def test_mget_with_id_that_doesnt_exist
-        assert_difference -> { User.redi_search_index.document_count } do
-          @record = User.create(
-            first: Faker::Name.first_name, last: Faker::Name.last_name
-          )
-        end
-
         docs = RediSearch::Document::Finder.new(
           @index,
           "#{@index.name}#{@record.id}",

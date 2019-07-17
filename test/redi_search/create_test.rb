@@ -7,7 +7,7 @@ module RediSearch
   class CreateTest < Minitest::Test
     def setup
       @index = Index.new(:users_test, first: :text, last: :text)
-      @document = RediSearch::Document.for_object(@index, users(:user1))
+      @document = RediSearch::Document.for_object(@index, users(index: 0))
     end
 
     def teardown
@@ -17,7 +17,7 @@ module RediSearch
     def test_creates_index
       creator = RediSearch::Create.new(@index, @index.schema, {})
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call
       assert @index.exist?
     end
@@ -26,9 +26,9 @@ module RediSearch
       creator = RediSearch::Create.new(@index, @index.schema, {})
       creator.stubs(:call!).raises(Redis::CommandError)
 
-      assert_not @index.exist?
-      assert_not creator.call
-      assert_not @index.exist?
+      refute @index.exist?
+      refute creator.call
+      refute @index.exist?
     end
 
     def test_call_bang_raises_the_error_to_the_consumer
@@ -45,7 +45,7 @@ module RediSearch
         @index, @index.schema, max_text_fields: true
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -59,7 +59,7 @@ module RediSearch
         @index, @index.schema, no_offsets: true
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -73,7 +73,7 @@ module RediSearch
         @index, @index.schema, temporary: 2000
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       # assert_includes(
       #   @index.info.index_options,
@@ -87,7 +87,7 @@ module RediSearch
         @index, @index.schema, no_highlight: true
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       # assert_includes(
       #   @index.info.index_options,
@@ -101,7 +101,7 @@ module RediSearch
         @index, @index.schema, no_fields: true
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
@@ -115,7 +115,7 @@ module RediSearch
         @index, @index.schema, no_frequencies: true
       )
 
-      assert_not @index.exist?
+      refute @index.exist?
       assert creator.call!
       assert_includes(
         @index.info.index_options,
