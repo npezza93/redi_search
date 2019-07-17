@@ -3,12 +3,12 @@
 require "test_helper"
 
 module RediSearch
-  class ConfigurationTest < ActiveSupport::TestCase
-    teardown do
+  class ConfigurationTest < Minitest::Test
+    def teardown
       RediSearch.reset
     end
 
-    test "#redis_config=" do
+    def test_redis_config_equals
       redis_config = {
         host: "google.com", port: 199
       }

@@ -4,16 +4,16 @@ require "test_helper"
 require "redi_search/client"
 
 module RediSearch
-  class ClientTest < ActiveSupport::TestCase
-    test "Response#ok? with string" do
+  class ClientTest < Minitest::Test
+    def test_Response_ok_with_string
       assert Client::Response.new("OK").ok?
     end
 
-    test "Response#ok? with array" do
+    def test_Response_ok_with_array
       assert Client::Response.new(%w(OK OK)).ok?
     end
 
-    test "Response#ok? with other object" do
+    def test_Response_ok_with_other_object
       assert Client::Response.new({ thing: 1 }).ok?
       assert_equal({ thing: 1 }, Client::Response.new({ thing: 1 }).ok?)
     end

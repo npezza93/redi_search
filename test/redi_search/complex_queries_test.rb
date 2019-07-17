@@ -5,18 +5,18 @@ require "redi_search/search"
 require "redi_search/search/result"
 
 module RediSearch
-  class ComplexQueriesTest < ActiveSupport::TestCase
-    setup do
+  class ComplexQueriesTest < Minitest::Test
+    def setup
       @index = Index.new("users_test", name: :text)
       @index.drop
       @index.create
     end
 
-    teardown do
+    def teardown
       @index.drop
     end
 
-    test "and not multiple phrase" do
+    def test_and_not_multiple_phrase
       query = User.search("hello").and.not(
         User.search("world").or("werld")
       )
@@ -26,7 +26,7 @@ module RediSearch
       )
     end
 
-    test "intersection of unions" do
+    def test_intersection_of_unions
       query = User.search("hello").or("halo").and(
         User.search("world").or("werld")
       )
@@ -36,7 +36,7 @@ module RediSearch
       )
     end
 
-    test "union inside phrase" do
+    def test_union_inside_phrase
       query = User.search("obama").and(User.search("barack").or("barrack"))
 
       assert_equal(
@@ -44,7 +44,7 @@ module RediSearch
       )
     end
 
-    test "multiple optional terms with higher priority" do
+    def test_multiple_optional_terms_with_higher_priority
       query = User.search("obama").and("barack", optional: true).and(
         "michelle", optional: true
       )
@@ -54,7 +54,7 @@ module RediSearch
       )
     end
 
-    test "exact phrase in one field, one word in another field" do
+    def test_exact_phrase_in_one_field_one_word_in_another_field
       query =
         User.search.where(title: "barack obama").where(job: "president")
 
@@ -64,7 +64,7 @@ module RediSearch
       )
     end
 
-    test "combined AND, OR with field specifiers" do
+    def test_combined_and_or_with_field_specifiers
       query = User.search("world").where(title: "hello").where(
         body: User.search("foo").and("bar")
       ).where(category: User.search("articles").or("biographies"))

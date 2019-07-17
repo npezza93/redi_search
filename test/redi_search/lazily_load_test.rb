@@ -3,38 +3,35 @@
 require "test_helper"
 
 module RediSearch
-  class LazilyLoadTest < ActiveSupport::TestCase
-    test "NotImplementedError is raised if command isnt defined" do
-      class TempLazy
-        include LazilyLoad
-      end
-
-      assert_raises NotImplementedError do
-        TempLazy.new.to_a
-      end
-
-      RediSearch::LazilyLoadTest.send :remove_const, :TempLazy
+  class LazilyLoadTest < Minitest::Test
+    class TempLazyDouble1
+      include LazilyLoad
     end
 
-    test "NotImplementedError is raised if parse_response isnt defined" do
+    class TempLazyDouble2
+      include LazilyLoad
+
+      def command
+        %w(INFO users_test)
+      end
+    end
+
+    def test_NotImplementedError_is_raised_if_command_isnt_defined
+      assert_raises NotImplementedError do
+        TempLazyDouble1.new.to_a
+      end
+    end
+
+    def test_NotImplementedError_is_raised_if_parse_response_isnt_defined
       index = Index.new("users_test", first: :text, last: :text)
       index.drop
       index.create
 
-      class TempLazy
-        include LazilyLoad
-
-        def command
-          %w(INFO users_test)
-        end
-      end
-
       assert_raises NotImplementedError do
-        TempLazy.new.to_a
+        TempLazyDouble2.new.to_a
       end
 
       index.drop
-      RediSearch::LazilyLoadTest.send :remove_const, :TempLazy
     end
   end
 end

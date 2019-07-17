@@ -4,18 +4,18 @@ require "test_helper"
 require "redi_search/document"
 
 module RediSearch
-  class DocumentTest < ActiveSupport::TestCase
-    setup do
+  class DocumentTest < Minitest::Test
+    def setup
       @index = Index.new("users_test", first: :text, last: :text)
       @index.drop
       @index.create
     end
 
-    teardown do
+    def teardown
       @index.drop
     end
 
-    test "#initialize" do
+    def test_initialize
       doc = RediSearch::Document.new(
         @index, "100", { "first" => "F", "last" => "L" }
       )
@@ -25,7 +25,7 @@ module RediSearch
       assert_equal "100", doc.document_id_without_index
     end
 
-    test ".get" do
+    def test_get_class_method
       assert_difference -> { User.redi_search_index.document_count } do
         @record = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -39,12 +39,12 @@ module RediSearch
       assert_equal "users_test#{@record.id}", doc.document_id
     end
 
-    test ".get when doc doesnt exist" do
+    def test_get_class_method_when_doc_doesnt_exist
       doc = RediSearch::Document.get(@index, "rando")
       assert_nil doc
     end
 
-    test ".mget" do
+    def test_mget_class_method
       assert_difference -> { User.redi_search_index.document_count }, 2 do
         @record1 = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -60,7 +60,7 @@ module RediSearch
       assert_equal @record2.id, docs.second.document_id_without_index
     end
 
-    test ".mget when a doc doesnt exist" do
+    def test_mget_class_method_when_a_doc_doesnt_exist
       assert_difference -> { User.redi_search_index.document_count } do
         @record1 = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -73,7 +73,7 @@ module RediSearch
       assert_nil docs.second
     end
 
-    test "#del" do
+    def test_del
       assert_difference -> { User.redi_search_index.document_count } do
         @record1 = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -85,7 +85,7 @@ module RediSearch
       assert_equal 0, @index.info["num_docs"].to_i
     end
 
-    test "#document_id with index name" do
+    def test_document_id_with_index_name
       attrs = { first: Faker::Name.first_name, last: Faker::Name.last_name }
 
       document = RediSearch::Document.new(@index, @index.name + "100", attrs)

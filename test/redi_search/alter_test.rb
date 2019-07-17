@@ -4,17 +4,17 @@ require "test_helper"
 require "redi_search/index"
 
 module RediSearch
-  class AlterTest < ActiveSupport::TestCase
-    setup do
+  class AlterTest < Minitest::Test
+    def setup
       Car.reindex
       @car = cars(:model_3)
     end
 
-    teardown do
+    def teardown
       Car.redi_search_index.drop
     end
 
-    test "alter adds a new field to the index" do
+    def test_alter_adds_a_new_field_to_the_index
       index = Car.redi_search_index
 
       assert_equal %w(make model), index.fields

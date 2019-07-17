@@ -5,27 +5,27 @@ require "redi_search/schema/geo_field"
 
 module RediSearch
   class Schema
-    class GeoFieldTest < ActiveSupport::TestCase
-      test "default options" do
+    class GeoFieldTest < Minitest::Test
+      def test_default_options
         schema = RediSearch::Schema::GeoField.new("temp_field")
         assert_equal %w(temp_field GEO), schema.to_a
       end
 
-      test "sortable option" do
+      def test_sortable_option
         schema = RediSearch::Schema::GeoField.new(
           "temp_field", sortable: true
         )
         assert_equal %w(temp_field GEO SORTABLE), schema.to_a
       end
 
-      test "no_index option" do
+      def test_no_index_option
         schema = RediSearch::Schema::GeoField.new(
           "temp_field", no_index: true
         )
         assert_equal %w(temp_field GEO NOINDEX), schema.to_a
       end
 
-      test "both options" do
+      def test_both_options
         schema = RediSearch::Schema::GeoField.new(
           "temp_field", no_index: true, sortable: true
         )

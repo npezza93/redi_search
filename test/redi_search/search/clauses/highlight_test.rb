@@ -6,42 +6,42 @@ require "redi_search/search/clauses/highlight"
 module RediSearch
   class Search
     module Clauses
-      class HighlightTest < ActiveSupport::TestCase
-        setup do
+      class HighlightTest < Minitest::Test
+        def setup
           @clause = RediSearch::Search::Clauses::Highlight
         end
 
-        test "returns HIGHLIGHT keyword" do
+        def test_returns_highlight_keyword
           assert_equal ["HIGHLIGHT", "TAGS", "<b>", "</b>"], @clause.new.clause
         end
 
-        test "tags clause" do
+        def test_tags_clause
           assert_equal(
             ["HIGHLIGHT", "TAGS", "<i>", "</i>"],
             @clause.new(opening_tag: "<i>", closing_tag: "</i>").clause
           )
         end
 
-        test "tags with no opening" do
+        def test_tags_with_no_opening
           assert_raise ArgumentError do
             @clause.new(opening_tag: nil).clause
           end
         end
 
-        test "tags with no closing" do
+        def test_tags_with_no_closing
           assert_raise ArgumentError do
             @clause.new(closing_tag: nil).clause
           end
         end
 
-        test "fields clause" do
+        def test_fields_clause
           assert_equal(
             ["HIGHLIGHT", "FIELDS", 1, ["name"], "TAGS", "<b>", "</b>"],
             @clause.new(fields: ["name"]).clause
           )
         end
 
-        test "fields is always before tags" do
+        def test_fields_is_always_before_tags
           assert_equal(
             ["HIGHLIGHT", "FIELDS", 1, ["name"], "TAGS", "<b>", "</b>"],
             @clause.new(

@@ -4,62 +4,62 @@ require "test_helper"
 
 module RediSearch
   class Search
-    class ClausesTest < ActiveSupport::TestCase
-      setup do
+    class ClausesTest < Minitest::Test
+      def setup
         @index = Index.new("users_test", name: :text)
         @index.drop
         @index.create
       end
 
-      teardown do
+      def teardown
         @index.drop
       end
 
-      test "slop clause" do
+      def test_slop_clause
         assert_clause("SLOP 1", stubbed_search.slop(1))
       end
 
-      test "#in_order clause" do
+      def test_in_order_clause
         assert_clause("INORDER", stubbed_search.in_order)
       end
 
-      test "#verbatim clause" do
+      def test_verbatim_clause
         assert_clause("VERBATIM", stubbed_search.verbatim)
       end
 
-      test "#no_stop_words clause" do
+      def test_no_stop_words_clause
         assert_clause("NOSTOPWORDS", stubbed_search.no_stop_words)
       end
 
-      test "#language clause" do
+      def test_language_clause
         assert_clause("LANGUAGE danish", stubbed_search.language("danish"))
       end
 
-      test "#sort_by clause" do
+      def test_sort_by_clause
         assert_clause("SORTBY first asc", stubbed_search.sort_by(:first))
       end
 
-      test "#sort_by desc clause" do
+      def test_sort_by_desc_clause
         assert_clause(
           "SORTBY first desc", stubbed_search.sort_by(:first, order: :desc)
         )
       end
 
-      test "#sort_by arg error with bad order" do
-        assert_raise ActiveModel::ValidationError do
+      def test_sort_by_arg_error_with_bad_order
+        assert_raise RediSearch::ValidationError do
           stubbed_search.sort_by(:first, order: :random)
         end
       end
 
-      test "#limit clause defaults to 0 offset" do
+      def test_limit_clause_defaults_to_0_offset
         assert_clause("LIMIT [0, 10]", stubbed_search.limit(10))
       end
 
-      test "#limit clause with custom offset" do
+      def test_limit_clause_with_custom_offset
         assert_clause("LIMIT [5, 10]", stubbed_search.limit(10, 5))
       end
 
-      test "no_content just returns docs with ids" do
+      def test_no_content_just_returns_docs_with_ids
         index_all_users
 
         assert_nothing_raised do
@@ -67,15 +67,15 @@ module RediSearch
         end
       end
 
-      test "#return returns certain fields" do
+      def test_return_returns_certain_fields
         assert_clause("RETURN 1 name", stubbed_search.return(:name))
       end
 
-      test "#with_scores clause" do
+      def test_with_scores_clause
         assert_clause("WITHSCORES", stubbed_search.with_scores)
       end
 
-      test "#with_scores includes the score" do
+      def test_with_scores_includes_the_score
         index_all_users
 
         query = RediSearch::Search.new(@index, User.first.first).with_scores
@@ -83,11 +83,11 @@ module RediSearch
         assert query.first.score > 0.0
       end
 
-      test "there are no duplicate clauses" do
+      def test_there_are_no_duplicate_clauses
         assert_clause("WITHSCORES", stubbed_search.with_scores.with_scores)
       end
 
-      test "#count when loaded" do
+      def test_count_when_loaded
         search = stubbed_search
         search.load
 
@@ -95,7 +95,7 @@ module RediSearch
         assert search.count >= 0
       end
 
-      test "#count when loaded on the result set" do
+      def test_count_when_loaded_on_the_result_set
         results = stubbed_search.load
 
         assert results.is_a? Search::Result

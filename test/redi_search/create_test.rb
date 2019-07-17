@@ -4,17 +4,17 @@ require "test_helper"
 require "redi_search/index"
 
 module RediSearch
-  class CreateTest < ActiveSupport::TestCase
-    setup do
+  class CreateTest < Minitest::Test
+    def setup
       @index = Index.new(:users_test, first: :text, last: :text)
       @document = RediSearch::Document.for_object(@index, users(:user1))
     end
 
-    teardown do
+    def teardown
       @index.drop
     end
 
-    test "creates index" do
+    def test_creates_index
       creator = RediSearch::Create.new(@index, @index.schema, {})
 
       assert_not @index.exist?
@@ -22,7 +22,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "if call fails false is returned" do
+    def test_if_call_fails_false_is_returned
       creator = RediSearch::Create.new(@index, @index.schema, {})
       creator.stubs(:call!).raises(Redis::CommandError)
 
@@ -31,7 +31,7 @@ module RediSearch
       assert_not @index.exist?
     end
 
-    test "#call! raises the error to the consumer" do
+    def test_call_bang_raises_the_error_to_the_consumer
       creator = RediSearch::Create.new(@index, @index.schema, {})
       RediSearch::Client.any_instance.stubs(:call!).raises(Redis::CommandError)
 
@@ -40,7 +40,7 @@ module RediSearch
       end
     end
 
-    test "max_text_fields option" do
+    def test_max_text_fields_option
       creator = RediSearch::Create.new(
         @index, @index.schema, max_text_fields: true
       )
@@ -54,7 +54,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "no_offsets option" do
+    def test_no_offsets_option
       creator = RediSearch::Create.new(
         @index, @index.schema, no_offsets: true
       )
@@ -68,7 +68,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "temporary option" do
+    def test_temporary_option
       creator = RediSearch::Create.new(
         @index, @index.schema, temporary: 2000
       )
@@ -82,7 +82,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "no_highlight option" do
+    def test_no_highlight_option
       creator = RediSearch::Create.new(
         @index, @index.schema, no_highlight: true
       )
@@ -96,7 +96,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "no_fields option" do
+    def test_no_fields_option
       creator = RediSearch::Create.new(
         @index, @index.schema, no_fields: true
       )
@@ -110,7 +110,7 @@ module RediSearch
       assert @index.exist?
     end
 
-    test "no_frequencies option" do
+    def test_no_frequencies_option
       creator = RediSearch::Create.new(
         @index, @index.schema, no_frequencies: true
       )

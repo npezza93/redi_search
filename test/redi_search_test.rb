@@ -3,5 +3,5 @@
 require "test_helper"
 require "redi_search"
 
-class RediSearchTest < ActiveSupport::TestCase
+class RediSearchTest < Minitest::Test
 end

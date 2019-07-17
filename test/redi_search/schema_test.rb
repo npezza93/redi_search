@@ -4,8 +4,8 @@ require "test_helper"
 require "redi_search/schema"
 
 module RediSearch
-  class SchemaTest < ActiveSupport::TestCase
-    test "#to_s" do
+  class SchemaTest < Minitest::Test
+    def test_to_s
       schema = [
         "name", "TEXT", "SORTABLE", "WEIGHT", 1.0, "age", "NUMERIC",
         "SORTABLE", "myTag", "TAG", "SORTABLE", "SEPARATOR", ",",
@@ -23,7 +23,7 @@ module RediSearch
       )
     end
 
-    test "#fields" do
+    def test_fields
       assert_equal(
         %i(name age myTag other),
         RediSearch::Schema.new({

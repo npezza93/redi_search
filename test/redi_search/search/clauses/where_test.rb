@@ -5,18 +5,18 @@ require "test_helper"
 module RediSearch
   class Search
     module Clauses
-      class WhereTest < ActiveSupport::TestCase
-        setup do
+      class WhereTest < Minitest::Test
+        def setup
           @index = Index.new("users_test", name: :text)
           @index.drop
           @index.create
         end
 
-        teardown do
+        def teardown
           @index.drop
         end
 
-        test "where clause is field specific" do
+        def test_where_clause_is_field_specific
           query = @index.search.where(name: :foo)
 
           assert_equal(
@@ -25,7 +25,7 @@ module RediSearch
           )
         end
 
-        test "where clause can take query" do
+        def test_where_clause_can_take_query
           query = @index.search.where(name: @index.search("foo").or("bar"))
 
           assert_equal(
@@ -34,7 +34,7 @@ module RediSearch
           )
         end
 
-        test "negate where clause" do
+        def test_negate_where_clause
           query = @index.search.where(x: :foo).where.not(y: :bar)
 
           assert_equal(
@@ -43,7 +43,7 @@ module RediSearch
           )
         end
 
-        test "negate where union clause" do
+        def test_negate_where_union_clause
           query = @index.search.where.not(x: @index.search("foo").or("bar"))
 
           assert_equal(
@@ -52,7 +52,7 @@ module RediSearch
           )
         end
 
-        test "where with prefix" do
+        def test_where_with_prefix
           query = @index.search.where(name: :john, prefix: true)
 
           assert_equal(
@@ -61,7 +61,7 @@ module RediSearch
           )
         end
 
-        test "or two where clauses" do
+        def test_or_two_where_clauses
           query = @index.search.where(x: :foo).or.where(y: :bar)
 
           assert_equal(
@@ -70,7 +70,7 @@ module RediSearch
           )
         end
 
-        test "between range" do
+        def test_between_range
           query = @index.search.where(num: 10..20)
 
           assert_equal(
@@ -79,7 +79,7 @@ module RediSearch
           )
         end
 
-        test "greater than num" do
+        def test_greater_than_num
           query = @index.search.where(num: 10..Float::INFINITY)
 
           assert_equal(
@@ -88,7 +88,7 @@ module RediSearch
           )
         end
 
-        test "less than num" do
+        def test_less_than_num
           query = @index.search.where(num: -Float::INFINITY..10)
 
           assert_equal(
@@ -97,7 +97,7 @@ module RediSearch
           )
         end
 
-        test "complex ranges" do
+        def test_complex_ranges
           query = @index.search.
                   where(num: -Float::INFINITY..9).
                   or.where(num: 21..Float::INFINITY)

@@ -4,21 +4,21 @@ require "test_helper"
 require "redi_search"
 
 module RediSearch
-  class ModelTest < ActiveSupport::TestCase
-    teardown do
+  class ModelTest < Minitest::Test
+    def teardown
       User.redi_search_index.drop
     end
 
-    test "index name" do
+    def test_index_name
       assert_equal "users_test", User.redi_search_index.name
     end
 
-    test "reindex" do
+    def test_reindex
       assert User.redi_search_index.create
       assert User.redi_search_index.drop
     end
 
-    test "adds document when a record is created" do
+    def test_adds_document_when_a_record_is_created
       assert User.reindex
 
       assert_difference -> { User.redi_search_index.info.num_docs.to_i }, 1 do
@@ -26,7 +26,7 @@ module RediSearch
       end
     end
 
-    test "removes document when a record is destroyed" do
+    def test_removes_document_when_a_record_is_destroyed
       assert User.reindex
 
       assert_difference -> { User.redi_search_index.info.num_docs.to_i }, -1 do
@@ -34,22 +34,22 @@ module RediSearch
       end
     end
 
-    test "using a serializer" do
+    def test_using_a_serializer
       document = characters(:tywin).redi_search_document
 
       assert_equal "Tywin Lannister", document.name
     end
 
-    test "setting an index prefix" do
+    def test_setting_an_index_prefix
       assert_equal "example_superpowers_test", Superpower.redi_search_index.name
     end
 
-    test "responds to spellcheck" do
+    def test_responds_to_spellcheck
       assert User.reindex
       assert_equal 1, User.spellcheck("fli").count
     end
 
-    test "calling results on search results looks up AR records" do
+    def test_calling_results_on_search_results_looks_up_AR_records
       assert User.reindex
       user = users(:nick)
       search_results = User.search("nick")

@@ -4,24 +4,24 @@ require "test_helper"
 require "redi_search/index"
 
 module RediSearch
-  class IndexTest < ActiveSupport::TestCase
-    setup do
+  class IndexTest < Minitest::Test
+    def setup
       @index = Index.new("users_test", first: :text, last: :text)
       @index.drop
       @index.create
     end
 
-    teardown do
+    def teardown
       @index.drop
     end
 
-    test "#add" do
+    def test_add
       assert_difference -> { User.redi_search_index.document_count } do
         @index.add(users(:nick).redi_search_document)
       end
     end
 
-    test "#add!" do
+    def test_add!
       assert_difference -> { User.redi_search_index.document_count } do
         @index.add(users(:nick).redi_search_document)
       end
@@ -31,7 +31,7 @@ module RediSearch
       end
     end
 
-    test "#del" do
+    def test_del
       @index.add(users(:nick).redi_search_document)
 
       assert_difference -> { User.redi_search_index.document_count }, -1 do
@@ -39,19 +39,19 @@ module RediSearch
       end
     end
 
-    test "#document_count" do
+    def test_document_count
       @index.add(users(:nick).redi_search_document)
 
       assert_equal @index.info["num_docs"].to_i, @index.document_count
     end
 
-    test "create fails if the index already exists" do
+    def test_create_fails_if_the_index_already_exists
       dup_index = Index.new("users_test", first: :text, last: :text)
 
       assert_not dup_index.create
     end
 
-    test "create! raises exception if the index already exists" do
+    def test_create_bang_raises_exception_if_the_index_already_exists
       dup_index = Index.new("users_test", first: :text, last: :text)
 
       assert_raises Redis::CommandError do
@@ -59,23 +59,23 @@ module RediSearch
       end
     end
 
-    test "info returns nothing if the index doesnt exist" do
+    def test_info_returns_nothing_if_the_index_doesnt_exist
       rando_idx = Index.new("rando_idx", first: :text, last: :text)
 
       assert_nil rando_idx.info
     end
 
-    test "#fields" do
+    def test_fields
       assert_equal %w(first last), @index.fields
     end
 
-    test "#reindex" do
+    def test_reindex
       assert_equal 0, @index.info["num_docs"].to_i
       assert @index.reindex(User.all.map(&:redi_search_document))
       assert_equal User.count, @index.info["num_docs"].to_i
     end
 
-    test "#search" do
+    def test_search
       assert_difference -> { User.redi_search_index.document_count } do
         @record = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -93,7 +93,7 @@ module RediSearch
       assert_equal 2, @index.search(@record.first).count
     end
 
-    test "Results#size is aliased to count" do
+    def test_Results_size_is_aliased_to_count
       assert_difference -> { User.redi_search_index.document_count } do
         @record = User.create(
           first: Faker::Name.first_name, last: Faker::Name.last_name
@@ -105,7 +105,7 @@ module RediSearch
       )
     end
 
-    test "#exists?" do
+    def test_exists?
       assert @index.exist?
       assert @index.drop
       assert_not @index.exist?
