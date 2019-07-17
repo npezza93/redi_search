@@ -11,8 +11,8 @@ module RediSearch
       options = [options] if options.is_a? Symbol
       schema, options = options.to_a.flatten
 
-      "RediSearch::Schema::#{schema.to_s.capitalize}Field".
-        constantize.new(field_name, **options.to_h).to_a
+      Object.const_get("RediSearch::Schema::#{schema.to_s.capitalize}Field").
+        new(field_name, **options.to_h).to_a
     end
 
     def initialize(raw)

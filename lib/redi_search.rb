@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 require "redis"
-require "active_support"
-require "active_support/core_ext/object/blank"
+require "active_support/lazy_load_hooks"
 
 require "redi_search/configuration"
 

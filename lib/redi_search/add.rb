@@ -48,7 +48,7 @@ module RediSearch
     end
 
     def replace?
-      replace.present?
+      !replace.empty?
     end
 
     def replace_options

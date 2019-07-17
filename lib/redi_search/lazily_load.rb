@@ -2,7 +2,6 @@
 
 module RediSearch
   module LazilyLoad
-    extend ActiveSupport::Concern
     extend Forwardable
 
     include Enumerable

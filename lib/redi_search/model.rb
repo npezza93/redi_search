@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 require "redi_search/index"
-require "active_support/concern"
 
 module RediSearch
   module Model
-    extend ActiveSupport::Concern
+    def self.included(base)
+      base.extend(ClassMethods)
+    end
 
-    # rubocop:disable Metrics/BlockLength
-    class_methods do
+    module ClassMethods
       attr_reader :redi_search_index, :redi_search_serializer
 
       # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -43,7 +43,6 @@ module RediSearch
           end
         end
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       private
 
@@ -54,7 +53,7 @@ module RediSearch
           respond_to?(:after_destroy_commit)
       end
     end
-    # rubocop:enable Metrics/BlockLength
+    
 
     def redi_search_document(only: [])
       Document.for_object(

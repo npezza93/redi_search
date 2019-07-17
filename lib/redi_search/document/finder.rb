@@ -5,7 +5,7 @@ module RediSearch
     class Finder
       def initialize(index, *document_ids)
         @index = index
-        @document_ids = Array.wrap(document_ids)
+        @document_ids = [*document_ids]
       end
 
       def find

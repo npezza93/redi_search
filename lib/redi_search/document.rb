@@ -12,7 +12,7 @@ module RediSearch
         object_to_serialize = serializer&.new(record) || record
 
         field_values = index.schema.fields.map do |field|
-          next if only.present? && !only.include?(field.to_sym)
+          next unless only.empty? || only.include?(field.to_sym)
 
           [field.to_s, object_to_serialize.public_send(field)]
         end.compact.to_h
@@ -61,7 +61,7 @@ module RediSearch
     end
 
     def document_id_without_index
-      if @document_id.to_s.starts_with? index.name
+      if @document_id.to_s.start_with? index.name
         @document_id.gsub(index.name, "")
       else
         @document_id
