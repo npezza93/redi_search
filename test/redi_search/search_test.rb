@@ -7,7 +7,7 @@ require "redi_search/search/result"
 module RediSearch
   class SearchTest < Minitest::Test
     def setup
-      @index = Index.new("users_test", name: :text)
+      @index = Index.new(:users_test, name: :text)
       @index.drop
       @index.create
     end
@@ -46,19 +46,19 @@ module RediSearch
     end
 
     def test_terms_with_options
-      query = User.search(:hello, fuzziness: 1)
+      query = @index.search(:hello, fuzziness: 1)
 
       assert_equal("SEARCH users_test `%hello%`", query.to_redis)
     end
 
     def test_simple_phrase
-      query = User.search("hello").and("world")
+      query = @index.search("hello").and("world")
 
       assert_equal("SEARCH users_test \"`hello` `world`\"", query.to_redis)
     end
 
     def test_exact_phrase
-      query = User.search("hello world")
+      query = @index.search("hello world")
 
       assert_equal(
         "SEARCH users_test \"`hello world`\"", query.to_redis
@@ -66,7 +66,7 @@ module RediSearch
     end
 
     def test_or_phrase
-      query = User.search("hello").or "world"
+      query = @index.search("hello").or "world"
 
       assert_equal(
         "SEARCH users_test \"`hello`|`world`\"", query.to_redis
@@ -74,7 +74,7 @@ module RediSearch
     end
 
     def test_and_phrase
-      query = User.search("hello").and "world"
+      query = @index.search("hello").and "world"
 
       assert_equal(
         "SEARCH users_test \"`hello` `world`\"", query.to_redis
@@ -82,7 +82,7 @@ module RediSearch
     end
 
     def test_and_not_phrase
-      query = User.search("hello").and.not("world")
+      query = @index.search("hello").and.not("world")
 
       assert_equal(
         "SEARCH users_test \"`hello` -`world`\"", query.to_redis
@@ -90,19 +90,19 @@ module RediSearch
     end
 
     def test_and_raises_arg_error_without_terms
-      assert_raise ArgumentError do
-        User.search("hello").and.to_s
+      assert_raises ArgumentError do
+        @index.search("hello").and.to_s
       end
     end
 
     def test_and_not_raises_arg_error_without_terms
-      assert_raise ArgumentError do
-        User.search("hello").and.not.results
+      assert_raises ArgumentError do
+        @index.search("hello").and.not.results
       end
     end
 
     def test_negation_of_or
-      query = User.search("hello").or.not "world"
+      query = @index.search("hello").or.not "world"
 
       assert_equal(
         "SEARCH users_test \"`hello`|-`world`\"", query.to_redis
@@ -110,9 +110,9 @@ module RediSearch
     end
 
     def test_searching_without_terms_returns_the_search_instance
-      assert User.search.inspect.start_with? "#<RediSearch::Search:"
-      assert User.search.inspect.is_a? String
-      assert User.search("hellow").inspect.is_a? RediSearch::Search::Result
+      assert @index.search.inspect.start_with? "#<RediSearch::Search:"
+      assert @index.search.inspect.is_a? String
+      assert @index.search("hellow").inspect.is_a? RediSearch::Search::Result
     end
   end
 end

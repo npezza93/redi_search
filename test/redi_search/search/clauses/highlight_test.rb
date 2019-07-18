@@ -23,13 +23,13 @@ module RediSearch
         end
 
         def test_tags_with_no_opening
-          assert_raise ArgumentError do
+          assert_raises ArgumentError do
             @clause.new(opening_tag: nil).clause
           end
         end
 
         def test_tags_with_no_closing
-          assert_raise ArgumentError do
+          assert_raises ArgumentError do
             @clause.new(closing_tag: nil).clause
           end
         end

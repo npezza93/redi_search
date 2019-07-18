@@ -11,7 +11,6 @@ end
 require "minitest"
 require "minitest/pride"
 require "pry"
-require "faker"
 require "mocha/minitest"
 require "redi_search"
 

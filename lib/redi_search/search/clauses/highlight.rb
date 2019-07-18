@@ -23,9 +23,9 @@ module RediSearch
         attr_reader :fields, :opening_tag, :closing_tag
 
         def tags_clause
-          return if opening_tag.blank? && closing_tag.blank?
+          return if !opening_tag? && !closing_tag?
 
-          if opening_tag.present? && closing_tag.present?
+          if opening_tag? && closing_tag?
             ["TAGS", opening_tag, closing_tag]
           else
             arg_error("Missing opening or closing tag")
@@ -40,6 +40,22 @@ module RediSearch
 
         def arg_error(msg)
           raise ArgumentError, "Highlight: #{msg}"
+        end
+
+        def opening_tag?
+          if opening_tag.respond_to? :empty?
+            !opening_tag.empty?
+          else
+            opening_tag
+          end
+        end
+
+        def closing_tag?
+          if closing_tag.respond_to? :empty?
+            !closing_tag.empty?
+          else
+            closing_tag
+          end
         end
       end
     end

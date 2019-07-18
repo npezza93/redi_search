@@ -6,7 +6,7 @@ module RediSearch
   class Search
     class ClausesTest < Minitest::Test
       def setup
-        @index = Index.new("users_test", name: :text)
+        @index = Index.new(:users_test, name: :text)
         @index.drop
         @index.create
       end
@@ -46,7 +46,7 @@ module RediSearch
       end
 
       def test_sort_by_arg_error_with_bad_order
-        assert_raise RediSearch::ValidationError do
+        assert_raises RediSearch::ValidationError do
           stubbed_search.sort_by(:first, order: :random)
         end
       end
@@ -62,9 +62,7 @@ module RediSearch
       def test_no_content_just_returns_docs_with_ids
         index_all_users
 
-        assert_nothing_raised do
-          assert_not @index.search("*").no_content.results.empty?
-        end
+        refute @index.search("*").no_content.results.empty?
       end
 
       def test_return_returns_certain_fields
@@ -78,7 +76,7 @@ module RediSearch
       def test_with_scores_includes_the_score
         index_all_users
 
-        query = RediSearch::Search.new(@index, User.first.first).with_scores
+        query = RediSearch::Search.new(@index, users(index: 0).first).with_scores
 
         assert query.first.score > 0.0
       end
@@ -111,7 +109,7 @@ module RediSearch
       end
 
       def index_all_users
-        User.find_each do |user|
+        users(index: 0..-1).each do |user|
           @index.add Document.for_object(@index, Name.new(user.first))
         end
       end

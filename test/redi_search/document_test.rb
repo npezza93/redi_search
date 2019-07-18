@@ -83,7 +83,7 @@ module RediSearch
     end
 
     def test_document_id_with_index_name
-      attrs = { first: Faker::Name.first_name, last: Faker::Name.last_name }
+      attrs = { first: "foo", last: "bar" }
 
       document = RediSearch::Document.new(@index, @index.name + "100", attrs)
 

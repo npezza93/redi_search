@@ -7,7 +7,7 @@ module RediSearch
     module Clauses
       class WhereTest < Minitest::Test
         def setup
-          @index = Index.new("users_test", name: :text)
+          @index = Index.new(:users_test, name: :text)
           @index.drop
           @index.create
         end

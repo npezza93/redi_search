@@ -21,7 +21,7 @@ module RediSearch
     end
 
     def results
-      if index.model.present?
+      if index.model
         index.model.where(id: to_a.map(&:document_id_without_index))
       else
         to_a
@@ -68,7 +68,7 @@ module RediSearch
     end
 
     def valid?
-      term_clause.present?
+      !!term_clause
     end
   end
 end

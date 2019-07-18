@@ -76,7 +76,7 @@ module RediSearch
       def where(**condition)
         @term_clause = Where.new(self, condition, @term_clause)
 
-        if condition.nil?
+        if condition.empty?
           @term_clause
         else
           self
@@ -106,7 +106,7 @@ module RediSearch
       private
 
       def add_to_clause(clause)
-        used_clauses.add(clause.class.name.demodulize.underscore)
+        used_clauses.add(clause.class)
         clauses.push(*clause.clause)
 
         self

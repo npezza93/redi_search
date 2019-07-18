@@ -45,11 +45,11 @@ module RediSearch
       end
 
       def with_scores?
-        @used_clauses.include? "with_scores"
+        @used_clauses.include? RediSearch::Search::Clauses::WithScores
       end
 
       def no_content?
-        @used_clauses.include? "no_content"
+        @used_clauses.include? RediSearch::Search::Clauses::NoContent
       end
 
       def parse_results(index, documents)

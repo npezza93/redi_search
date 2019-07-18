@@ -14,10 +14,10 @@ module RediSearch
       end
 
       def test_fuzziness_less_than_0_or_greater_than_3_throws_error
-        assert_raise RediSearch::ValidationError do
+        assert_raises RediSearch::ValidationError do
           Term.new("term", fuzziness: -1).to_s
         end
-        assert_raise RediSearch::ValidationError do
+        assert_raises RediSearch::ValidationError do
           Term.new("term", fuzziness: 4).to_s
         end
       end
@@ -27,7 +27,7 @@ module RediSearch
       end
 
       def test_unsupported_options_throw_error
-        assert_raise RediSearch::ValidationError do
+        assert_raises RediSearch::ValidationError do
           Term.new("term", random: true)
         end
       end
