@@ -28,7 +28,7 @@ module RediSearch
     end
 
     def client
-      @client ||= Client.new(Redis.new(configuration.redis_config))
+      @client ||= Client.new(Redis.new(configuration.redis_config.to_h))
     end
 
     def env

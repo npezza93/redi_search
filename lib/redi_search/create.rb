@@ -17,9 +17,7 @@ module RediSearch
     end
 
     def call!
-      RediSearch.client.call!(
-        "CREATE", index.name, *extract_options.compact, "SCHEMA", schema.to_a
-      ).ok?
+      RediSearch.client.call!(*command).ok?
     end
 
     def call
@@ -32,12 +30,16 @@ module RediSearch
 
     attr_reader :index, :schema, :options
 
+    def command
+      ["CREATE", index.name, *extract_options.compact, "SCHEMA", schema.to_a]
+    end
+
     def extract_options
       options.map do |clause, switch|
         next unless OPTION_MAPPER.key?(clause.to_sym) && switch
 
         OPTION_MAPPER[clause.to_sym]
-      end << temporary_option
+      end + temporary_option
     end
 
     def temporary_option
