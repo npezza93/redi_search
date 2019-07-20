@@ -7,9 +7,9 @@ module RediSearch
     include ActiveSupport::Testing::Assertions
 
     def setup
-      @index = Index.new(:users_test, first: :text, last: :text)
+      @index = Index.new(:users, first: :text, last: :text)
       @document = Document.for_object(@index, users(index: 0))
-      @index.recreate
+      @index.create
     end
 
     def teardown

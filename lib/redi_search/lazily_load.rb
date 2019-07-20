@@ -55,12 +55,12 @@ module RediSearch
 
       @loaded = true
 
-      call!(*command).yield_self do |response|
+      call!.yield_self do |response|
         parse_response(response)
       end
     end
 
-    def call!(*command)
+    def call!
       RediSearch.client.call!(*command)
     end
 

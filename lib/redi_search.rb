@@ -4,6 +4,7 @@ require "redis"
 require "active_support/lazy_load_hooks"
 
 require "redi_search/configuration"
+require "redi_search/client"
 
 require "redi_search/model"
 require "redi_search/index"
@@ -27,7 +28,7 @@ module RediSearch
     end
 
     def client
-      configuration.client
+      @client ||= Client.new(Redis.new(configuration.redis_config))
     end
 
     def env

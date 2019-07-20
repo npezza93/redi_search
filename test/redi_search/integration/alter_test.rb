@@ -6,7 +6,7 @@ module RediSearch
   class AlterTest < Minitest::Test
     def setup
       @index = Index.new(:cars, make: :text)
-      @index.recreate
+      @index.create
     end
 
     def teardown

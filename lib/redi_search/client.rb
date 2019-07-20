@@ -7,8 +7,8 @@ require "redi_search/client/response"
 
 module RediSearch
   class Client
-    def initialize(redis_config = {})
-      @redis = Redis.new(redis_config)
+    def initialize(redis = Redis.new)
+      @redis = redis
     end
 
     def call!(command, *params)
