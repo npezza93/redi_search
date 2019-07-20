@@ -9,6 +9,6 @@ gem "rubocop"
 gem "rubocop-performance"
 gem "simplecov"
 gem "sqlite3"
-gem "rails", "< 6.0", ">= 5.2"
+gem "activerecord", "< 5.2", ">= 5.1"
 
 gemspec path: "../"
