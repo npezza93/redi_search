@@ -2,17 +2,15 @@
 
 source "https://rubygems.org"
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gemspec
 
 gem "faker"
 gem "mocha"
 gem "pry"
-gem "pry-rails"
 gem "rubocop"
 gem "rubocop-performance"
-gem "rubocop-rails"
 gem "simplecov"
 gem "sqlite3"
 
