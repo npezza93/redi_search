@@ -11,14 +11,22 @@ module RediSearch
     def call!
       index.schema.alter(field_name, raw_schema)
 
-      RediSearch.client.call!(
-        "ALTER", index.name, "SCHEMA", "ADD", *field_schema
-      ).ok?
+      RediSearch.client.call!(*command).ok?
+    end
+
+    def call
+      call!
+    rescue Redis::CommandError
+      false
     end
 
     private
 
     attr_reader :index, :field_name, :raw_schema
+
+    def command
+      ["ALTER", index.name, "SCHEMA", "ADD", *field_schema]
+    end
 
     def field_schema
       @field_schema ||= Schema.make_field(field_name, raw_schema)
