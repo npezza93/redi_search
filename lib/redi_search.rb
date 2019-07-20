@@ -12,8 +12,6 @@ require "redi_search/document"
 
 module RediSearch
   class << self
-    extend Forwardable
-
     attr_writer :configuration
 
     def configuration
@@ -28,7 +26,9 @@ module RediSearch
       yield(configuration)
     end
 
-    def_delegator :configuration, :client
+    def client
+      configuration.client
+    end
 
     def env
       @env ||= ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"

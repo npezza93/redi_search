@@ -48,7 +48,11 @@ module RediSearch
     end
 
     def replace?
-      !replace.empty?
+      if replace.respond_to?(:empty?)
+        !replace.empty?
+      else
+        replace
+      end
     end
 
     def replace_options
