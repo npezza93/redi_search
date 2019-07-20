@@ -81,15 +81,23 @@ module RediSearch
       schema.fields.map(&:to_s)
     end
 
+    def recreate
+      drop
+      create
+    end
+
     def reindex(documents, recreate: false, **options)
-      drop if recreate
-      create unless exist?
+      if recreate
+        self.recreate
+      elsif !exist?
+        create
+      end
 
       add_multiple! documents, **options
     end
 
     def document_count
-      info["num_docs"].to_i
+      info.num_docs.to_i
     end
 
     def alter(field_name, schema)
