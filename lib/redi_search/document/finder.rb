@@ -61,9 +61,17 @@ module RediSearch
       end
 
       def parse_document(document_id, document_response)
-        return if (document_response.respond_to?(:empty?) ? !!document_response.empty? : !document_response)
+        return unless document_response?(document_response)
 
         Document.new(index, document_id, Hash[*document_response])
+      end
+
+      def document_response?(document_response)
+        if document_response.respond_to?(:empty?)
+          !document_response.empty?
+        else
+          !document_response.nil?
+        end
       end
     end
   end

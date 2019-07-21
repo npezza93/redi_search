@@ -31,7 +31,7 @@ module RediSearch
       def pretty_print_attributes
         pp_attrs = attributes.keys.dup
         pp_attrs.push("document_id")
-        pp_attrs.push("score") if score.present?
+        pp_attrs.push("score") if score
 
         pp_attrs.compact
       end

@@ -12,6 +12,10 @@ module RediSearch
         end
       end
 
+      def nil?
+        response.nil?
+      end
+
       private
 
       def array_ok?
