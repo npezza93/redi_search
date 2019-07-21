@@ -7,7 +7,6 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 gemspec
 
 gem "faker"
-gem "mocha"
 gem "pry"
 gem "rubocop"
 gem "rubocop-performance"

@@ -41,7 +41,8 @@ module RediSearch
     end
 
     def del(delete_document: false)
-      call!("DEL", index.name, document_id, ("DD" if delete_document)).ok?
+      command = ["DEL", index.name, document_id, ("DD" if delete_document)]
+      call!(*command.compact).ok?
     end
 
     def schema_fields
@@ -78,7 +79,7 @@ module RediSearch
 
     def load_attributes
       attributes.each do |field, value|
-        next unless schema_fields.include? field
+        next unless schema_fields.include? field.to_s
 
         instance_variable_set(:"@#{field}", value)
         define_singleton_method(field) { value }

@@ -11,7 +11,6 @@ end
 require "minitest/autorun"
 require "minitest/pride"
 require "pry"
-require "mocha/minitest"
 require "redi_search"
 
 require "active_support/testing/assertions"
@@ -24,4 +23,20 @@ def users(index:)
   end
 
   @users[index]
+end
+
+class UserSerializer
+  def initialize(object)
+    @object = object
+  end
+
+  delegate :id, to: :object
+
+  def name
+    "#{object.first} #{object.last}"
+  end
+
+  private
+
+  attr_reader :object
 end
