@@ -43,6 +43,7 @@ module RediSearch
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
       private
 
@@ -53,7 +54,6 @@ module RediSearch
           respond_to?(:after_destroy_commit)
       end
     end
-    
 
     def redi_search_document(only: [])
       Document.for_object(

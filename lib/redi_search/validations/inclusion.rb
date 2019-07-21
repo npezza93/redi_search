@@ -12,9 +12,9 @@ module RediSearch
       def validate!(object)
         value = object.send(field)
 
-        return if within.include?(value) || (allow_nil? && value.nil?)
+        return true if within.include?(value) || (allow_nil? && value.nil?)
 
-        raise RediSearch::ValidationError, "#{value.inspect} not included in #{within}"
+        raise ValidationError, "#{value.inspect} not included in #{within}"
       end
 
       private

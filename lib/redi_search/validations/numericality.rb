@@ -15,7 +15,7 @@ module RediSearch
       def validate!(object)
         value = object.send(field)
 
-        return if value.nil? && allow_nil?
+        return true if value.nil? && allow_nil?
 
         validate_numberness!(value)
         validate_inclusion!(object)
@@ -28,11 +28,13 @@ module RediSearch
       alias allow_nil? allow_nil
 
       def validate_numberness!(value)
-        if !value.is_a?(Numeric)
-          raise RediSearch::ValidationError, "#{field} must be a number"
-        elsif only_integer? && !value.is_a?(Integer)
-          raise RediSearch::ValidationError, "#{field} must be an Integer"
-        end
+        raise(ValidationError, "#{field} must be a number") unless
+          value.is_a?(Numeric)
+
+        raise(ValidationError, "#{field} must be an Integer") if
+          only_integer? && !value.is_a?(Integer)
+
+        true
       end
 
       def validate_inclusion!(object)

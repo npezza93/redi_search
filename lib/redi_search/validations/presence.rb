@@ -8,7 +8,7 @@ module RediSearch
       end
 
       def validate!(object)
-        return if value_present?(object.send(field))
+        return true if value_present?(object.send(field))
 
         raise RediSearch::ValidationError, "#{field} can't be blank"
       end
