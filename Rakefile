@@ -15,4 +15,4 @@ Rake::TestTask.new("test:integration") do |t|
   t.test_files = FileList["test/**/integration/**/*_test.rb"]
 end
 
-task default: ["test:unit", "test:integration"]
+task default: ["test:integration", "test:unit"]

@@ -21,9 +21,9 @@ rvm:
   - 2.6
   - 2.5
 gemfile:
-  - gemfiles/rails_6.gemfile
-  - gemfiles/rails_52.gemfile
-  - gemfiles/rails_51.gemfile
+  - gemfiles/activerecord_6.gemfile
+  - gemfiles/activerecord_52.gemfile
+  - gemfiles/activerecord_51.gemfile
 jobs:
   include:
     - stage: Lint
