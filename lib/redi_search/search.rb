@@ -68,7 +68,7 @@ module RediSearch
     end
 
     def valid?
-      !!term_clause
+      !term_clause.to_s.empty?
     end
   end
 end
