@@ -14,10 +14,10 @@ module RediSearch
       end
 
       def test_fuzziness_less_than_0_or_greater_than_3_throws_error
-        assert_raises RediSearch::ValidationError do
+        assert_raises ValidationError do
           Term.new("term", fuzziness: -1).to_s
         end
-        assert_raises RediSearch::ValidationError do
+        assert_raises ValidationError do
           Term.new("term", fuzziness: 4).to_s
         end
       end
@@ -27,7 +27,7 @@ module RediSearch
       end
 
       def test_unsupported_options_throw_error
-        assert_raises RediSearch::ValidationError do
+        assert_raises ValidationError do
           Term.new("term", random: true)
         end
       end
@@ -38,6 +38,18 @@ module RediSearch
 
       def test_support_prefix_term
         assert_equal "`hel*`", Term.new("hel", prefix: true).to_s
+      end
+
+      def test_support_ranges
+        assert_equal "[1 5]", Term.new(1..5).to_s
+      end
+
+      def test_support_infinite_range
+        assert_equal "[1 +inf]", Term.new(1..Float::INFINITY).to_s
+      end
+
+      def test_support_negative_infinite_range
+        assert_equal "[-inf 1]", Term.new(-Float::INFINITY..1).to_s
       end
     end
   end
