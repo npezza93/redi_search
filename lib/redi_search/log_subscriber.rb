@@ -5,11 +5,11 @@ require "active_support/log_subscriber"
 module RediSearch
   class LogSubscriber < ActiveSupport::LogSubscriber
     def self.runtime=(value)
-      Thread.current[:searchkick_runtime] = value
+      Thread.current[:redi_search_runtime] = value
     end
 
     def self.runtime
-      Thread.current[:searchkick_runtime] ||= 0
+      Thread.current[:redi_search_runtime] ||= 0
     end
 
     #:nocov:
@@ -20,64 +20,34 @@ module RediSearch
     end
     #:nocov:
 
-    def search(event)
-      log_command(event, YELLOW)
-    end
-
-    def create(event)
-      log_command(event, GREEN)
-    end
-
-    def drop(event)
-      log_command(event, RED)
-    end
-
-    def add(event)
-      log_command(event, GREEN)
-    end
-
-    def info(event)
-      log_command(event, CYAN)
-    end
-
-    def pipeline(event)
-      log_command(event, MAGENTA)
-    end
-
-    def get(event)
-      log_command(event, CYAN)
-    end
-
-    def mget(event)
-      log_command(event, CYAN)
-    end
-
-    def del(event)
-      log_command(event, RED)
-    end
-
-    def spellcheck(event)
-      log_command(event, YELLOW)
-    end
-
-    def explaincli(event)
-      log_command(event, BLUE)
-    end
-
-    private
-
-    def log_command(event, debug_color)
+    def action(event)
       self.class.runtime += event.duration
       return unless logger.debug?
 
       command = command_string(event)
+      debug_color = action_color(event.payload[:action])
 
       debug "  #{log_name(event)}  #{color(command, debug_color, true)}"
     end
 
+    private
+
     def log_name(event)
       color("#{event.payload[:name]} (#{event.duration.round(1)}ms)", RED, true)
     end
+
+    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def action_color(action)
+      case action.to_sym
+      when :search, :spellcheck then YELLOW
+      when :create, :add then GREEN
+      when :drop, :del then RED
+      when :get, :mget, :info then CYAN
+      when :pipeline then MAGENTA
+      when :explaincli then BLUE
+      end
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
     def command_string(event)
       event.payload[:query].flatten.map.with_index do |arg, i|
