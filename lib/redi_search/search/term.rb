@@ -7,8 +7,10 @@ module RediSearch
     class Term
       include Validatable
 
-      validates_numericality_of :fuzziness, within: 1..3, only_integer: true, allow_nil: true
-      validates_inclusion_of :option, within: %i(fuzziness optional prefix), allow_nil: true
+      validates_numericality_of :fuzziness, within: 1..3, only_integer: true,
+                                            allow_nil: true
+      validates_inclusion_of :option, within: %i(fuzziness optional prefix),
+                                      allow_nil: true
 
       def initialize(term, **options)
         @term = term

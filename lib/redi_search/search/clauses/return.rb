@@ -15,7 +15,7 @@ module RediSearch
         def clause
           validate!
 
-          ["RETURN", fields.size, fields]
+          ["RETURN", fields.size, *fields]
         end
       end
     end
