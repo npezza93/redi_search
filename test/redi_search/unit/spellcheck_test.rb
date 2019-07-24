@@ -25,13 +25,13 @@ module RediSearch
     end
 
     def test_raises_validation_error_when_distance_is_to_large
-      assert_raises RediSearch::ValidationError do
+      assert_raises ValidationError do
         Spellcheck.new(@index, "foo", distance: 10).load
       end
     end
 
     def test_raises_validation_error_when_distance_is_too_specific
-      assert_raises RediSearch::ValidationError do
+      assert_raises ValidationError do
         Spellcheck.new(@index, "foo", distance: 3.5).load
       end
     end
