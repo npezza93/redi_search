@@ -50,7 +50,7 @@ module RediSearch
         end
 
         def initialize_term(condition)
-          return if (condition.respond_to?(:empty?) ? !!condition.empty? : !condition)
+          return if condition?(condition)
 
           condition, *options = condition.to_a
 
@@ -63,6 +63,14 @@ module RediSearch
             condition[1]
           else
             Term.new(condition[1], **options.to_h)
+          end
+        end
+
+        def condition?(condition)
+          if condition.respond_to?(:empty?)
+            condition.empty?
+          else
+            !condition
           end
         end
       end

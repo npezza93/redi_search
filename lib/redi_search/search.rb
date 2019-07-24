@@ -44,19 +44,19 @@ module RediSearch
       self.class.new(index)
     end
 
-    attr_reader :term_clause
+    attr_reader :term_clause, :used_clauses, :index, :clauses
 
     private
 
-    attr_reader :documents, :used_clauses
-    attr_accessor :index, :clauses
+    attr_reader :documents
+    attr_writer :index, :clauses
 
     def command
-      ["SEARCH", index.name, term_clause.to_s, *clauses.uniq]
+      ["SEARCH", index.name, term_clause.to_s, *clauses]
     end
 
     def parse_response(response)
-      @documents = Result.new(index, used_clauses, response[0], response[1..-1])
+      @documents = Result.new(self, response[0], response[1..-1])
     end
 
     def inspect_command_arg(arg)

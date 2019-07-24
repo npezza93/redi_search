@@ -6,10 +6,10 @@ module RediSearch
       extend Forwardable
       include Enumerable
 
-      def initialize(index, used_clauses, count, documents)
+      def initialize(search, count, documents)
         @count = count
-        @used_clauses = used_clauses
-        @results = parse_results(index, documents)
+        @search = search
+        @results = parse_results(documents)
       end
 
       def count
@@ -34,7 +34,7 @@ module RediSearch
 
       private
 
-      attr_reader :results
+      attr_reader :results, :search
 
       def response_slice
         slice_length = 2
@@ -45,20 +45,20 @@ module RediSearch
       end
 
       def with_scores?
-        @used_clauses.include? Search::Clauses::WithScores
+        search.used_clauses.include? Search::Clauses::WithScores
       end
 
       def no_content?
-        @used_clauses.include? Search::Clauses::NoContent
+        search.used_clauses.include? Search::Clauses::NoContent
       end
 
-      def parse_results(index, documents)
+      def parse_results(documents)
         documents.each_slice(response_slice).map do |slice|
           document_id = slice[0]
           fields = slice.last unless no_content?
           score = slice[1].to_f if with_scores?
 
-          Document.new(index, document_id, Hash[*fields.to_a], score)
+          Document.new(search.index, document_id, Hash[*fields.to_a], score)
         end
       end
     end

@@ -16,11 +16,23 @@ module RediSearch
     end
 
     def test_not_implemented_error_is_raised_if_parse_response_isnt_defined
-      @double.stub(:call!, "OK") do
-        @double.stub(:command, %w(INFO users_test)) do
+      mock_client("OK") do
+        @double.stub(:command, %w(GET key)) do
           assert_raises(NotImplementedError) { @double.to_a }
         end
       end
+    end
+
+    private
+
+    def mock_client(response)
+      client = Minitest::Mock.new.expect(
+        :call!, Client::Response.new(response), %w(GET key)
+      )
+
+      RediSearch.stub(:client, client) { yield }
+
+      assert_mock client
     end
   end
 end

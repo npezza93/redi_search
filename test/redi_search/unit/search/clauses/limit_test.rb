@@ -12,12 +12,12 @@ module RediSearch
         end
 
         def test_clause
-          assert_equal ["LIMIT", [0, 1]], @clause.new(total: 1).clause
+          assert_equal ["LIMIT", 0, 1], @clause.new(total: 1).clause
         end
 
         def test_clause_with_offset
           assert_equal(
-            ["LIMIT", [5, 1]], @clause.new(total: 1, offset: 5).clause
+            ["LIMIT", 5, 1], @clause.new(total: 1, offset: 5).clause
           )
         end
 

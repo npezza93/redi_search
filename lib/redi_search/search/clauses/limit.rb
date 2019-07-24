@@ -21,7 +21,7 @@ module RediSearch
         def clause
           validate!
 
-          ["LIMIT", [offset, total]]
+          ["LIMIT", offset, total]
         end
       end
     end

@@ -68,8 +68,8 @@ module RediSearch
       def count
         return to_a.size if loaded?
 
-        call!(
-          "SEARCH", index.name, term_clause, *Limit.new(total: 0).clause
+        RediSearch.client.call!(
+          "SEARCH", index.name, term_clause.to_s, *Limit.new(total: 0).clause
         ).first
       end
 
@@ -106,8 +106,7 @@ module RediSearch
       private
 
       def add_to_clause(clause)
-        used_clauses.add(clause.class)
-        clauses.push(*clause.clause)
+        clauses.push(*clause.clause) if used_clauses.add?(clause.class)
 
         self
       end
