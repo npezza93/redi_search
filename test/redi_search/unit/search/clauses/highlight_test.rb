@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "test_helper"
+require "redi_search/search"
 require "redi_search/search/clauses/highlight"
 
 module RediSearch
@@ -8,7 +9,7 @@ module RediSearch
     module Clauses
       class HighlightTest < Minitest::Test
         def setup
-          @clause = RediSearch::Search::Clauses::Highlight
+          @clause = Highlight
         end
 
         def test_returns_highlight_keyword
