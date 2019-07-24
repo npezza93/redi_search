@@ -30,14 +30,8 @@ module RediSearch
 
     def explain
       RediSearch.client.call!(
-        "EXPLAINCLI", index.name, term_clause
+        "EXPLAINCLI", index.name, term_clause.to_s
       ).join(" ").strip
-    end
-
-    def to_redis
-      command.map do |arg|
-        inspect_command_arg(arg)
-      end.join(" ")
     end
 
     def dup
@@ -57,14 +51,6 @@ module RediSearch
 
     def parse_response(response)
       @documents = Result.new(self, response[0], response[1..-1])
-    end
-
-    def inspect_command_arg(arg)
-      if !arg.to_s.start_with?(/\(-?@/) && arg.to_s.split(/\s|\|/).size > 1
-        arg.inspect
-      else
-        arg
-      end
     end
 
     def valid?

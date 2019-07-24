@@ -477,8 +477,6 @@ index.search.where(number: -Float::INFINITY..0)
 - `explain`
   - Returns the execution plan for a complex query. In the returned response,
     a + on a term is an indication of stemming.
-- `to_redis`
-  - Returns the command to be executed without executing it.
 
 
 ## Spellcheck
