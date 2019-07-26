@@ -46,6 +46,8 @@ module RediSearch
 
     private
 
+    attr_reader :documents
+
     def command
       raise NotImplementedError, "included class did not define #{__method__}"
     end

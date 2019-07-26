@@ -98,6 +98,20 @@ module RediSearch
       assert_respond_to document, :name
     end
 
+    def test_get_class_method
+      Document::Finder.any_instance.expects(:find).once.
+        returns(Client::Response.new([]))
+
+      Document.get(:users, 1)
+    end
+
+    def test_mget_class_method
+      Document::Finder.any_instance.expects(:find).once.
+        returns(Client::Response.new([]))
+
+      Document.mget(:users, 1, 2)
+    end
+
     private
 
     def mock_client(document, response, *options)

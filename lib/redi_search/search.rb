@@ -42,7 +42,6 @@ module RediSearch
 
     private
 
-    attr_reader :documents
     attr_writer :index, :clauses
 
     def command
