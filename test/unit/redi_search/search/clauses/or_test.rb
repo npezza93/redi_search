@@ -2,7 +2,7 @@
 
 require "test_helper"
 require "redi_search/search"
-require "redi_search/unit/search/clauses/boolean_interface_test"
+require "unit/redi_search/search/clauses/boolean_interface_test"
 
 module RediSearch
   class Search
