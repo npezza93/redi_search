@@ -15,9 +15,9 @@ module RediSearch
 
       def to_a
         query = [name.to_s, "TEXT"]
-        query += boolean_options_string
         query += ["WEIGHT", weight] if weight
         query += ["PHONETIC", phonetic] if phonetic
+        query += boolean_options_string
 
         query
       end

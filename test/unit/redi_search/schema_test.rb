@@ -6,8 +6,8 @@ module RediSearch
   class SchemaTest < Minitest::Test
     def test_to_a
       schema = [
-        "name", "TEXT", "SORTABLE", "WEIGHT", 1.0, "age", "NUMERIC",
-        "SORTABLE", "myTag", "TAG", "SORTABLE", "SEPARATOR", ",",
+        "name", "TEXT", "WEIGHT", 1.0, "SORTABLE", "age", "NUMERIC",
+        "SORTABLE", "myTag", "TAG", "SEPARATOR", ",", "SORTABLE",
         "other", "TEXT", "WEIGHT", 1.0
       ]
 

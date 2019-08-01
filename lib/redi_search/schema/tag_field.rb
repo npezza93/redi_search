@@ -14,8 +14,8 @@ module RediSearch
 
       def to_a
         query = [name.to_s, "TAG"]
-        query += boolean_options_string
         query += ["SEPARATOR", separator] if separator
+        query += boolean_options_string
 
         query
       end

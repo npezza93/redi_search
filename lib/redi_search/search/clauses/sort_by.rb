@@ -17,7 +17,7 @@ module RediSearch
         def clause
           validate!
 
-          ["SORTBY", field, order.to_s.upcase]
+          ["SORTBY", field, order]
         end
       end
     end

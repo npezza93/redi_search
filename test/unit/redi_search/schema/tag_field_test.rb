@@ -13,12 +13,12 @@ module RediSearch
 
       def test_sortable_option
         schema = TagField.new("temp_field", sortable: true)
-        assert_equal %w(temp_field TAG SORTABLE SEPARATOR ,), schema.to_a
+        assert_equal %w(temp_field TAG SEPARATOR , SORTABLE), schema.to_a
       end
 
       def test_no_index_option
         schema = TagField.new("temp_field", no_index: true)
-        assert_equal %w(temp_field TAG NOINDEX SEPARATOR ,), schema.to_a
+        assert_equal %w(temp_field TAG SEPARATOR , NOINDEX), schema.to_a
       end
 
       def test_separator_option
@@ -31,7 +31,7 @@ module RediSearch
           "temp_field", no_index: true, sortable: true, separator: ","
         )
         assert_equal(
-          %w(temp_field TAG SORTABLE NOINDEX SEPARATOR ,), schema.to_a
+          %w(temp_field TAG SEPARATOR , SORTABLE NOINDEX), schema.to_a
         )
       end
     end
