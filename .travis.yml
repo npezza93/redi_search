@@ -14,7 +14,7 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 before_install:
-  - docker run -d -p 6379:6379 redislabs/redisearch:1.4.11 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+  - docker run -d -p 6379:6379 redislabs/redisearch:1.4.10 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
 after_script:
   - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
 rvm:
