@@ -24,6 +24,8 @@ module RediSearch
 
         scope :search_import, -> { all }
 
+        include InstanceMethods
+
         class << self
           def search(term = nil, **term_options)
             redi_search_index.search(term, **term_options)
@@ -55,25 +57,27 @@ module RediSearch
       end
     end
 
-    def redi_search_document(only: [])
-      Document.for_object(
-        self.class.redi_search_index, self,
-        only: only, serializer: self.class.redi_search_serializer
-      )
-    end
+    module InstanceMethods
+      def redi_search_document(only: [])
+        Document.for_object(
+          self.class.redi_search_index, self,
+          only: only, serializer: self.class.redi_search_serializer
+        )
+      end
 
-    def redi_search_delete_document
-      return unless self.class.redi_search_index.exist?
+      def redi_search_delete_document
+        return unless self.class.redi_search_index.exist?
 
-      self.class.redi_search_index.del(
-        redi_search_document, delete_document: true
-      )
-    end
+        self.class.redi_search_index.del(
+          redi_search_document, delete_document: true
+        )
+      end
 
-    def redi_search_add_document
-      return unless self.class.redi_search_index.exist?
+      def redi_search_add_document
+        return unless self.class.redi_search_index.exist?
 
-      self.class.redi_search_index.add(redi_search_document, replace: true)
+        self.class.redi_search_index.add(redi_search_document, replace: true)
+      end
     end
   end
 end
