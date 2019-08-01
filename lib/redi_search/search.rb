@@ -8,8 +8,12 @@ require "redi_search/search/result"
 
 module RediSearch
   class Search
+    extend Forwardable
     include LazilyLoad
     include Clauses
+
+    attr_reader :term_clause, :used_clauses, :index, :clauses
+    def_delegator :index, :model
 
     def initialize(index, term = nil, **term_options)
       @index = index
@@ -21,8 +25,8 @@ module RediSearch
     end
 
     def results
-      if index.model
-        index.model.where(id: to_a.map(&:document_id_without_index))
+      if model
+        model.where(id: to_a.map(&:document_id_without_index))
       else
         to_a
       end
@@ -37,8 +41,6 @@ module RediSearch
     def dup
       self.class.new(index)
     end
-
-    attr_reader :term_clause, :used_clauses, :index, :clauses
 
     private
 
