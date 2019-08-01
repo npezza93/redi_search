@@ -35,7 +35,7 @@ module RediSearch
         attr_reader :prior_clause, :term, :search
 
         def operand
-          raise NotImplementedError
+          raise NotImplementedError, "#{__method__} needs to be defined"
         end
 
         def not_operator
