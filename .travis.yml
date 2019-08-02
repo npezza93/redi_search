@@ -9,23 +9,55 @@ cache:
    - gemfiles/vendor/bundle
    - /home/travis/.rvm/
 services: docker
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-before_install:
-  - docker run -d -p 6379:6379 redislabs/redisearch:latest --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-after_script:
-  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
-rvm:
-  - 2.6
-  - 2.5
-gemfile:
-  - gemfiles/activerecord_6.gemfile
-  - gemfiles/activerecord_52.gemfile
-  - gemfiles/activerecord_51.gemfile
 jobs:
   include:
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.12 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+      name: RediSearch 1.4.12
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.11 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+      name: RediSearch 1.4.11
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.10 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+      name: RediSearch 1.4.10
+    - stage: Unit Tests
+      script: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+        ./cc-test-reporter before-build
+        bundle exec rake test:unit
+        if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
+      rvm: 2.6
+      gemfile: Gemfile
+      name: Ruby 2.6 and Rails 6.0rc2
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.6
+      gemfile: gemfiles/activerecord_52.gemfile
+      name: Ruby 2.6 and Rails 5.2
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.6
+      gemfile: gemfiles/activerecord_51.gemfile
+      name: Ruby 2.6 and Rails 5.1
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.5
+      gemfile: Gemfile
+      name: Ruby 2.5 and Rails 6.0rc2
     - stage: Lint
       script: bundle exec rubocop --config=./.rubocop.yml
       rvm: 2.6
+      name: Rubocop

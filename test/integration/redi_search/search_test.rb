@@ -15,8 +15,8 @@ module RediSearch
     end
 
     def test_explain
-      assert_equal(
-        "UNION { first_name +first_nam(expanded) first_nam(expanded) }",
+      assert_match(
+        /UNION { first_name .*\+first_nam\(expanded\) first_nam\(expanded\) }/,
         Search.new(@index, "first_name").explain
       )
     end
