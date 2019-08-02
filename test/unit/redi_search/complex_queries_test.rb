@@ -55,6 +55,42 @@ module RediSearch
     end
     # rubocop:enable Metrics/MethodLength
 
+    def test_simple_phrase
+      assert_query("`hello` `world`") do
+        @index.search("hello").and("world")
+      end
+    end
+
+    def test_exact_phrase
+      assert_query("`hello world`") do
+        @index.search("hello world")
+      end
+    end
+
+    def test_or_phrase
+      assert_query("`hello`|`world`") do
+        @index.search("hello").or "world"
+      end
+    end
+
+    def test_and_phrase
+      assert_query("`hello` `world`") do
+        @index.search("hello").and "world"
+      end
+    end
+
+    def test_and_not_phrase
+      assert_query("`hello` -`world`") do
+        @index.search("hello").and.not("world")
+      end
+    end
+
+    def test_negation_of_or
+      assert_query("`hello`|-`world`") do
+        @index.search("hello").or.not "world"
+      end
+    end
+
     private
 
     def assert_query(expected)
