@@ -14,8 +14,7 @@ module RediSearch
 
     #:nocov:
     def self.reset_runtime
-      rt = runtime
-      self.runtime = 0
+      rt, self.runtime = runtime, 0
       rt
     end
     #:nocov:
