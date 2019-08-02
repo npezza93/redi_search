@@ -69,5 +69,11 @@ module RediSearch
       refute_respond_to car, :redi_search_delete_document
       refute_respond_to car, :redi_search_add_document
     end
+
+    def test_reindex
+      Character.create(name: :foo_bar)
+      Character.redi_search_index.expects(:reindex).once.returns(true)
+      assert Character.reindex
+    end
   end
 end

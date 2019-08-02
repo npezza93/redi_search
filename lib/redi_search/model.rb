@@ -11,7 +11,7 @@ module RediSearch
     module ClassMethods
       attr_reader :redi_search_index, :redi_search_serializer
 
-      # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:disable Metrics/MethodLength
       def redi_search(schema:, **options)
         @redi_search_index = Index.new(
           [options[:index_prefix],
@@ -25,27 +25,9 @@ module RediSearch
         scope :search_import, -> { all }
 
         include InstanceMethods
-
-        class << self
-          def search(term = nil, **term_options)
-            redi_search_index.search(term, **term_options)
-          end
-
-          def spellcheck(term, distance: 1)
-            redi_search_index.spellcheck(term, distance: distance)
-          end
-
-          def reindex(only: [], **options)
-            search_import.find_in_batches.all? do |group|
-              redi_search_index.reindex(
-                group.map { |record| record.redi_search_document(only: only) },
-                **options.deep_merge(replace: { partial: true })
-              )
-            end
-          end
-        end
+        extend ModelClassMethods
       end
-      # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:enable Metrics/MethodLength
 
       private
 
@@ -54,6 +36,25 @@ module RediSearch
           respond_to?(:after_commit)
         after_destroy_commit(:redi_search_delete_document) if
           respond_to?(:after_destroy_commit)
+      end
+    end
+
+    module ModelClassMethods
+      def search(term = nil, **term_options)
+        redi_search_index.search(term, **term_options)
+      end
+
+      def spellcheck(term, distance: 1)
+        redi_search_index.spellcheck(term, distance: distance)
+      end
+
+      def reindex(only: [], **options)
+        search_import.find_in_batches.all? do |group|
+          redi_search_index.reindex(
+            group.map { |record| record.redi_search_document(only: only) },
+            **options.deep_merge(replace: { partial: true })
+          )
+        end
       end
     end
 
