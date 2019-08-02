@@ -2,7 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "faker"
 gem "mocha"
 gem "pry"
 gem "rubocop"
