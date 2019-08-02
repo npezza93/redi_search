@@ -23,34 +23,42 @@ jobs:
         bundle exec rake test:integration
       rvm: 2.6
       gemfile: Gemfile
+      name: RediSearch 1.4.12
     - stage: Integration Tests
       script: |
         docker run -d -p 6379:6379 redislabs/redisearch:1.4.11 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
         bundle exec rake test:integration
       rvm: 2.6
       gemfile: Gemfile
+      name: RediSearch 1.4.11
     - stage: Integration Tests
       script: |
         docker run -d -p 6379:6379 redislabs/redisearch:1.4.10 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
         bundle exec rake test:integration
       rvm: 2.6
       gemfile: Gemfile
+      name: RediSearch 1.4.10
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: 2.5
       gemfile: Gemfile
+      name: Ruby 2.5 and Rails 6.0rc2
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: 2.6
-      gemfile: gemfiles/activerecord_6.gemfile
+      gemfile: Gemfile
+      name: Ruby 2.6 and Rails 6.0rc2
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: 2.6
       gemfile: gemfiles/activerecord_52.gemfile
+      name: Ruby 2.6 and Rails 5.2
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: 2.6
       gemfile: gemfiles/activerecord_51.gemfile
+      name: Ruby 2.6 and Rails 5.1
     - stage: Lint
       script: bundle exec rubocop --config=./.rubocop.yml
       rvm: 2.6
+      name: Rubocop
