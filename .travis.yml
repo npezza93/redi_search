@@ -9,12 +9,6 @@ cache:
    - gemfiles/vendor/bundle
    - /home/travis/.rvm/
 services: docker
-before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-after_script:
-  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
 jobs:
   include:
     - stage: Integration Tests
@@ -44,7 +38,12 @@ jobs:
       gemfile: Gemfile
       name: Ruby 2.5 and Rails 6.0rc2
     - stage: Unit Tests
-      script: bundle exec rake test:unit
+      script: |
+        curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        chmod +x ./cc-test-reporter
+        ./cc-test-reporter before-build
+        bundle exec rake test:unit
+        ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
       rvm: 2.6
       gemfile: Gemfile
       name: Ruby 2.6 and Rails 6.0rc2
