@@ -14,7 +14,6 @@ module RediSearch
         end
       end
 
-      #:nocov:
       def inspect
         inspection = %w(term suggestions).map do |field_name|
           "#{field_name}: #{public_send(field_name)}"
@@ -23,6 +22,7 @@ module RediSearch
         "#<#{self.class} #{inspection}>"
       end
 
+      #:nocov:
       def pretty_print(printer) # rubocop:disable Metrics/MethodLength
         printer.object_address_group(self) do
           printer.seplist(
