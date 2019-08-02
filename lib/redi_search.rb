@@ -32,7 +32,7 @@ module RediSearch
     end
 
     def env
-      @env ||= ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+      ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
     end
   end
 end
