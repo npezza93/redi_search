@@ -38,7 +38,7 @@ jobs:
         chmod +x ./cc-test-reporter
         ./cc-test-reporter before-build
         bundle exec rake test:unit
-        ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
       rvm: 2.6
       gemfile: Gemfile
       name: Ruby 2.6 and Rails 6.0rc2
