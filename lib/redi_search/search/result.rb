@@ -22,11 +22,11 @@ module RediSearch
 
       def_delegators :results, :each, :empty?, :[], :last
 
-      #:nocov:
       def inspect
         results
       end
 
+      #:nocov:
       def pretty_print(printer)
         printer.pp(results)
       end

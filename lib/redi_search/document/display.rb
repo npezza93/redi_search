@@ -3,7 +3,6 @@
 module RediSearch
   class Document
     module Display
-      #:nocov:
       def inspect
         inspection = pretty_print_attributes.map do |field_name|
           "#{field_name}: #{public_send(field_name)}"
@@ -12,6 +11,15 @@ module RediSearch
         "#<#{self.class} #{inspection}>"
       end
 
+      def pretty_print_attributes
+        pp_attrs = attributes.keys.dup
+        pp_attrs.push("document_id")
+        pp_attrs.push("score") if score
+
+        pp_attrs.compact
+      end
+
+      #:nocov:
       def pretty_print(printer) # rubocop:disable Metrics/MethodLength
         printer.object_address_group(self) do
           printer.seplist(
@@ -26,14 +34,6 @@ module RediSearch
             end
           end
         end
-      end
-
-      def pretty_print_attributes
-        pp_attrs = attributes.keys.dup
-        pp_attrs.push("document_id")
-        pp_attrs.push("score") if score
-
-        pp_attrs.compact
       end
       #:nocov:
     end

@@ -56,9 +56,8 @@ module RediSearch
 
     def test_del
       document = Document.new(@index, 100, { first: :foo, last: :bar })
-      mock_client(document, 1) do
-        assert document.del
-      end
+
+      mock_client(document, 1) { assert document.del }
     end
 
     def test_del_that_deletes_document
@@ -110,6 +109,21 @@ module RediSearch
         returns(Client::Response.new([]))
 
       Document.mget(:users, 1, 2)
+    end
+
+    def test_inspect
+      document = Document.new(@index, 100, { first: :foo, last: :bar })
+      expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\
+                            "document_id: users_test100>"
+      assert_equal expected_inspection, document.inspect
+    end
+
+    def test_inspect_with_score
+      document = Document.new(@index, 100, { first: :foo, last: :bar }, 2)
+      expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\
+                            "document_id: users_test100, score: 2>"
+
+      assert_equal expected_inspection, document.inspect
     end
 
     private

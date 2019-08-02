@@ -22,6 +22,13 @@ module RediSearch
         assert_equal "users1", @result[0].document_id
         assert_equal "foo", @result[0].name
       end
+
+      def test_inspect
+        assert_equal(
+          "[#<RediSearch::Document name: foo, document_id: users1>]",
+          @result.inspect.to_s
+        )
+      end
     end
   end
 end

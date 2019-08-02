@@ -22,7 +22,6 @@ module RediSearch
 
     alias load to_a
 
-    #:nocov:
     def inspect
       execute_and_rescue_inspection do
         return super unless valid?
@@ -31,6 +30,7 @@ module RediSearch
       end
     end
 
+    #:nocov:
     def pretty_print(printer)
       execute_and_rescue_inspection do
         return super(inspect) unless valid?
@@ -74,7 +74,6 @@ module RediSearch
       true
     end
 
-    #:nocov:
     def execute_and_rescue_inspection
       execute unless loaded?
 
@@ -82,6 +81,5 @@ module RediSearch
     rescue Redis::CommandError => e
       e.message
     end
-    #:nocov:
   end
 end
