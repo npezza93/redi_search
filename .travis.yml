@@ -17,15 +17,42 @@ before_install:
   - docker run -d -p 6379:6379 redislabs/redisearch:latest --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
 after_script:
   - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
-rvm:
-  - 2.6
-  - 2.5
-gemfile:
-  - gemfiles/activerecord_6.gemfile
-  - gemfiles/activerecord_52.gemfile
-  - gemfiles/activerecord_51.gemfile
 jobs:
   include:
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.12 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.11 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+    - stage: Integration Tests
+      script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.4.10 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.5
+      gemfile: Gemfile
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.6
+      gemfile: gemfiles/activerecord_6.gemfile
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.6
+      gemfile: gemfiles/activerecord_52.gemfile
+    - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: 2.6
+      gemfile: gemfiles/activerecord_51.gemfile
     - stage: Lint
       script: bundle exec rubocop --config=./.rubocop.yml
       rvm: 2.6
