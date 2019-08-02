@@ -71,8 +71,11 @@ module RediSearch
     end
 
     def test_reindex
-      Character.create(name: :foo_bar)
       Character.redi_search_index.expects(:reindex).once.returns(true)
+      Character.redi_search_index.expects(:exist?).once.returns(true)
+      Character.redi_search_index.expects(:add).once.returns(true)
+
+      Character.create(name: :foo_bar)
       assert Character.reindex
     end
   end

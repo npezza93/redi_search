@@ -6,7 +6,7 @@ module RediSearch
 
     include Enumerable
 
-    def_delegators :to_a, :size, :each, :last, :[]# , :empty?
+    def_delegators :to_a, :size, :each, :last, :[], :count, :empty?
 
     def loaded?
       @loaded = false unless defined? @loaded
@@ -39,10 +39,6 @@ module RediSearch
       end
     end
     #:nocov:
-
-    def count
-      to_a.size
-    end
 
     private
 

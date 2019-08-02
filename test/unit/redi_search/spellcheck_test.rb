@@ -36,6 +36,13 @@ module RediSearch
       end
     end
 
+    def test_count
+      mock_client("foo", 2, [["TERM", "foo", [["0.5", "foob"]]]]) do
+        spellcheck = Spellcheck.new(@index, "foo", distance: 2)
+        assert_equal 1, spellcheck.count
+      end
+    end
+
     private
 
     def mock_client(terms, distance, response)
