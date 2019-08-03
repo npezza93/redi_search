@@ -29,7 +29,7 @@ module RediSearch
       raw.keys
     end
 
-    def alter(field_name, options)
+    def add_field(field_name, options)
       raw[field_name] = options
       self
     end

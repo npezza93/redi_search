@@ -293,7 +293,7 @@ RediSearch::Index.new(name_of_index, schema)
         - For efficiency, RediSearch encodes indexes differently if they are
           created with less than 32 text fields. This option forces RediSearch
           to encode indexes as if there were more than 32 text fields, which
-          allows you to add additional fields (beyond 32) using `alter`.
+          allows you to add additional fields (beyond 32) using `add_field`.
       - `no_offsets: #{true || false}`
         - If set, we do not store term offsets for documents (saves memory, does
           not allow exact searches or highlighting). Implies `no_highlight`.
@@ -345,8 +345,8 @@ RediSearch::Index.new(name_of_index, schema)
     `Index`.
 - `document_count`
   - Returns the number of `Document`s in the `Index`
-- `alter(field_name, schema)`
-  - Adds a new field to the `Index`. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
+- `add_field(field_name, schema)`
+  - Adds a new field to the `Index`. Ex: `index.add_field(:first_name, text: { phonetic: "dm:en" })`
 - `reindex(documents, recreate: false, **options)`
    - If `recreate` is `true` the `Index` will be dropped and recreated
    - `options` accepts the same options as `add`

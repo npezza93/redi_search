@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RediSearch
-  class Alter
+  class AddField
     def initialize(index, field_name, schema)
       @index = index
       @field_name = field_name
@@ -9,7 +9,7 @@ module RediSearch
     end
 
     def call!
-      index.schema.alter(field_name, raw_schema)
+      index.schema.add_field(field_name, raw_schema)
 
       RediSearch.client.call!(*command).ok?
     end

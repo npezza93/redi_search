@@ -3,7 +3,7 @@
 require "test_helper"
 
 module RediSearch
-  class AlterTest < Minitest::Test
+  class AddFieldTest < Minitest::Test
     def setup
       @index = Index.new(:cars, make: :text)
       @index.create
@@ -14,7 +14,7 @@ module RediSearch
     end
 
     def test_adds_document_to_index
-      assert Alter.new(@index, :model, :text).call
+      assert AddField.new(@index, :model, :text).call
       assert_includes @index.fields, "model"
     end
   end

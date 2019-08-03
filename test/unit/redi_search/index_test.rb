@@ -150,10 +150,10 @@ module RediSearch
       end
     end
 
-    def test_alter
-      Alter.any_instance.expects(:call!).once
+    def test_add_field
+      AddField.any_instance.expects(:call!).once
 
-      @index.alter(:foo, :text)
+      @index.add_field(:foo, :text)
     end
 
     private

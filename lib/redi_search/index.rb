@@ -5,7 +5,7 @@ require "redi_search/create"
 require "redi_search/schema"
 require "redi_search/search"
 require "redi_search/spellcheck"
-require "redi_search/alter"
+require "redi_search/add_field"
 
 module RediSearch
   class Index
@@ -92,8 +92,8 @@ module RediSearch
       info.num_docs.to_i
     end
 
-    def alter(field_name, schema)
-      Alter.new(self, field_name, schema).call!
+    def add_field(field_name, schema)
+      AddField.new(self, field_name, schema).call!
     end
 
     private

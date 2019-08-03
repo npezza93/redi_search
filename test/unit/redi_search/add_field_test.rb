@@ -3,28 +3,28 @@
 require "test_helper"
 
 module RediSearch
-  class AlterTest < Minitest::Test
+  class AddFieldTest < Minitest::Test
     def setup
       @index = Index.new(:cars, make: :text)
     end
 
     def test_adds_document_to_index
       mock_client("model", "TEXT", "WEIGHT", 1.0) do
-        assert Alter.new(@index, :model, :text).call
+        assert AddField.new(@index, :model, :text).call
         assert_includes @index.fields, "model"
       end
     end
 
     def test_if_call_fails_false_is_returned
       mock_exceptional_client do
-        refute Alter.new(@index, :model, :text).call
+        refute AddField.new(@index, :model, :text).call
       end
     end
 
     def test_call_bang_raises_the_error_to_the_consumer
       mock_exceptional_client do
         assert_raises Redis::CommandError do
-          Alter.new(@index, :model, :text).call!
+          AddField.new(@index, :model, :text).call!
         end
       end
     end
