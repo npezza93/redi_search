@@ -4,8 +4,34 @@
 require "bundler/setup"
 require "redi_search"
 
+require "faker"
 require "pry"
 require "active_support/logger"
+require "active_record"
+
 ActiveSupport::LogSubscriber.logger = ActiveSupport::Logger.new(STDOUT)
+
+ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
+
+ActiveRecord::Migration.create_table :users do |t|
+  t.string :first
+  t.string :last
+end
+
+class User < ActiveRecord::Base
+  redi_search schema: {
+    first: { text: { phonetic: "dm:en" } },
+    last: { text: { phonetic: "dm:en" } }
+  }
+end
+
+def seed_users
+  User.insert_all(
+    Array.new(10_000).map do
+      { first: Faker::Name.first_name, last: Faker::Name.last_name }
+    end
+  )
+  User.reindex
+end
 
 Pry.start
