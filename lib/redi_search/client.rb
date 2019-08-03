@@ -17,8 +17,8 @@ module RediSearch
       end
     end
 
-    def pipelined
-      Response.new(redis.pipelined do
+    def multi
+      Response.new(redis.multi do
         instrument("pipeline", query: ["begin pipeline"])
         yield
         instrument("pipeline", query: ["finish pipeline"])

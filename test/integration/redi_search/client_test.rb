@@ -13,8 +13,8 @@ module RediSearch
       @index.drop
     end
 
-    def test_pipelined
-      assert(RediSearch.client.pipelined do
+    def test_multi
+      assert(RediSearch.client.multi do
         @index.add(Document.for_object(@index, users(index: 0)))
         @index.add(Document.for_object(@index, users(index: 1)))
       end.ok?)

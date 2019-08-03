@@ -53,8 +53,9 @@ module RediSearch
 
     def add_multiple!(documents, **options)
       client.pipelined do
+      client.multi do
         documents.each do |document|
-          add!(document, **options)
+          add(document, **options)
         end
       end.ok?
     end
