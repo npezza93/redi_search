@@ -34,11 +34,4 @@ def seed_users(count = 10_000)
   User.reindex
 end
 
-def reload!
-  Object.send :remove_const, :RediSearch
-  files = $LOADED_FEATURES.select { |feat| feat =~ /\/redi_search\// }
-  files.each { |file| load file }
-  true
-end
-
 Pry.start
