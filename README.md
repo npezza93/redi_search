@@ -336,7 +336,7 @@ RediSearch::Index.new(name_of_index, schema)
     - `replace: { partial: true }` -> Allows you to not have to specify all
       fields for reindexing. Fields not given to the command will be loaded from
       the current version of the `Document`.
-- `add_multiple!(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
+- `add_multiple(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
   - Takes an array of `Document` objects. This provides a more performant way to
     add multiple documents to the `Index`. Accepts the same options as `add`.
 - `del(document, delete_document: false)`

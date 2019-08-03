@@ -72,7 +72,7 @@ module RediSearch
       document2 = Document.for_object(@index, User.new(rand, "bar", "baz"))
       Redis.new.stub(:call, "OK") do |redis|
         RediSearch.stub(:client, Client.new(redis)) do
-          assert @index.add_multiple!([@document, document2])
+          assert @index.add_multiple([@document, document2])
         end
       end
     end
@@ -122,7 +122,7 @@ module RediSearch
     def test_reindex
       @index.expects(:exist?).once.returns(true)
       @index.expects(:create).never
-      @index.expects(:add_multiple!).once
+      @index.expects(:add_multiple).once
 
       @index.reindex([@document])
     end
@@ -130,7 +130,7 @@ module RediSearch
     def test_reindex_when_index_doesnt_exist
       @index.expects(:exist?).once.returns(false)
       @index.expects(:create).once
-      @index.expects(:add_multiple!).once
+      @index.expects(:add_multiple).once
 
       @index.reindex([@document])
     end
@@ -139,7 +139,7 @@ module RediSearch
       @index.expects(:drop).once
       @index.expects(:exist?).once.returns(false)
       @index.expects(:create).once
-      @index.expects(:add_multiple!).once
+      @index.expects(:add_multiple).once
 
       @index.reindex([@document], recreate: true)
     end

@@ -51,8 +51,7 @@ module RediSearch
       Add.new(self, document, **options).call!
     end
 
-    def add_multiple!(documents, **options)
-      client.pipelined do
+    def add_multiple(documents, **options)
       client.multi do
         documents.each do |document|
           add(document, **options)
@@ -86,7 +85,7 @@ module RediSearch
       drop if recreate
       create unless exist?
 
-      add_multiple! documents, **options
+      add_multiple documents, **options
     end
 
     def document_count
