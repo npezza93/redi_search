@@ -521,8 +521,8 @@ end
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
 
-`User.reindex(only: [], **options)` is also added and behaves similarly to
-`RediSearch::Index#reindex`. Some of the differences include:
+`User.reindex(recreate: false, only: [], **options)` is also added and behaves
+similarly to `RediSearch::Index#reindex`. Some of the differences include:
   - By default, does an upsert for all `Document`s added using the
     option `replace: { partial: true }`.
   - `Document`s do not to be passed as the first parameter. The `search_import`
