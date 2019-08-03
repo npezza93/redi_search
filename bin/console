@@ -25,13 +25,20 @@ class User < ActiveRecord::Base
   }
 end
 
-def seed_users
+def seed_users(count = 10_000)
   User.insert_all(
-    Array.new(10_000).map do
+    Array.new(count).map do
       { first: Faker::Name.first_name, last: Faker::Name.last_name }
     end
   )
   User.reindex
+end
+
+def reload!
+  Object.send :remove_const, :RediSearch
+  files = $LOADED_FEATURES.select { |feat| feat =~ /\/redi_search\// }
+  files.each { |file| load file }
+  true
 end
 
 Pry.start
