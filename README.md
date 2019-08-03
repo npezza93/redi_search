@@ -561,6 +561,10 @@ class User < ApplicationRecord
 end
 ```
 
+When searching, by default a collection of `Document`s is returned. Calling
+`#results` on the search query will execute the search, and then look up all the
+found records in the database and return an ActiveRecord relation.
+
 The default `Index` name for model `Index`s is
 `#{model_name.plural}_#{RediSearch.env}`. The `redi_search` method takes an
 optional `index_prefix` argument which gets prepended to the index name:

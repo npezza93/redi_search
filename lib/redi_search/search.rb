@@ -26,6 +26,8 @@ module RediSearch
 
     def results
       if model
+        no_content unless loaded?
+
         model.where(id: to_a.map(&:document_id_without_index))
       else
         to_a
