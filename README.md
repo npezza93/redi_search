@@ -24,11 +24,13 @@ macOS or Linux you can install via Homebrew.
 
 To install RediSearch check out,
 [https://oss.redislabs.com/redisearch/Quick_Start.html](https://oss.redislabs.com/redisearch/Quick_Start.html).
-Once you have RediSearch built, you can update your redis.conf file to always
-load the redisearch module with `loadmodule /path/to/redisearch.so`. (On macOS
-the redis.conf file can be found `/usr/local/etc/redis.conf`)
+Once you have RediSearch built, if you are not using Docker, you can update your
+redis.conf file to always load the RediSearch module with
+`loadmodule /path/to/redisearch.so`. (On macOS the redis.conf file can be found
+at `/usr/local/etc/redis.conf`)
 
-After Redis and RediSearch are up and running, add this line to your Gemfile:
+After Redis and RediSearch are up and running, add the following line to your
+Gemfile:
 
 ```ruby
 gem 'redi_search'
@@ -51,7 +53,7 @@ require 'redi_search'
 
 Once the gem is installed and required you'll need to configure it with your
 Redis configuration. If you're on Rails, this should go in an initializer
-(`config/initializers/redi_search.rb`)
+(`config/initializers/redi_search.rb`).
 
 ```ruby
 RediSearch.configure do |config|
@@ -74,7 +76,7 @@ end
 
 ## Preface
 RediSearch revolves around a search index, so lets start with
-defining what a search index is. According to [Switype](https://swiftype.com):
+defining what a search index is. According to [Swiftype](https://swiftype.com):
 > A search index is a body of structured data that a search engine refers to
 > when looking for results that are relevant to a specific query. Indexes are a
 > critical piece of any search system, since they must be tailored to the
@@ -244,38 +246,38 @@ With no options: `{ place: :geo }`
 
 A `Document` is the Ruby representation of a RediSearch document.
 
-You can fetch a `Document` using `.get` or `mget` class methods.
-- `get(index, document_id)` fetches a single document in an `Index` for a given
-`document_id`.
+You can fetch a `Document` using `.get` or `.mget` class methods.
+- `get(index, document_id)` fetches a single `Document` in an `Index` for a
+given `document_id`.
 - `mget(index, *document_ids)` fetches a collection of `Document`s
 in an `Index` for the given `document_ids`.
 
 You can also make a `Document` instance using the
 `.for_object(index, record, serializer: nil, only: [])` class method. It takes
-an `Index` instance and a ruby object. That object must respond to all the
-fields specified in the indexes schema or pass a serializer class that accepts
-the object and responds to all the fields specified in the indexes schema.
-`only` accepts an array of fields from the schema and limits the fields that are
-passed to the `Document`.
+an `Index` instance and a Ruby object. That object must respond to all the
+fields specified in the `Index`'s `Schema` or pass a serializer class that
+accepts the object and responds to all the fields specified in the `Index`'s
+`Schema`. `only` accepts an array of fields from the schema and limits the
+fields that are passed to the `Document`.
 
 Once you have an instance of a `Document`, it responds to all the fields
-specified in the indexes schema as methods and `document_id`. `document_id` is
-automatically prepended with the indexes names unless it already is to ensure
-uniqueness. We prepend the index name because if you have two documents with the
-same id in different indexes we don't want the documents to override each other.
-There is also a `#document_id_without_index` method which removes the prepended
-index name.
+specified in the `Index`'s `Schema` as methods and `document_id`. `document_id`
+is automatically prepended with the `Index`'s names unless it already is to
+ensure uniqueness. We prepend the `Index` name because if you have two
+`Document`s with the same id in different `Index`s we don't want the `Document`s
+to override each other. There is also a `#document_id_without_index` method
+which removes the prepended index name.
 
-Finally there is a `#del` method that will remove the document from the index.
-It optionally accepts a `delete_document` named argument that signifies whether
-the document should be completely removed from the Redis instance vs just the
-index.
+Finally there is a `#del` method that will remove the `Document` from the
+`Index`. It optionally accepts a `delete_document` named argument that signifies
+whether the `Document` should be completely removed from the Redis instance vs
+just the `Index`.
 
 
 ## Index
 
-To initialize an index, pass the name of the index as a string or symbol and the
-schema.
+To initialize an `Index`, pass the name of the `Index` as a string or symbol
+and the `Schema`.
 
 ```ruby
 RediSearch::Index.new(name_of_index, schema)
@@ -313,40 +315,40 @@ RediSearch::Index.new(name_of_index, schema)
           memory but does not allow sorting based on the frequencies of a given
           term within the document.
 - `drop`
-  - Drops the index from the Redis instance, returns a boolean. Has an
+  - Drops the `Index` from the Redis instance, returns a boolean. Has an
     accompanying bang method that will raise an exception upon failure. Will
-    return `false` if the index has already been dropped.
+    return `false` if the `Index` has already been dropped.
 - `exist?`
-  - Returns a boolean signifying index existence.
+  - Returns a boolean signifying `Index` existence.
 - `info`
-  - Returns a struct object with all the information about the index.
+  - Returns a struct object with all the information about the `Index`.
 - `fields`
-  - Returns an array of the field names in the index.
+  - Returns an array of the field names in the `Index`.
 - `add(document, score: 1.0, replace: {}, language: nil, no_save: false)`
   - Takes a `Document` object and options. Has an
     accompanying bang method that will raise an exception upon failure.
-    - `score` -> The document's rank, a value between 0.0 and 1.0
+    - `score` -> The `Document`'s rank, a value between 0.0 and 1.0
     - `language` -> Use a stemmer for the supplied language during indexing.
-    - `no_save` -> Don't save the actual document in the database and only index it.
+    - `no_save` -> Don't save the actual `Document` in the database and only index it.
     - `replace` -> Accepts a boolean or a hash. If a truthy value is passed, we
       will do an UPSERT style insertion - and delete an older version of the
-      document if it exists.
+      `Document` if it exists.
     - `replace: { partial: true }` -> Allows you to not have to specify all
       fields for reindexing. Fields not given to the command will be loaded from
-      the current version of the document.
+      the current version of the `Document`.
 - `add_multiple!(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
   - Takes an array of `Document` objects. This provides a more performant way to
-    add multiple documents to the index. Accepts the same options as `add`.
+    add multiple documents to the `Index`. Accepts the same options as `add`.
 - `del(document, delete_document: false)`
-  - Removes a document from the index. `delete_document` signifies whether the
-    document should be completely removed from the Redis instance vs just the
-    index.
+  - Removes a `Document` from the `Index`. `delete_document` signifies whether the
+    `Document` should be completely removed from the Redis instance vs just the
+    `Index`.
 - `document_count`
-  - Returns the number of documents in the index
+  - Returns the number of `Document`s in the `Index`
 - `alter(field_name, schema)`
-  - Adds a new field to the index. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
+  - Adds a new field to the `Index`. Ex: `index.alter(:first_name, text: { phonetic: "dm:en" })`
 - `reindex(documents, recreate: false, **options)`
-   - If `recreate` is `true` the index will be dropped and recreated
+   - If `recreate` is `true` the `Index` will be dropped and recreated
    - `options` accepts the same options as `add`
 
 
@@ -354,8 +356,7 @@ RediSearch::Index.new(name_of_index, schema)
 
 Searching is initiated off a `RediSearch::Index` instance with clauses that can
 be chained together. When searching, an array of `Document`s is returned
-which has public reader methods for all the schema fields and a `document_id`
-method which returns the id of the document prefixed with the index name.
+which has public reader methods for all the schema fields.
 
 ```ruby
 main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
@@ -440,15 +441,15 @@ index.search.where(number: -Float::INFINITY..0)
   phrase terms. (i.e the slop for exact phrases is 0)
 - `in_order`
   - Usually used in conjunction with `slop`. We make sure the query terms appear
-    in the same order in the document as in the query, regardless of the offsets
-    between them.
+    in the same order in the `Document` as in the query, regardless of the
+    offsets between them.
 - `no_content`
-  - Only return the document ids and not the content. This is useful if
-    RediSearch is being used on a Rails model where the document attributes
-    don't matter and it's being converted into ActiveRecord objects.
+  - Only return the `Document` ids and not the content. This is useful if
+    RediSearch is being used on a Rails model where the `Document` attributes
+    don't matter and it's being converted into `ActiveRecord` objects.
 - `language(language)`
   - Stemmer to use for the supplied language during search for query expansion.
-    If querying documents in Chinese, this should be set to chinese in order to
+    If querying `Document`s in Chinese, this should be set to chinese in order to
     properly tokenize the query terms. If an unsupported language is sent, the
     command returns an error.
 - `sort_by(field, order: :asc)`
@@ -459,7 +460,7 @@ index.search.where(number: -Float::INFINITY..0)
   - Limit the results to the specified `num` at the `offset`. The default limit
     is set to `10`.
 - `count`
-  - Returns the number of documents found in the search query
+  - Returns the number of `Document`s found in the search query
 - `highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")`
   - Use this option to format occurrences of matched text. `fields` are an
     array of fields to be highlighted.
@@ -469,11 +470,11 @@ index.search.where(number: -Float::INFINITY..0)
 - `no_stop_words`
   - Do not filter stopwords from the query.
 - `with_scores`
-  - Include the relative internal score of each document. This can be used to
+  - Include the relative internal score of each `Document`. This can be used to
     merge results from multiple instances. This will add a `score` method to the
     returned `Document` instances.
 - `return(*fields)`
-  - Limit which fields from the document are returned.
+  - Limit which fields from the `Document` are returned.
 - `explain`
   - Returns the execution plan for a complex query. In the returned response,
     a + on a term is an indication of stemming.
@@ -505,8 +506,8 @@ main ❯ index.spellcheck("jimy", distance: 2).first.suggestions
 
 ## Rails Integration
 
-Integration with Rails is super easy! Call `redi_search` with the schema keyword
-arg from inside your model. Ex:
+Integration with Rails is super easy! Call `redi_search` with the `schema`
+keyword argument from inside your model. Ex:
 
 ```ruby
 class User < ApplicationRecord
@@ -520,8 +521,9 @@ end
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
 
-`User.reindex(only: [], **options)` is also added and behaves similarly to `RediSearch::Index#reindex`. Some of the differences include:
-  - By default does an upsert for all documents added using the
+`User.reindex(only: [], **options)` is also added and behaves similarly to
+`RediSearch::Index#reindex`. Some of the differences include:
+  - By default, does an upsert for all `Document`s added using the
     option `replace: { partial: true }`.
   - `Document`s do not to be passed as the first parameter. The `search_import`
     scope is automatically called and all the records are converted
@@ -550,8 +552,8 @@ class UserSerializer < SimpleDelegator
 end
 ```
 
-You can create a scope on the model to eager load relationships when indexing or
-it can be used to limit the records to index.
+You can override the `search_import` scope on the model to eager load
+relationships when indexing or it can be used to limit the records to index.
 
 ```ruby
 class User < ApplicationRecord
@@ -559,7 +561,7 @@ class User < ApplicationRecord
 end
 ```
 
-The default index name for model indexes is
+The default `Index` name for model `Index`s is
 `#{model_name.plural}_#{RediSearch.env}`. The `redi_search` method takes an
 optional `index_prefix` argument which gets prepended to the index name:
 
@@ -576,15 +578,16 @@ User.redi_search_index.name
 ```
 
 When integrating RediSearch into a model, records will automatically be indexed
-after creating and updating and will be removed from the index upon destruction.
+after creating and updating and will be removed from the `Index` upon
+destruction.
 
-There are few more convenience methods that are publicly available:
+There are a few more convenience methods that are publicly available:
 - `redi_search_document`
   - Returns the record as a `RediSearch::Document` instance
 - `redi_search_delete_document`
-  - Removes the record from the index
+  - Removes the record from the `Index`
 - `redi_search_add_document`
-  - Adds the record to the index
+  - Adds the record to the `Index`
 - `redi_search_index`
   - Returns the `RediSearch::Index` instance
 
@@ -592,15 +595,15 @@ There are few more convenience methods that are publicly available:
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run
-`rake test` to run the tests. You can also run `bin/console` for an interactive
-prompt that will allow you to experiment. You can also start a rails console if
-you `cd` into `test/dummy`.
+`rake test` to run the both unit and integration tests. To run them individually
+you can run `rake test:unit` or `rake test:integration`. You can also run
+`bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To
 release a new version, execute `bin/publish (major|minor|patch)` which will
 update the version number in `version.rb`, create a git tag for the version,
 push git commits and tags, and push the `.gem` file to
-[rubygems.org](https://rubygems.org).
+[rubygems.org](https://rubygems.org) and GitHub.
 
 ## Contributing
 
