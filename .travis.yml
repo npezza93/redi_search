@@ -13,6 +13,13 @@ jobs:
   include:
     - stage: Integration Tests
       script: |
+        docker run -d -p 6379:6379 redislabs/redisearch:1.6.1 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        bundle exec rake test:integration
+      rvm: 2.6
+      gemfile: Gemfile
+      name: RediSearch 1.6.1
+    - stage: Integration Tests
+      script: |
         docker run -d -p 6379:6379 redislabs/redisearch:1.4.13 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
         bundle exec rake test:integration
       rvm: 2.6
