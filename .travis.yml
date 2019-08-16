@@ -55,7 +55,7 @@ jobs:
         if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT; fi
       rvm: 2.6
       gemfile: Gemfile
-      name: Ruby 2.6 and Rails 6.0rc2
+      name: Ruby 2.6 and Rails 6.0
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: 2.6
@@ -70,7 +70,7 @@ jobs:
       script: bundle exec rake test:unit
       rvm: 2.5
       gemfile: Gemfile
-      name: Ruby 2.5 and Rails 6.0rc2
+      name: Ruby 2.5 and Rails 6.0
     - stage: Lint
       script: bundle exec rubocop --config=./.rubocop.yml
       rvm: 2.6
