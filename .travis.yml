@@ -47,6 +47,11 @@ jobs:
       gemfile: Gemfile
       name: RediSearch 1.4.10
     - stage: Unit Tests
+      script: bundle exec rake test:unit
+      rvm: ruby-head
+      gemfile: Gemfile
+      name: Ruby head and Rails 6.0
+    - stage: Unit Tests
       script: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
