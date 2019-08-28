@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.5.x', '2.6.x', 'ruby-head' ]
+        ruby: [ '2.5.x', '2.6.x' ]
         gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile' ]
     steps:
     - uses: actions/checkout@v1
@@ -17,7 +17,7 @@ jobs:
         ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: |
-        sudo apt-get install libsqlite3-dev
+        sudo apt-get install libsqlite3-dev -y
         gem install bundler --no-document
         BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle install
     - name: Run tests
