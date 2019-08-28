@@ -16,9 +16,10 @@ jobs:
         sudo apt-get install libsqlite3-dev -y
         gem install bundler --no-document
         bundle install
+        export COV=1
     - name: Test & publish code coverage
       uses: paambaati/codeclimate-action@v2.2.0
       env:
         CC_TEST_REPORTER_ID: fec34310f03fd2cc767a85fa23d5102f3dca67b9cc967a48d9940027731394e8
       with:
-        coverageCommand: "COV=1 bundle exec rake test:unit"
+        coverageCommand: "bundle exec rake test:unit"
