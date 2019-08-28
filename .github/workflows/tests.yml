@@ -1,9 +1,9 @@
-name: unit_tests
+name: tests
 
 on: [push]
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,3 +22,23 @@ jobs:
         BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle install
     - name: Run tests
       run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
+  integration:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redi_search: [ '1.6.1', '1.4.15' ]
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Ruby 2.6
+      uses: actions/setup-ruby@v1
+      with:
+        ruby-version: 2.6.x
+    - name: Install dependencies
+      run: |
+        sudo apt-get install libsqlite3-dev -y
+        gem install bundler --no-document
+        bundle install
+        docker run -d -p 6379:6379 redislabs/redisearch:${{ matrix.redi_search }} --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+    - name: Run tests
+      run: |
+        bundle exec rake test:integration
