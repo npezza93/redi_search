@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if ENV["COV"] || ENV["CI"]
+if ENV["COV"]
   require "simplecov"
 
   SimpleCov.start do
