@@ -3,7 +3,7 @@ name: ci
 on: [push]
 
 jobs:
-  "Integration (RediSearch 1.6.1)":
+  integration-redisearch-1-6-1:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
