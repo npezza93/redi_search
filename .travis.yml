@@ -12,11 +12,6 @@ services: docker
 jobs:
   include:
     - stage: Unit Tests
-      script: bundle exec rake test:unit
-      rvm: ruby-head
-      gemfile: Gemfile
-      name: Ruby head and Rails 6.0
-    - stage: Unit Tests
       script: |
         curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         chmod +x ./cc-test-reporter
@@ -26,13 +21,3 @@ jobs:
       rvm: 2.6
       gemfile: Gemfile
       name: Ruby 2.6 and Rails 6.0
-    - stage: Unit Tests
-      script: bundle exec rake test:unit
-      rvm: 2.6
-      gemfile: gemfiles/activerecord_52.gemfile
-      name: Ruby 2.6 and Rails 5.2
-    - stage: Unit Tests
-      script: bundle exec rake test:unit
-      rvm: 2.6
-      gemfile: gemfiles/activerecord_51.gemfile
-      name: Ruby 2.6 and Rails 5.1

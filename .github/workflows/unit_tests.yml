@@ -5,16 +5,27 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - ruby: 2.5.x
+            gemfile: Gemfile
+          - ruby: 2.6.x
+            gemfile: gemfiles/activerecord_51.gemfile
+          - ruby: 2.6.x
+            gemfile: gemfiles/activerecord_52.gemfile
+          - ruby: ruby-head
+            gemfile: Gemfile
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Ruby 2.5
+    - name: Set up Ruby ${{ matrix.ruby }}
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.5.x
+        ruby-version: ${{ matrix.ruby }}
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev
         gem install bundler --no-document
-        BUNDLE_GEMFILE=Gemfile bundle install
+        BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle install
     - name: Run tests
-      run: BUNDLE_GEMFILE=Gemfile bundle exec rake test:unit
+      run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
