@@ -1,9 +1,9 @@
-name: ci
+name: integration_tests
 
 on: [push]
 
 jobs:
-  integration:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
