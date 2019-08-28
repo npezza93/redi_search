@@ -11,41 +11,6 @@ cache:
 services: docker
 jobs:
   include:
-    - stage: Integration Tests
-      script: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.6.1 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-        bundle exec rake test:integration
-      rvm: 2.6
-      gemfile: Gemfile
-      name: RediSearch 1.6.1
-    - stage: Integration Tests
-      script: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.4.14 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-        bundle exec rake test:integration
-      rvm: 2.6
-      gemfile: Gemfile
-      name: RediSearch 1.4.14
-    - stage: Integration Tests
-      script: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.4.13 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-        bundle exec rake test:integration
-      rvm: 2.6
-      gemfile: Gemfile
-      name: RediSearch 1.4.13
-    - stage: Integration Tests
-      script: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.4.12 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-        bundle exec rake test:integration
-      rvm: 2.6
-      gemfile: Gemfile
-      name: RediSearch 1.4.12
-    - stage: Integration Tests
-      script: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.4.11 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
-        bundle exec rake test:integration
-      rvm: 2.6
-      gemfile: Gemfile
-      name: RediSearch 1.4.11
     - stage: Unit Tests
       script: bundle exec rake test:unit
       rvm: ruby-head
@@ -71,12 +36,3 @@ jobs:
       rvm: 2.6
       gemfile: gemfiles/activerecord_51.gemfile
       name: Ruby 2.6 and Rails 5.1
-    - stage: Unit Tests
-      script: bundle exec rake test:unit
-      rvm: 2.5
-      gemfile: Gemfile
-      name: Ruby 2.5 and Rails 6.0
-    - stage: Lint
-      script: bundle exec rubocop --config=./.rubocop.yml
-      rvm: 2.6
-      name: Rubocop
