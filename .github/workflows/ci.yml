@@ -3,20 +3,23 @@ name: ci
 on: [push]
 
 jobs:
-  integration-redisearch-1-6-1:
+  integration:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redi_search: [ '1.6.1', '1.4.14', '1.4.13', '1.4.12', '1.4.11' ]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.6
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
-    - name: Install Deps
+    - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-    - name: Run Tests
+        gem install bundler --no-document
+        bundle install
+    - name: Run tests
       run: |
-        docker run -d -p 6379:6379 redislabs/redisearch:1.6.1 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
+        docker run -d -p 6379:6379 redislabs/redisearch:${{ matrix.redi_search }} --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
         bundle exec rake test:integration
