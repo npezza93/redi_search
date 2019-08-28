@@ -11,9 +11,12 @@ jobs:
       uses: actions/setup-ruby@v1
       with:
         ruby-version: 2.6.x
-    - name: Build and test with Rake
+    - name: Install Deps
       run: |
+        apt-get install libsqlite3-dev
         gem install bundler
         bundle install --jobs 4 --retry 3
+    - name: Run Tests
+      run: |
         docker run -d -p 6379:6379 redislabs/redisearch:1.6.1 --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
         bundle exec rake test:integration
