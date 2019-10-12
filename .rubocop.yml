@@ -773,13 +773,13 @@ Performance/CaseWhenSplat:
 
 Performance/Count:
   Description: Use `count` instead of `select...size`, `reject...size`, `select...count`, `reject...count`, `select...length`, and `reject...length`.
-  SafeMode: true
+  SafeAutoCorrect: true
   Enabled: true
 
 Performance/Detect:
   Description: Use `detect` instead of `select.first`, `find_all.first`, `select.last`, and `find_all.last`.
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
-  SafeMode: true
+  SafeAutoCorrect: true
   Enabled: true
 
 Performance/DoubleStartEndWith:
