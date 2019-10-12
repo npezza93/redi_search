@@ -17,4 +17,4 @@ jobs:
         gem install bundler --no-document
         bundle install
     - name: Run tests
-      run: bundle exec rubocop --config=./.rubocop.yml
+      run: bundle exec rubocop --config=./.rubocop.yml --parallel
