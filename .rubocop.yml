@@ -571,11 +571,11 @@ Lint/UnifiedInteger:
   Description: Use Integer instead of Fixnum or Bignum
   Enabled: true
 
-Lint/UnneededRequireStatement:
+Lint/RedundantRequireStatement:
   Description: Checks for unnecessary `require` statement.
   Enabled: true
 
-Lint/UnneededSplatExpansion:
+Lint/RedundantSplatExpansion:
   Description: Checks for splat unnecessarily being called on literals
   Enabled: true
 
@@ -1547,15 +1547,15 @@ Style/UnlessElse:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-else-with-unless
   Enabled: true
 
-Style/UnneededCapitalW:
+Style/RedundantCapitalW:
   Description: Checks for %W when interpolation is not needed.
   Enabled: false
 
-Style/UnneededInterpolation:
+Style/RedundantInterpolation:
   Description: Checks for strings that are just an interpolated expression.
   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Description: Checks for %q/%Q when single quotes or double quotes would do.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#percent-q
   Enabled: false
