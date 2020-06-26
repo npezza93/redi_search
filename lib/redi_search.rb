@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "delegate"
 require "forwardable"
 require "redis"
 require "active_support/lazy_load_hooks"
