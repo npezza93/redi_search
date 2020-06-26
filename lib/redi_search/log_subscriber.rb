@@ -35,7 +35,7 @@ module RediSearch
       color("#{event.payload[:name]} (#{event.duration.round(1)}ms)", RED, true)
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
     def action_color(action)
       case action.to_sym
       when :search, :spellcheck then YELLOW
@@ -46,7 +46,7 @@ module RediSearch
       when :explaincli then BLUE
       end
     end
-    # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength
 
     def command_string(event)
       event.payload[:query].flatten.map.with_index do |arg, i|
