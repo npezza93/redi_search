@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "forwardable"
-
 module RediSearch
   module LazilyLoad
     extend Forwardable
