@@ -327,7 +327,7 @@ Layout/SpaceInsideStringInterpolation:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#string-interpolation
   Enabled: false
 
-Layout/Tab:
+Layout/IndentationStyle:
   Description: No hard tabs.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#spaces-indentation
   Enabled: false
@@ -432,7 +432,7 @@ Layout/EndAlignment:
   Description: Align ends correctly.
   Enabled: true
 
-Lint/EndInMethod:
+Style/EndBlock:
   Description: END blocks should not be placed inside method definitions.
   Enabled: true
 
@@ -664,7 +664,7 @@ Metrics/CyclomaticComplexity:
   Description: A complexity metric that is strongly correlated to the number of test cases needed to validate a method.
   Enabled: true
 
-Metrics/LineLength:
+Layout/LineLength:
   Description: Limit lines to 80 characters.
   StyleGuide: '#80-character-limits'
   Enabled: true
@@ -945,10 +945,6 @@ Style/BlockDelimiters:
   Description: Avoid using {...} for multi-line blocks (multiline chaining is always ugly). Prefer {...} over do...end for single-line blocks.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#single-line-blocks
   Enabled: true
-
-Style/BracesAroundHashParameters:
-  Description: Enforce braces style around hash parameters.
-  Enabled: false
 
 Style/CaseEquality:
   Description: Avoid explicit use of the case equality operator(===).
