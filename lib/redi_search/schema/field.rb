@@ -11,7 +11,8 @@ module RediSearch
 
       def boolean_options_string
         boolean_options.map do |option|
-          option.to_s.upcase.split("_").join unless FALSES.include?(send(option))
+          option.to_s.upcase.split("_").join unless
+            FALSES.include?(send(option))
         end.compact
       end
     end

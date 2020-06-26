@@ -17,7 +17,7 @@ require "redi_search"
 
 require "active_support/testing/assertions"
 
-User = Struct.new(:id, :first, :last)
+User = Struct.new(:id, :first, :last) # rubocop:disable Lint/StructNewOverride
 
 def users(index:)
   @users ||= Array.new(10).map.with_index(1) do |_el, i|

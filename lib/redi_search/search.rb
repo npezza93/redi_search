@@ -13,6 +13,7 @@ module RediSearch
     include Clauses
 
     attr_reader :term_clause, :used_clauses, :index, :clauses
+
     def_delegator :index, :model
 
     def initialize(index, term = nil, **term_options)

@@ -332,6 +332,9 @@ Layout/IndentationStyle:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#spaces-indentation
   Enabled: false
 
+Layout/SpaceAroundMethodCallOperator:
+  Enabled: true
+
 Layout/TrailingEmptyLines:
   Description: Checks trailing blank lines and final newline.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#newline-eof
@@ -430,10 +433,6 @@ Lint/EmptyWhen:
 
 Layout/EndAlignment:
   Description: Align ends correctly.
-  Enabled: true
-
-Style/EndBlock:
-  Description: END blocks should not be placed inside method definitions.
   Enabled: true
 
 Lint/EnsureReturn:
@@ -646,7 +645,6 @@ Metrics/BlockLength:
     - Rakefile
     - "**/*.rake"
     - spec/**/*.rb
-    - 'config/routes.rb'
     - 'config/environments/*.rb'
 
 Metrics/BlockNesting:
@@ -668,8 +666,11 @@ Layout/LineLength:
   Description: Limit lines to 80 characters.
   StyleGuide: '#80-character-limits'
   Enabled: true
+  Max: 80
   Exclude:
     - 'db/**/*'
+    - 'config/initializers/**/*'
+    - 'config/environments/**/*'
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
@@ -819,6 +820,9 @@ Performance/RedundantMatch:
 Performance/RedundantMerge:
   Description: Use Hash#[]=, rather than Hash#merge! with a single key-value pair.
   Reference: https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code
+  Enabled: true
+
+Style/ExponentialNotation:
   Enabled: true
 
 Style/RedundantSortBy:
@@ -1069,7 +1073,7 @@ Style/EmptyMethod:
 Style/EndBlock:
   Description: Avoid the use of END blocks.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-END-blocks
-  Enabled: false
+  Enabled: true
 
 Style/Encoding:
   Description: Use UTF-8 as the source file encoding.
@@ -1252,7 +1256,7 @@ Style/MultipleComparison:
 
 Style/MutableConstant:
   Description: Do not assign mutable objects to constants.
-  Enabled: true
+  Enabled: false
 
 Style/NegatedIf:
   Description: Favor unless over if for negative conditions (or control flow or).
@@ -1593,4 +1597,38 @@ Style/YodaCondition:
 
 Style/ZeroLengthPredicate:
   Description: Use #empty? when testing for objects of length 0.
+  Enabled: true
+
+Lint/RaiseException:
+  Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
+  Enabled: true
+Lint/StructNewOverride:
+  Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
+  Enabled: true
+Style/HashEachMethods:
+  Description: 'Use Hash#each_key and Hash#each_value.'
+  Enabled: true
+  Safe: false
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  Enabled: true
+  Safe: false
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  Enabled: true
+  Safe: false
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Enabled: true
+Lint/DeprecatedOpenSSLConstant:
+  Enabled: true
+Style/SlicingWithRange:
+  Enabled: true
+Lint/MixedRegexpCaptureTypes:
+  Enabled: true
+Style/RedundantRegexpCharacterClass:
+  Enabled: true
+Style/RedundantRegexpEscape:
+  Enabled: true
+Style/RedundantFetchBlock:
   Enabled: true
