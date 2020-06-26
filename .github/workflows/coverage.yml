@@ -10,7 +10,7 @@ jobs:
     - name: Set up Ruby ${{ matrix.ruby }}
       uses: actions/setup-ruby@v1
       with:
-        ruby-version: 2.6.x
+        ruby-version: 2.7.x
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev -y
