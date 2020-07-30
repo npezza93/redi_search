@@ -82,7 +82,7 @@ module RediSearch
 
       def assert_documents(documents, size:, ids:)
         assert_equal size, documents.size
-        [*documents].each_with_index do |document, i|
+        Array(documents).each_with_index do |document, i|
           assert_equal "#{@index.name}#{ids[i]}", document.document_id
         end
       end
