@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        redi_search: [ '1.4.28', '1.6.13', 'edge' ]
+        redi_search: [ '1.4.28', '1.6.13', '1.99.1' ]
     steps:
     - uses: actions/checkout@v1
     - name: Set up Ruby 2.7
