@@ -48,21 +48,21 @@ module RediSearch
         redi_search_index.spellcheck(term, distance: distance)
       end
 
-      def reindex(recreate: false, only: [], **options)
+      def reindex(recreate: false, **options)
         search_import.find_in_batches.all? do |group|
           redi_search_index.reindex(
-            group.map { |record| record.redi_search_document(only: only) },
-            recreate: recreate, **options.deep_merge(replace: { partial: true })
+            group.map { |record| record.redi_search_document },
+            recreate: recreate, **options
           )
         end
       end
     end
 
     module InstanceMethods
-      def redi_search_document(only: [])
+      def redi_search_document
         Document.for_object(
           self.class.redi_search_index, self,
-          only: only, serializer: self.class.redi_search_serializer
+          serializer: self.class.redi_search_serializer
         )
       end
 
