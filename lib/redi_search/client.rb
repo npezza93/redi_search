@@ -12,8 +12,9 @@ module RediSearch
       @pipeline = false
     end
 
-    def call!(command, *params)
+    def call!(command, *params, skip_ft: false)
       instrument(command.downcase, query: [command, params]) do
+        command = "FT.#{command}" unless skip_ft
         send_command(command, *params)
       end
     end
@@ -38,7 +39,7 @@ module RediSearch
     end
 
     def send_command(command, *params)
-      Response.new(redis.call("FT.#{command}", *params))
+      Response.new(redis.call(command, *params))
     end
 
     def instrument(action, payload, &block)

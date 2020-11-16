@@ -62,7 +62,7 @@ module RediSearch
     end
 
     def prepend_ft?(arg, index)
-      index.zero? && !multiword?(arg)
+      index.zero? && !multiword?(arg) && %w(HSET HGETALL DEL).exclude?(arg.to_s)
     end
 
     def inspect_arg?(payload, arg)
