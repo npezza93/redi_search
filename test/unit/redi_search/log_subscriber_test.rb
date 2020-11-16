@@ -70,7 +70,7 @@ module RediSearch
       instrument("del", query: %w(DEL foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DEL foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mDEL foo\e[0m",
         @logger.logged(:debug).last
       )
     end

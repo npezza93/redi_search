@@ -21,11 +21,5 @@ module RediSearch
         Document.for_object(@index, users(index: 0)).del
       end
     end
-
-    def test_del_with_dd
-      assert_difference -> { @index.document_count }, -1 do
-        Document.for_object(@index, users(index: 0)).del(delete_document: true)
-      end
-    end
   end
 end

@@ -40,9 +40,8 @@ module RediSearch
       load_attributes
     end
 
-    def del(delete_document: false)
-      command = ["DEL", index.name, document_id, ("DD" if delete_document)]
-      call!(*command.compact).ok?
+    def del
+      RediSearch.client.call!("DEL", document_id, skip_ft: true).ok?
     end
 
     def schema_fields
@@ -72,10 +71,6 @@ module RediSearch
     private
 
     attr_reader :index
-
-    def call!(*command)
-      RediSearch.client.call!(*command)
-    end
 
     def load_attributes
       attributes.each do |field, value|

@@ -59,8 +59,8 @@ module RediSearch
       end.all? { |response| response >= 0 }
     end
 
-    def del(document, delete_document: false)
-      document.del(delete_document: delete_document)
+    def del(document)
+      document.del
     end
 
     def exist?

@@ -35,7 +35,6 @@ module RediSearch
 
     def test_redi_search_delete_document
       assert_respond_to @character, :redi_search_delete_document
-      Character.redi_search_index.expects(:exist?).once.returns(true)
       Character.redi_search_index.expects(:del).once.returns(true)
 
       assert @character.redi_search_delete_document

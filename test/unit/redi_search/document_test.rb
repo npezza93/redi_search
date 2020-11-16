@@ -60,13 +60,6 @@ module RediSearch
       mock_client(document, 1) { assert document.del }
     end
 
-    def test_del_that_deletes_document
-      document = Document.new(@index, 100, { first: :foo, last: :bar })
-      mock_client(document, 1, "DD") do
-        assert document.del(delete_document: true)
-      end
-    end
-
     def test_failed_del
       document = Document.new(@index, 100, { first: :foo, last: :bar })
       mock_client(document, 0) do
@@ -128,10 +121,10 @@ module RediSearch
 
     private
 
-    def mock_client(document, response, *options)
+    def mock_client(document, response)
       client = Minitest::Mock.new.expect(
-        :call!, Client::Response.new(response), ["DEL", @index.name,
-                                                 document.document_id, *options]
+        :call!, Client::Response.new(response),
+        ["DEL", document.document_id, skip_ft: true]
       )
 
       RediSearch.stub(:client, client) { yield }

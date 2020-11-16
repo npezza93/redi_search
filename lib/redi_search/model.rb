@@ -67,11 +67,7 @@ module RediSearch
       end
 
       def redi_search_delete_document
-        return unless self.class.redi_search_index.exist?
-
-        self.class.redi_search_index.del(
-          redi_search_document, delete_document: true
-        )
+        self.class.redi_search_index.del(redi_search_document)
       end
 
       def redi_search_add_document
