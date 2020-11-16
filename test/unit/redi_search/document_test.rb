@@ -16,7 +16,7 @@ module RediSearch
 
     def test_document_id_with_already_prepended_index_name
       document = Document.new(
-        @index, @index.name + "100", { first: :foo, last: :bar }
+        @index, "#{@index.name}100", { first: :foo, last: :bar }
       )
 
       assert_equal "users_test100", document.document_id
@@ -36,7 +36,7 @@ module RediSearch
 
     def test_document_id_without_index_when_already_prepended
       document = Document.new(
-        @index, @index.name + "100", { first: :foo, last: :bar }
+        @index, "#{@index.name}100", { first: :foo, last: :bar }
       )
 
       assert_equal "100", document.document_id_without_index
