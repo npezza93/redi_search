@@ -1,20 +1,21 @@
 name: tests
 
-on: [push]
+on: [push,pull_request]
 
 jobs:
   unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.5.x', '2.6.x', '2.7.x' ]
+        ruby: [ '2.5', '2.6', '2.7' ]
         gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile' ]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby }}
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
+        bundler-cache: false
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev -y
@@ -24,21 +25,23 @@ jobs:
       run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
   integration:
     runs-on: ubuntu-latest
+    rediseach:
+      image: redisearch
+      ports:
+        - 6379:6379
     strategy:
       matrix:
-        redi_search: [ '1.4.28', '1.6.13' ]
+        redi_search: [ '2.0.2' ]
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - name: Set up Ruby 2.7
-      uses: actions/setup-ruby@v1
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7.x
+        ruby-version: 2.7
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev -y
-        gem install bundler --no-document
         bundle install
-        docker run -d -p 6379:6379 redislabs/redisearch:${{ matrix.redi_search }} --protected-mode no --loadmodule /usr/lib/redis/modules/redisearch.so
     - name: Run tests
       run: |
         bundle exec rake test:integration
