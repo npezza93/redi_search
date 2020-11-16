@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         ruby: [ '2.5', '2.6', '2.7' ]
-        gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile' ]
+        gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile', 'gemfiles/activerecord_61.gemfile' ]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby }}
