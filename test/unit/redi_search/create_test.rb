@@ -81,11 +81,17 @@ module RediSearch
       end
     end
 
-    def mock_client(*options)
-      client = Minitest::Mock.new.expect(:call!, Client::Response.new("OK"), [
-        "CREATE", @index.name, *options, "SCHEMA",
+    def command(*options)
+      [
+        "CREATE", @index.name, "ON", "HASH", "PREFIX", 1, @index.name, *options,
+        "SCHEMA",
         ["first", "TEXT", "WEIGHT", 1.0, "last", "TEXT", "WEIGHT", 1.0]
-      ].compact)
+      ]
+    end
+
+    def mock_client(*options)
+      client = Minitest::Mock.new.expect(:call!, Client::Response.new("OK"),
+                                         command(*options).compact)
 
       RediSearch.stub(:client, client) { yield }
 
