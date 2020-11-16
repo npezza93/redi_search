@@ -52,6 +52,7 @@ module RediSearch
       event.payload[:query].flatten.map.with_index do |arg, i|
         arg = "FT.#{arg}" if prepend_ft?(arg, i)
         arg = arg.inspect if inspect_arg?(event.payload, arg)
+        arg = "  #{arg}"  if event.payload[:inside_pipeline]
         arg
       end.join(" ")
     end
