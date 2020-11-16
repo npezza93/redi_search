@@ -33,14 +33,16 @@ module RediSearch
       Create.new(self, schema, options).call!
     end
 
-    def drop
-      drop!
+    def drop(keep_docs: false)
+      drop!(keep_docs: keep_docs)
     rescue Redis::CommandError
       false
     end
 
-    def drop!
-      client.call!("DROP", name).ok?
+    def drop!(keep_docs: false)
+      command = ["DROPINDEX", name]
+      command << "DD" unless keep_docs
+      client.call!(*command.compact).ok?
     end
 
     def add(document, **options)

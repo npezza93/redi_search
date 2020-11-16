@@ -57,11 +57,11 @@ module RediSearch
       )
     end
 
-    def test_drop
-      instrument("drop", query: %w(DROP foo))
+    def test_dropindex
+      instrument("dropindex", query: %w(DROPINDEX foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DROP foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DROPINDEX foo\e[0m",
         @logger.logged(:debug).last
       )
     end

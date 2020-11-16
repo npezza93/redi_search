@@ -30,8 +30,14 @@ module RediSearch
       @index.create!
     end
 
+    def test_drop_while_keeping_docs
+      mock_client(%w(DROPINDEX users), "OK") do
+        assert @index.drop(keep_docs: true)
+      end
+    end
+
     def test_drop
-      mock_client(%w(DROP users), "OK") do
+      mock_client(%w(DROPINDEX users DD), "OK") do
         assert @index.drop
       end
     end
@@ -43,7 +49,7 @@ module RediSearch
     end
 
     def test_drop!
-      mock_client(%w(DROP users), "OK") do
+      mock_client(%w(DROPINDEX users DD), "OK") do
         assert @index.drop!
       end
     end

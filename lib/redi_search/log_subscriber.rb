@@ -40,7 +40,7 @@ module RediSearch
       case action.to_sym
       when :search, :spellcheck then YELLOW
       when :create, :hset then GREEN
-      when :drop, :del then RED
+      when :dropindex, :del then RED
       when :hgetall, :info then CYAN
       when :pipeline then MAGENTA
       when :explaincli then BLUE
