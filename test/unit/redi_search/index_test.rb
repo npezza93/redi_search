@@ -57,13 +57,13 @@ module RediSearch
     end
 
     def test_add
-      Add.any_instance.expects(:call).once
+      Hset.any_instance.expects(:call).once
 
       @index.add(@document)
     end
 
     def test_add!
-      Add.any_instance.expects(:call!).once
+      Hset.any_instance.expects(:call!).once
 
       @index.add!(@document)
     end

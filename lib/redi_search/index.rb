@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "redi_search/add"
+require "redi_search/hset"
 require "redi_search/create"
 require "redi_search/schema"
 require "redi_search/search"
@@ -44,11 +44,11 @@ module RediSearch
     end
 
     def add(document, **options)
-      Add.new(self, document, **options).call
+      Hset.new(self, document, **options).call
     end
 
     def add!(document, **options)
-      Add.new(self, document, **options).call!
+      Hset.new(self, document, **options).call!
     end
 
     def add_multiple(documents, **options)
@@ -56,7 +56,7 @@ module RediSearch
         documents.each do |document|
           add(document, **options)
         end
-      end.ok?
+      end.all? { |response| response >= 0 }
     end
 
     def del(document, delete_document: false)

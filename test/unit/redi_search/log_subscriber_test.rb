@@ -48,11 +48,11 @@ module RediSearch
       )
     end
 
-    def test_add
-      instrument("add", query: %w(ADD foo))
+    def test_hset
+      instrument("hset", query: %w(HSET foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[32mFT.ADD foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[32mHSET foo\e[0m",
         @logger.logged(:debug).last
       )
     end

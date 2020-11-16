@@ -75,9 +75,7 @@ module RediSearch
       end
 
       def redi_search_add_document
-        return unless self.class.redi_search_index.exist?
-
-        self.class.redi_search_index.add(redi_search_document, replace: true)
+        self.class.redi_search_index.add(redi_search_document)
       end
     end
   end

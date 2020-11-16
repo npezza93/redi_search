@@ -39,7 +39,7 @@ module RediSearch
     def action_color(action)
       case action.to_sym
       when :search, :spellcheck then YELLOW
-      when :create, :add then GREEN
+      when :create, :hset then GREEN
       when :drop, :del then RED
       when :get, :mget, :info then CYAN
       when :pipeline then MAGENTA
