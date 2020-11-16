@@ -21,10 +21,6 @@ module RediSearch
       def get(index, document_id)
         Finder.new(index, document_id).find
       end
-
-      def mget(index, *document_ids)
-        Finder.new(index, *document_ids).find
-      end
     end
 
     attr_reader :attributes, :score

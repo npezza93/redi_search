@@ -90,13 +90,6 @@ module RediSearch
       Document.get(:users, 1)
     end
 
-    def test_mget_class_method
-      Document::Finder.any_instance.expects(:find).once.
-        returns(Client::Response.new([]))
-
-      Document.mget(:users, 1, 2)
-    end
-
     def test_inspect
       document = Document.new(@index, 100, { first: :foo, last: :bar })
       expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\

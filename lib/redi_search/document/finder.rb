@@ -3,75 +3,37 @@
 module RediSearch
   class Document
     class Finder
-      def initialize(index, *document_ids)
+      def initialize(index, document_id)
         @index = index
-        @document_ids = Array(document_ids)
+        @document_id = document_id
       end
 
       def find
-        if multi?
-          parse_multi_documents
-        else
-          parse_document(document_ids.first, response)
-        end
+        Document.new(index, document_id, Hash[*response]) if response?
       end
 
       private
 
-      attr_reader :index, :document_ids
+      attr_reader :index, :document_id
 
       def response
-        @response ||= call!(get_command, index.name, *prepended_document_ids)
+        @response ||= call!("HGETALL", prepended_document_id)
       end
 
       def call!(*command)
-        RediSearch.client.call!(*command)
+        RediSearch.client.call!(*command, skip_ft: true)
       end
 
-      def get_command
-        if multi?
-          "MGET"
+      def prepended_document_id
+        if document_id.to_s.start_with? index.name
+          document_id
         else
-          "GET"
+          "#{index.name}#{document_id}"
         end
       end
 
-      def multi?
-        document_ids.size > 1
-      end
-
-      def prepended_document_ids
-        document_ids.map do |document_id|
-          prepend_document_id(document_id)
-        end
-      end
-
-      def prepend_document_id(id)
-        if id.to_s.start_with? index.name
-          id
-        else
-          "#{index.name}#{id}"
-        end
-      end
-
-      def parse_multi_documents
-        document_ids.map.with_index do |document_id, index|
-          parse_document(document_id, response[index])
-        end.compact
-      end
-
-      def parse_document(document_id, document_response)
-        return unless document_response?(document_response)
-
-        Document.new(index, document_id, Hash[*document_response])
-      end
-
-      def document_response?(document_response)
-        if document_response.respond_to?(:empty?)
-          !document_response.empty?
-        else
-          !document_response.nil?
-        end
+      def response?
+        !response.to_a.empty?
       end
     end
   end

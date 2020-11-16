@@ -41,7 +41,7 @@ module RediSearch
       when :search, :spellcheck then YELLOW
       when :create, :hset then GREEN
       when :drop, :del then RED
-      when :get, :mget, :info then CYAN
+      when :hgetall, :info then CYAN
       when :pipeline then MAGENTA
       when :explaincli then BLUE
       end
