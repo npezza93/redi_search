@@ -25,13 +25,11 @@ jobs:
       run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
   integration:
     runs-on: ubuntu-latest
-    rediseach:
-      image: redisearch
-      ports:
-        - 6379:6379
-    strategy:
-      matrix:
-        redi_search: [ '2.0.2' ]
+    services:
+      redisearch:
+        image: redislabs/redisearch:2.0.2
+        ports:
+          - 6379:6379
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby 2.7
