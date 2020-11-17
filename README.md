@@ -307,10 +307,12 @@ RediSearch::Index.new(name_of_index, schema)
         - If set, we avoid saving the term frequencies in the index. This saves
           memory but does not allow sorting based on the frequencies of a given
           term within the document.
-- `drop`
+- `drop(keep_docs: false)`
   - Drops the `Index` from the Redis instance, returns a boolean. Has an
     accompanying bang method that will raise an exception upon failure. Will
-    return `false` if the `Index` has already been dropped.
+    return `false` if the `Index` has already been dropped. Takes an option
+    keyword arg, `keep_docs`, that will by default remove all the document
+    hashes in Redis.
 - `exist?`
   - Returns a boolean signifying `Index` existence.
 - `info`
