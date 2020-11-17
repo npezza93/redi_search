@@ -48,11 +48,11 @@ module RediSearch
         redi_search_index.spellcheck(term, distance: distance)
       end
 
-      def reindex(recreate: false, only: [], **options)
+      def reindex(recreate: false, only: [])
         search_import.find_in_batches.all? do |group|
           redi_search_index.reindex(
             group.map { |record| record.redi_search_document(only: only) },
-            recreate: recreate, **options.deep_merge(replace: { partial: true })
+            recreate: recreate
           )
         end
       end
@@ -67,17 +67,11 @@ module RediSearch
       end
 
       def redi_search_delete_document
-        return unless self.class.redi_search_index.exist?
-
-        self.class.redi_search_index.del(
-          redi_search_document, delete_document: true
-        )
+        self.class.redi_search_index.del(redi_search_document)
       end
 
       def redi_search_add_document
-        return unless self.class.redi_search_index.exist?
-
-        self.class.redi_search_index.add(redi_search_document, replace: true)
+        self.class.redi_search_index.add(redi_search_document)
       end
     end
   end

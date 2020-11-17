@@ -24,8 +24,9 @@ module RediSearch
           documents = @searcher.return(:first, :middle).load
 
           assert_equal 1, documents.size
-          assert_respond_to documents.first, :first
-          assert_respond_to documents.first, :middle
+          %i(first middle).each do |method|
+            assert_respond_to documents.first, method
+          end
           refute_respond_to documents.first, :last
         end
       end

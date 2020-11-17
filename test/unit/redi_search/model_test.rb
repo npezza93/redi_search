@@ -35,7 +35,6 @@ module RediSearch
 
     def test_redi_search_delete_document
       assert_respond_to @character, :redi_search_delete_document
-      Character.redi_search_index.expects(:exist?).once.returns(true)
       Character.redi_search_index.expects(:del).once.returns(true)
 
       assert @character.redi_search_delete_document
@@ -43,7 +42,6 @@ module RediSearch
 
     def test_redi_search_add_document
       assert_respond_to @character, :redi_search_add_document
-      Character.redi_search_index.expects(:exist?).once.returns(true)
       Character.redi_search_index.expects(:add).once.returns(true)
 
       assert @character.redi_search_add_document
@@ -72,7 +70,6 @@ module RediSearch
 
     def test_reindex
       Character.redi_search_index.expects(:reindex).once.returns(true)
-      Character.redi_search_index.expects(:exist?).once.returns(true)
       Character.redi_search_index.expects(:add).once.returns(true)
 
       Character.create(name: :foo_bar)

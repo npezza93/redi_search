@@ -22,9 +22,9 @@ module RediSearch
 
         def test_clause
           document = @searcher.no_content.load.first
-          refute_respond_to document, :first
-          refute_respond_to document, :middle
-          refute_respond_to document, :last
+          %i(first middle last).each do |method|
+            refute_respond_to document, method
+          end
           assert_respond_to document, :document_id
         end
       end

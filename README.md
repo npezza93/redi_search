@@ -243,13 +243,11 @@ With no options: `{ place: :geo }`
 
 ## Document
 
-A `Document` is the Ruby representation of a RediSearch document.
+A `Document` is the Ruby representation of a Redis hash.
 
-You can fetch a `Document` using `.get` or `.mget` class methods.
+You can fetch a `Document` using `.get` class methods.
 - `get(index, document_id)` fetches a single `Document` in an `Index` for a
 given `document_id`.
-- `mget(index, *document_ids)` fetches a collection of `Document`s
-in an `Index` for the given `document_ids`.
 
 You can also make a `Document` instance using the
 `.for_object(index, record, serializer: nil, only: [])` class method. It takes
@@ -268,10 +266,7 @@ to override each other. There is also a `#document_id_without_index` method
 which removes the prepended index name.
 
 Finally there is a `#del` method that will remove the `Document` from the
-`Index`. It optionally accepts a `delete_document` named argument that signifies
-whether the `Document` should be completely removed from the Redis instance vs
-just the `Index`.
-
+`Index`.
 
 ## Index
 
@@ -313,42 +308,32 @@ RediSearch::Index.new(name_of_index, schema)
         - If set, we avoid saving the term frequencies in the index. This saves
           memory but does not allow sorting based on the frequencies of a given
           term within the document.
-- `drop`
+- `drop(keep_docs: false)`
   - Drops the `Index` from the Redis instance, returns a boolean. Has an
     accompanying bang method that will raise an exception upon failure. Will
-    return `false` if the `Index` has already been dropped.
+    return `false` if the `Index` has already been dropped. Takes an option
+    keyword arg, `keep_docs`, that will by default remove all the document
+    hashes in Redis.
 - `exist?`
   - Returns a boolean signifying `Index` existence.
 - `info`
   - Returns a struct object with all the information about the `Index`.
 - `fields`
   - Returns an array of the field names in the `Index`.
-- `add(document, score: 1.0, replace: {}, language: nil, no_save: false)`
-  - Takes a `Document` object and options. Has an
+- `add(document)`
+  - Takes a `Document` object. Has an
     accompanying bang method that will raise an exception upon failure.
-    - `score` -> The `Document`'s rank, a value between 0.0 and 1.0
-    - `language` -> Use a stemmer for the supplied language during indexing.
-    - `no_save` -> Don't save the actual `Document` in the database and only index it.
-    - `replace` -> Accepts a boolean or a hash. If a truthy value is passed, we
-      will do an UPSERT style insertion - and delete an older version of the
-      `Document` if it exists.
-    - `replace: { partial: true }` -> Allows you to not have to specify all
-      fields for reindexing. Fields not given to the command will be loaded from
-      the current version of the `Document`.
-- `add_multiple(documents, score: 1.0, replace: {}, language: nil, no_save: false)`
+- `add_multiple(documents)`
   - Takes an array of `Document` objects. This provides a more performant way to
     add multiple documents to the `Index`. Accepts the same options as `add`.
-- `del(document, delete_document: false)`
-  - Removes a `Document` from the `Index`. `delete_document` signifies whether the
-    `Document` should be completely removed from the Redis instance vs just the
-    `Index`.
+- `del(document)`
+  - Removes a `Document` from the `Index`.
 - `document_count`
   - Returns the number of `Document`s in the `Index`
 - `add_field(field_name, schema)`
   - Adds a new field to the `Index`. Ex: `index.add_field(:first_name, text: { phonetic: "dm:en" })`
-- `reindex(documents, recreate: false, **options)`
+- `reindex(documents, recreate: false)`
    - If `recreate` is `true` the `Index` will be dropped and recreated
-   - `options` accepts the same options as `add`
 
 
 ## Searching
@@ -520,11 +505,9 @@ end
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
 
-`User.reindex(recreate: false, only: [], **options)` is also added and behaves
+`User.reindex(recreate: false, only: [])` is also added and behaves
 similarly to `RediSearch::Index#reindex`. Some of the differences include:
-  - By default, does an upsert for all `Document`s added using the
-    option `replace: { partial: true }`.
-  - `Document`s do not to be passed as the first parameter. The `search_import`
+  - `Document`s do not need to be passed as the first parameter. The `search_import`
     scope is automatically called and all the records are converted
     to `Document`s.
   - Accepts an optional `only` parameter where you can specify a limited number

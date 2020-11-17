@@ -6,7 +6,7 @@ module RediSearch
       def ok?
         case response
         when String then response == "OK"
-        when Integer then response == 1
+        when Integer then response >= 1
         when Array then array_ok?
         else response
         end

@@ -39,9 +39,9 @@ module RediSearch
     def action_color(action)
       case action.to_sym
       when :search, :spellcheck then YELLOW
-      when :create, :add then GREEN
-      when :drop, :del then RED
-      when :get, :mget, :info then CYAN
+      when :create, :hset then GREEN
+      when :dropindex, :del then RED
+      when :hgetall, :info then CYAN
       when :pipeline then MAGENTA
       when :explaincli then BLUE
       end
@@ -52,6 +52,7 @@ module RediSearch
       event.payload[:query].flatten.map.with_index do |arg, i|
         arg = "FT.#{arg}" if prepend_ft?(arg, i)
         arg = arg.inspect if inspect_arg?(event.payload, arg)
+        arg = "  #{arg}"  if event.payload[:inside_pipeline]
         arg
       end.join(" ")
     end
@@ -61,7 +62,7 @@ module RediSearch
     end
 
     def prepend_ft?(arg, index)
-      index.zero? && !multiword?(arg)
+      index.zero? && !multiword?(arg) && %w(HSET HGETALL DEL).exclude?(arg.to_s)
     end
 
     def inspect_arg?(payload, arg)

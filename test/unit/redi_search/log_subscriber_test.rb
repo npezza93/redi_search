@@ -48,20 +48,20 @@ module RediSearch
       )
     end
 
-    def test_add
-      instrument("add", query: %w(ADD foo))
+    def test_hset
+      instrument("hset", query: %w(HSET foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[32mFT.ADD foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[32mHSET foo\e[0m",
         @logger.logged(:debug).last
       )
     end
 
-    def test_drop
-      instrument("drop", query: %w(DROP foo))
+    def test_dropindex
+      instrument("dropindex", query: %w(DROPINDEX foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DROP foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DROPINDEX foo\e[0m",
         @logger.logged(:debug).last
       )
     end
@@ -70,25 +70,16 @@ module RediSearch
       instrument("del", query: %w(DEL foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mFT.DEL foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[31mDEL foo\e[0m",
         @logger.logged(:debug).last
       )
     end
 
-    def test_get
-      instrument("get", query: %w(GET foo))
+    def test_hgetall
+      instrument("hgetall", query: %w(HGETALL foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[36mFT.GET foo\e[0m",
-        @logger.logged(:debug).last
-      )
-    end
-
-    def test_mget
-      instrument("mget", query: %w(MGET foo))
-
-      assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[36mFT.MGET foo\e[0m",
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[36mHGETALL foo\e[0m",
         @logger.logged(:debug).last
       )
     end

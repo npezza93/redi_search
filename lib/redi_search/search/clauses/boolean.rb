@@ -65,10 +65,10 @@ module RediSearch
         end
 
         def queryify_search
-          if !term.term_clause.is_a?(RediSearch::Search::Clauses::Where)
-            "(#{term.term_clause})"
-          else
+          if term.term_clause.is_a?(RediSearch::Search::Clauses::Where)
             term.term_clause
+          else
+            "(#{term.term_clause})"
           end
         end
       end

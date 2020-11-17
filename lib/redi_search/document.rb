@@ -23,10 +23,6 @@ module RediSearch
       def get(index, document_id)
         Finder.new(index, document_id).find
       end
-
-      def mget(index, *document_ids)
-        Finder.new(index, *document_ids).find
-      end
     end
 
     attr_reader :attributes, :score
@@ -40,9 +36,8 @@ module RediSearch
       load_attributes
     end
 
-    def del(delete_document: false)
-      command = ["DEL", index.name, document_id, ("DD" if delete_document)]
-      call!(*command.compact).ok?
+    def del
+      RediSearch.client.call!("DEL", document_id, skip_ft: true).ok?
     end
 
     def schema_fields
@@ -72,10 +67,6 @@ module RediSearch
     private
 
     attr_reader :index
-
-    def call!(*command)
-      RediSearch.client.call!(*command)
-    end
 
     def load_attributes
       attributes.each do |field, value|

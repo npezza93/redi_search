@@ -1,6 +1,8 @@
 require:
+  - rubocop-minitest
   - rubocop-performance
 AllCops:
+  NewCops: enable
   Exclude:
     - vendor/**/*
     - Gemfile.lock
@@ -9,6 +11,7 @@ AllCops:
     - tmp/**/*
     - test/dummy/db/schema.rb
     - gemfiles/**/*
+    - bin/**/*
   TargetRubyVersion: 2.5
 
 # Department Bundler
@@ -611,7 +614,7 @@ Lint/UselessAssignment:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars
   Enabled: true
 
-Lint/UselessComparison:
+Lint/BinaryOperatorWithIdenticalOperands:
   Description: Checks for comparison of something with itself.
   Enabled: true
 
@@ -1197,9 +1200,6 @@ Style/MethodDefParentheses:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#method-parens
   Enabled: true
 
-Style/MethodMissingSuper:
-  Enabled: true
-
 Style/MissingRespondToMissing:
   Enabled: true
 
@@ -1630,10 +1630,26 @@ Style/RedundantRegexpCharacterClass:
   Enabled: true
 Style/RedundantRegexpEscape:
   Enabled: true
-Style/RedundantFetchBlock:
-  Enabled: true
+Lint/MissingSuper:
+  Enabled: false
+
+
 
 Lint/DuplicateElsifCondition:
+  Enabled: true
+Lint/DuplicateRescueException:
+  Enabled: true
+Lint/EmptyConditionalBody:
+  Enabled: true
+Lint/FloatComparison:
+  Enabled: true
+Lint/OutOfRangeRegexpRef:
+  Enabled: true
+Lint/SelfAssignment:
+  Enabled: true
+Lint/TopLevelReturnWithArgument:
+  Enabled: true
+Lint/UnreachableLoop:
   Enabled: true
 Style/AccessorGrouping:
   Enabled: true
@@ -1643,13 +1659,25 @@ Style/BisectedAttrAccessor:
   Enabled: true
 Style/CaseLikeIf:
   Enabled: true
-Style/HashAsLastArrayItem:
+Style/ExplicitBlockArgument:
+  Enabled: false
+Style/GlobalStdStream:
   Enabled: true
+Style/HashAsLastArrayItem:
+  Enabled: false
 Style/HashLikeCase:
+  Enabled: true
+Style/OptionalBooleanParameter:
   Enabled: true
 Style/RedundantAssignment:
   Enabled: true
+Style/RedundantFetchBlock:
+  Enabled: true
 Style/RedundantFileExtensionInRequire:
+  Enabled: true
+Style/SingleArgumentDig:
+  Enabled: true
+Style/StringConcatenation:
   Enabled: true
 Performance/AncestorsInclude:
   Enabled: true
@@ -1667,3 +1695,5 @@ Performance/Squeeze:
   Enabled: true
 Performance/StringInclude:
   Enabled: true
+Minitest/AssertionInLifecycleHook:
+  Enabled: false

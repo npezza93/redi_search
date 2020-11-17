@@ -31,7 +31,8 @@ module RediSearch
     attr_reader :index, :schema, :options
 
     def command
-      ["CREATE", index.name, *extract_options.compact, "SCHEMA", schema.to_a]
+      ["CREATE", index.name, "ON", "HASH", "PREFIX", 1, index.name,
+       *extract_options.compact, "SCHEMA", schema.to_a]
     end
 
     def extract_options

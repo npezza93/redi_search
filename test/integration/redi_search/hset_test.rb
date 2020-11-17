@@ -3,22 +3,22 @@
 require "test_helper"
 
 module RediSearch
-  class DocumentTest < Minitest::Test
+  class HsetTest < Minitest::Test
     include ActiveSupport::Testing::Assertions
 
     def setup
       @index = Index.new(:users, first: :text, last: :text)
+      @document = Document.for_object(@index, users(index: 0))
       @index.create
-      @index.add(Document.for_object(@index, users(index: 0)))
     end
 
     def teardown
       @index.drop
     end
 
-    def test_del
-      assert_difference -> { @index.document_count }, -1 do
-        Document.for_object(@index, users(index: 0)).del
+    def test_adds_document_to_index
+      assert_difference -> { @index.document_count }, 1 do
+        assert Hset.new(@index, @document).call
       end
     end
   end

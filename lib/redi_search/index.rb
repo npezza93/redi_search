@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "redi_search/add"
+require "redi_search/hset"
 require "redi_search/create"
 require "redi_search/schema"
 require "redi_search/search"
@@ -33,34 +33,36 @@ module RediSearch
       Create.new(self, schema, options).call!
     end
 
-    def drop
-      drop!
+    def drop(keep_docs: false)
+      drop!(keep_docs: keep_docs)
     rescue Redis::CommandError
       false
     end
 
-    def drop!
-      client.call!("DROP", name).ok?
+    def drop!(keep_docs: false)
+      command = ["DROPINDEX", name]
+      command << "DD" unless keep_docs
+      client.call!(*command.compact).ok?
     end
 
-    def add(document, **options)
-      Add.new(self, document, **options).call
+    def add(document)
+      Hset.new(self, document).call
     end
 
-    def add!(document, **options)
-      Add.new(self, document, **options).call!
+    def add!(document)
+      Hset.new(self, document).call!
     end
 
-    def add_multiple(documents, **options)
+    def add_multiple(documents)
       client.multi do
         documents.each do |document|
-          add(document, **options)
+          add(document)
         end
-      end.ok?
+      end.all? { |response| response >= 0 }
     end
 
-    def del(document, delete_document: false)
-      document.del(delete_document: delete_document)
+    def del(document)
+      document.del
     end
 
     def exist?
@@ -81,11 +83,11 @@ module RediSearch
       schema.fields.map(&:to_s)
     end
 
-    def reindex(documents, recreate: false, **options)
+    def reindex(documents, recreate: false)
       drop if recreate
       create unless exist?
 
-      add_multiple documents, **options
+      add_multiple documents
     end
 
     def document_count

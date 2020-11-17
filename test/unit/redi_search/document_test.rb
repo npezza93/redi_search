@@ -16,7 +16,7 @@ module RediSearch
 
     def test_document_id_with_already_prepended_index_name
       document = Document.new(
-        @index, @index.name + "100", { first: :foo, last: :bar }
+        @index, "#{@index.name}100", { first: :foo, last: :bar }
       )
 
       assert_equal "users_test100", document.document_id
@@ -36,7 +36,7 @@ module RediSearch
 
     def test_document_id_without_index_when_already_prepended
       document = Document.new(
-        @index, @index.name + "100", { first: :foo, last: :bar }
+        @index, "#{@index.name}100", { first: :foo, last: :bar }
       )
 
       assert_equal "100", document.document_id_without_index
@@ -58,13 +58,6 @@ module RediSearch
       document = Document.new(@index, 100, { first: :foo, last: :bar })
 
       mock_client(document, 1) { assert document.del }
-    end
-
-    def test_del_that_deletes_document
-      document = Document.new(@index, 100, { first: :foo, last: :bar })
-      mock_client(document, 1, "DD") do
-        assert document.del(delete_document: true)
-      end
     end
 
     def test_failed_del
@@ -104,13 +97,6 @@ module RediSearch
       Document.get(:users, 1)
     end
 
-    def test_mget_class_method
-      Document::Finder.any_instance.expects(:find).once.
-        returns(Client::Response.new([]))
-
-      Document.mget(:users, 1, 2)
-    end
-
     def test_inspect
       document = Document.new(@index, 100, { first: :foo, last: :bar })
       expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\
@@ -128,10 +114,10 @@ module RediSearch
 
     private
 
-    def mock_client(document, response, *options)
+    def mock_client(document, response)
       client = Minitest::Mock.new.expect(
-        :call!, Client::Response.new(response), ["DEL", @index.name,
-                                                 document.document_id, *options]
+        :call!, Client::Response.new(response),
+        ["DEL", document.document_id, skip_ft: true]
       )
 
       RediSearch.stub(:client, client) { yield }
