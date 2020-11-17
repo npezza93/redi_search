@@ -250,11 +250,12 @@ You can fetch a `Document` using `.get` class methods.
 given `document_id`.
 
 You can also make a `Document` instance using the
-`.for_object(index, record, serializer: nil)` class method. It takes
+`.for_object(index, record, serializer: nil, only: [])` class method. It takes
 an `Index` instance and a Ruby object. That object must respond to all the
 fields specified in the `Index`'s `Schema` or pass a serializer class that
 accepts the object and responds to all the fields specified in the `Index`'s
-`Schema`.
+`Schema`. `only` accepts an array of fields from the schema and limits the
+fields that are passed to the `Document`.
 
 Once you have an instance of a `Document`, it responds to all the fields
 specified in the `Index`'s `Schema` as methods and `document_id`. `document_id`
@@ -504,11 +505,15 @@ end
 This will automatically add `User.search` and `User.spellcheck`
 methods which behave the same as if you called them on an `Index` instance.
 
-`User.reindex(recreate: false)` is also added and behaves
+`User.reindex(recreate: false, only: [])` is also added and behaves
 similarly to `RediSearch::Index#reindex`. Some of the differences include:
   - `Document`s do not need to be passed as the first parameter. The `search_import`
     scope is automatically called and all the records are converted
     to `Document`s.
+  - Accepts an optional `only` parameter where you can specify a limited number
+    of fields to update. Useful if you alter the schema and only need to index a
+    particular field.
+
 
 The `redi_search` class method also takes an optional `serializer` argument
 which takes the class name of a serializer. The serializer must respond to all

@@ -73,6 +73,13 @@ module RediSearch
       assert_equal "users_test1", document.document_id
     end
 
+    def test_for_object_only
+      document = Document.for_object(@index, users(index: 0), only: %i(first))
+
+      assert_equal "users_test1", document.document_id
+      refute_respond_to document, :last
+    end
+
     def test_for_object_serializer
       index = Index.new(:users_test, name: :text)
       document =

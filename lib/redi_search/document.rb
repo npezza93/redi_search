@@ -8,10 +8,12 @@ module RediSearch
     include Display
 
     class << self
-      def for_object(index, record, serializer: nil)
+      def for_object(index, record, serializer: nil, only: [])
         object_to_serialize = serializer&.new(record) || record
 
         field_values = index.schema.fields.map do |field|
+          next unless only.empty? || only.include?(field.to_sym)
+
           [field.to_s, object_to_serialize.public_send(field)]
         end.compact.to_h
 
