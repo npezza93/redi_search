@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.5', '2.6', '2.7' ]
-        gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile', 'gemfiles/activerecord_61.gemfile' ]
+        ruby: [ '2.5', '2.6', '2.7', '3.0' ]
+        gemfile: [ 'Gemfile', 'gemfiles/activerecord_51.gemfile', 'gemfiles/activerecord_52.gemfile', 'gemfiles/activerecord_60.gemfile'  ]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby }}
@@ -32,10 +32,10 @@ jobs:
           - 6379:6379
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby 2.7
+    - name: Set up Ruby 3.0
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.7
+        ruby-version: 3.0
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev -y

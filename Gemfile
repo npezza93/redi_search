@@ -16,4 +16,4 @@ gem "rubocop-performance"
 gem "simplecov"
 gem "sqlite3"
 
-gem "activerecord", "~> 6.0.0"
+gem "activerecord", "~> 6.1"
