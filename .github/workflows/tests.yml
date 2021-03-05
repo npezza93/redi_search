@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       redisearch:
-        image: redislabs/redisearch:2.0.2
+        image: redislabs/redisearch:2.0.6
         ports:
           - 6379:6379
     steps:
