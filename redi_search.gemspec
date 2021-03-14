@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.name          = "redi_search"
   spec.version       = RediSearch::VERSION
   spec.authors       = "Nick Pezza"
-  spec.email         = "npezza93@gmail.com"
+  spec.email         = "pezza@hey.com"
 
   spec.summary       = %q(RediSearch ruby wrapper that can integrate with Rails)
   spec.homepage      = "https://github.com/npezza93/redi_search"
@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 2.5.0"
 
-  spec.add_runtime_dependency "activesupport", ">= 5.2", "< 6.2"
+  spec.add_runtime_dependency "activesupport", ">= 5.1", "< 6.2"
   spec.add_runtime_dependency "redis", ">= 4.0", "< 5.0"
 
   spec.add_development_dependency "bundler", ">= 1.17", "< 3"

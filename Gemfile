@@ -9,7 +9,6 @@ gemspec
 gem "appraisal", "~> 2.2"
 gem "faker"
 gem "mocha"
-gem "pry"
 gem "rubocop"
 gem "rubocop-minitest"
 gem "rubocop-performance"
