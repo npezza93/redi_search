@@ -17,6 +17,6 @@ jobs:
         ruby-version: 3.0
     - name: Install rubocop
       run: |
-        gem install rubocop rubocop-performance rubocop-minitest
+        gem install rubocop rubocop-performance rubocop-minitest rubocop-rake
     - name: Lint
       run: rubocop --config=./.rubocop.yml --parallel
