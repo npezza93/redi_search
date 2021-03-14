@@ -47,7 +47,9 @@ module RediSearch
     end
 
     def redis_attributes
-      attributes.to_a.flatten
+      attributes.flat_map do |field, value|
+        [field, index.schema[field.to_sym].serialize(value)]
+      end
     end
 
     def document_id

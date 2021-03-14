@@ -20,6 +20,10 @@ module RediSearch
         query
       end
 
+      def serialize(value)
+        value.join(separator)
+      end
+
       private
 
       attr_reader :separator, :sortable, :no_index

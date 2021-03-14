@@ -23,6 +23,10 @@ module RediSearch
       fields.map(&:to_a).flatten
     end
 
+    def [](field)
+      fields.group_by(&:name)[field]&.first
+    end
+
     def fields
       @fields ||= raw.map do |field_name, options|
         self.class.make_field(field_name, options)

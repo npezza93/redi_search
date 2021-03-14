@@ -7,6 +7,10 @@ module RediSearch
         @name&.to_sym
       end
 
+      def serialize(value)
+        value
+      end
+
       private
 
       FALSES = [
