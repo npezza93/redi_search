@@ -34,4 +34,8 @@ def seed_users(count = 10_000)
   User.reindex
 end
 
+def reload!
+  exec($0)
+end
+
 IRB.start
