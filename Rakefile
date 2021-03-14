@@ -20,5 +20,6 @@ Rake::TestTask.new("test:integration") do |t|
   t.test_files = FileList["test/integration/**/*_test.rb"]
 end
 
+desc "run all tests"
 task test: [:default]
 task default: ["test:integration", "test:unit", :rubocop]

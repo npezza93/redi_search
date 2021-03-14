@@ -80,7 +80,7 @@ module RediSearch
     end
 
     def fields
-      schema.fields.map(&:to_s)
+      schema.fields.map { |field| field.name.to_s }
     end
 
     def reindex(documents, recreate: false)

@@ -15,7 +15,7 @@ module RediSearch
     end
 
     def test_fields
-      assert_equal(%i(name age myTag other), actual_schema.fields)
+      assert_equal(%i(name age myTag other), actual_schema.fields.map(&:name))
     end
 
     private

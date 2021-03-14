@@ -3,7 +3,9 @@
 module RediSearch
   class Schema
     class Field
-      attr_reader :name
+      def name
+        @name&.to_sym
+      end
 
       private
 

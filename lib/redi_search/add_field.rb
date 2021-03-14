@@ -29,7 +29,7 @@ module RediSearch
     end
 
     def field_schema
-      @field_schema ||= Schema.make_field(field_name, raw_schema)
+      @field_schema ||= Schema.make_field(field_name, raw_schema).to_a
     end
   end
 end

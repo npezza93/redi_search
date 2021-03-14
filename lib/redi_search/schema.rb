@@ -12,7 +12,7 @@ module RediSearch
       schema, options = options.to_a.flatten
 
       Object.const_get("RediSearch::Schema::#{schema.to_s.capitalize}Field").
-        new(field_name, **options.to_h).to_a
+        new(field_name, **options.to_h)
     end
 
     def initialize(raw)
@@ -20,17 +20,18 @@ module RediSearch
     end
 
     def to_a
-      raw.map do |field_name, options|
+      fields.map(&:to_a).flatten
+    end
+
+    def fields
+      @fields ||= raw.map do |field_name, options|
         self.class.make_field(field_name, options)
       end.flatten
     end
 
-    def fields
-      raw.keys
-    end
-
     def add_field(field_name, options)
       raw[field_name] = options
+      @fields = nil
       self
     end
 

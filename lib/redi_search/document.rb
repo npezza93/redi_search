@@ -11,8 +11,8 @@ module RediSearch
       def for_object(index, record, serializer: nil, only: [])
         object_to_serialize = serializer&.new(record) || record
 
-        field_values = index.schema.fields.map do |field|
-          next unless only.empty? || only.include?(field.to_sym)
+        field_values = index.schema.fields.map(&:name).map do |field|
+          next unless only.empty? || only.include?(field)
 
           [field.to_s, object_to_serialize.public_send(field)]
         end.compact.to_h
@@ -41,7 +41,9 @@ module RediSearch
     end
 
     def schema_fields
-      @schema_fields ||= index.schema.fields.map(&:to_s)
+      @schema_fields ||= index.schema.fields.map do |field|
+        field.name.to_s
+      end
     end
 
     def redis_attributes

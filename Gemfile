@@ -12,6 +12,7 @@ gem "mocha"
 gem "rubocop"
 gem "rubocop-minitest"
 gem "rubocop-performance"
+gem "rubocop-rake"
 gem "simplecov"
 gem "sqlite3"
 
