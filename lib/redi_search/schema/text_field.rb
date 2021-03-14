@@ -24,7 +24,7 @@ module RediSearch
 
       private
 
-      attr_reader :name, :weight, :phonetic, :sortable, :no_index, :no_stem
+      attr_reader :weight, :phonetic, :sortable, :no_index, :no_stem
 
       def boolean_options
         %i(sortable no_index no_stem)

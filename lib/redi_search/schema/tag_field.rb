@@ -22,7 +22,7 @@ module RediSearch
 
       private
 
-      attr_reader :name, :separator, :sortable, :no_index
+      attr_reader :separator, :sortable, :no_index
 
       def boolean_options
         %i(sortable no_index)

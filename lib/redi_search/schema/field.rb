@@ -3,6 +3,8 @@
 module RediSearch
   class Schema
     class Field
+      attr_reader :name
+
       private
 
       FALSES = [
