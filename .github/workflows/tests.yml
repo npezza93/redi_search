@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.5', '2.6', '2.7', '3.0' ]
-        gemfile: [ 'Gemfile', 'gemfiles/activerecord_60.gemfile'  ]
+        ruby: [ '2.7', '3.0' ]
+        gemfile: [ 'Gemfile', 'gemfiles/activerecord_60.gemfile', 'gemfiles/activerecord_61.gemfile', 'gemfiles/activerecord_70.gemfile'  ]
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby }}
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       redisearch:
-        image: redislabs/redisearch:2.0.6
+        image: redislabs/redisearch:2.0.12
         ports:
           - 6379:6379
     steps:
