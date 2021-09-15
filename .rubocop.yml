@@ -13,7 +13,7 @@ AllCops:
     - test/dummy/db/schema.rb
     - gemfiles/**/*
     - bin/**/*
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.7
 
 # Department Bundler
 Bundler/DuplicatedGem:
