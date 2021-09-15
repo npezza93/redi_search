@@ -27,7 +27,7 @@ module RediSearch
     end
 
     def parsed_terms
-      terms.split(Regexp.union(",.<>{}[]\"':;!@#$%^&*()-+=~\s".split("")))
+      terms.split(Regexp.union(",.<>{}[]\"':;!@#$%^&*()-+=~\s".chars))
     end
 
     def execute

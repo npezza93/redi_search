@@ -4,9 +4,9 @@ module RediSearch
   class Document
     module Display
       def inspect
-        inspection = pretty_print_attributes.map do |field_name|
+        inspection = pretty_print_attributes.filter_map do |field_name|
           "#{field_name}: #{public_send(field_name)}"
-        end.compact.join(", ")
+        end.join(", ")
 
         "#<#{self.class} #{inspection}>"
       end
@@ -19,7 +19,7 @@ module RediSearch
         pp_attrs.compact
       end
 
-      #:nocov:
+      # :nocov:
       def pretty_print(printer) # rubocop:disable Metrics/MethodLength
         printer.object_address_group(self) do
           printer.seplist(
@@ -35,7 +35,7 @@ module RediSearch
           end
         end
       end
-      #:nocov:
+      # :nocov:
     end
   end
 end

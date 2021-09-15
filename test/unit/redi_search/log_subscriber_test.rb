@@ -98,7 +98,7 @@ module RediSearch
 
       assert_equal(
         "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[34mFT.EXPLAINCLI "\
-          "SEARCH foo\e[0m",
+        "SEARCH foo\e[0m",
         @logger.logged(:debug).last
       )
     end

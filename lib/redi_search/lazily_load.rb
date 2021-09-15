@@ -30,7 +30,7 @@ module RediSearch
       end
     end
 
-    #:nocov:
+    # :nocov:
     def pretty_print(printer)
       execute_and_rescue_inspection do
         return super(inspect) unless valid?
@@ -38,7 +38,7 @@ module RediSearch
         printer.pp(documents)
       end
     end
-    #:nocov:
+    # :nocov:
 
     private
 

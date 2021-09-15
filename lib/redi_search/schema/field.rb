@@ -18,10 +18,10 @@ module RediSearch
       ].freeze
 
       def boolean_options_string
-        boolean_options.map do |option|
+        boolean_options.filter_map do |option|
           option.to_s.upcase.split("_").join unless
             FALSES.include?(send(option))
-        end.compact
+        end
       end
     end
   end

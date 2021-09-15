@@ -54,7 +54,7 @@ module RediSearch
     end
 
     def parse_response(response)
-      @documents = Result.new(self, response[0], response[1..-1])
+      @documents = Result.new(self, response[0], response[1..])
     end
 
     def valid?

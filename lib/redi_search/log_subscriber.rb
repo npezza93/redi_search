@@ -12,12 +12,12 @@ module RediSearch
       Thread.current[:redi_search_runtime] ||= 0
     end
 
-    #:nocov:
+    # :nocov:
     def self.reset_runtime
       rt, self.runtime = runtime, 0
       rt
     end
-    #:nocov:
+    # :nocov:
 
     def action(event)
       self.class.runtime += event.duration

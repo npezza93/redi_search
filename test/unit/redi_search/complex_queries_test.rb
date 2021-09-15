@@ -45,7 +45,7 @@ module RediSearch
     # rubocop:disable Metrics/MethodLength
     def test_combined_and_or_with_field_specifiers
       expected = "`world` (@title:`hello`) (@description:(`foo` `bar`)) "\
-        "(@category:(`articles`|`biographies`))"
+                 "(@category:(`articles`|`biographies`))"
 
       assert_query(expected) do
         @index.search("world").where(title: "hello").

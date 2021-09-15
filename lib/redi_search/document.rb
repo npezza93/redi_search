@@ -11,11 +11,11 @@ module RediSearch
       def for_object(index, record, serializer: nil, only: [])
         object_to_serialize = serializer&.new(record) || record
 
-        field_values = index.schema.fields.map(&:name).map do |field|
+        field_values = index.schema.fields.map(&:name).filter_map do |field|
           next unless only.empty? || only.include?(field)
 
           [field.to_s, object_to_serialize.public_send(field)]
-        end.compact.to_h
+        end.to_h
 
         new(index, object_to_serialize.id, field_values)
       end

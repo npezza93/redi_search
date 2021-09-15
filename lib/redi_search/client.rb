@@ -47,7 +47,7 @@ module RediSearch
         "action.redi_search",
         { name: "RediSearch", action: action, inside_pipeline: pipeline }.
           merge(payload),
-        &Proc.new(&(block || proc {})) # rubocop:disable Lint/EmptyBlock
+        &Proc.new(&(block || proc {}))
       )
     end
   end

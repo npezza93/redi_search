@@ -15,14 +15,14 @@ module RediSearch
       end
 
       def inspect
-        inspection = %w(term suggestions).map do |field_name|
+        inspection = %w(term suggestions).filter_map do |field_name|
           "#{field_name}: #{public_send(field_name)}"
-        end.compact.join(", ")
+        end.join(", ")
 
         "#<#{self.class} #{inspection}>"
       end
 
-      #:nocov:
+      # :nocov:
       def pretty_print(printer) # rubocop:disable Metrics/MethodLength
         printer.object_address_group(self) do
           printer.seplist(
@@ -38,7 +38,7 @@ module RediSearch
           end
         end
       end
-      #:nocov:
+      # :nocov:
     end
   end
 end

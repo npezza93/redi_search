@@ -26,11 +26,11 @@ module RediSearch
         results
       end
 
-      #:nocov:
+      # :nocov:
       def pretty_print(printer)
         printer.pp(results)
       end
-      #:nocov:
+      # :nocov:
 
       private
 
