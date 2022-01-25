@@ -41,9 +41,9 @@ module RediSearch
     end
 
     def parse_response(response)
-      suggestions = response.map do |suggestion|
+      suggestions = response.to_h do |suggestion|
         suggestion[1..2]
-      end.to_h
+      end
 
       @documents = parsed_terms.map do |term|
         Result.new(term, suggestions[term] || [])
