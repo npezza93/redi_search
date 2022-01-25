@@ -31,7 +31,9 @@ class UserSerializer
     @object = object
   end
 
-  delegate :id, to: :object
+  def id
+    object.id
+  end
 
   def name
     "#{object.first} #{object.last}"
