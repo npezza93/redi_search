@@ -4,14 +4,14 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby: [ '2.7', '3.0' ]
+        ruby: [ '2.7', '3.0', '3.1' ]
         gemfile: [ 'Gemfile', 'gemfiles/activerecord_60.gemfile', 'gemfiles/activerecord_61.gemfile', 'gemfiles/activerecord_70.gemfile'  ]
     steps:
     - uses: actions/checkout@v2
@@ -29,17 +29,20 @@ jobs:
       run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
   integration:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        redisearch: [ '2.0.14', '2.2.7' ]
     services:
       redisearch:
-        image: redislabs/redisearch:2.0.12
+        image: redislabs/redisearch:${{ matrix.redisearch }}
         ports:
           - 6379:6379
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby 3.0
+    - name: Set up Ruby 3.1
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.0
+        ruby-version: 3.1
     - name: Install dependencies
       run: |
         sudo apt-get install libsqlite3-dev -y

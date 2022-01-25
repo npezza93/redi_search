@@ -4,17 +4,17 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Ruby 3.0
+    - name: Set up Ruby 3.1
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 3.0
+        ruby-version: 3.1
     - name: Install rubocop
       run: |
         gem install rubocop rubocop-performance rubocop-minitest rubocop-rake
