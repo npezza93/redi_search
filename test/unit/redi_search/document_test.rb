@@ -5,7 +5,10 @@ require "test_helper"
 module RediSearch
   class DocumentTest < Minitest::Test
     def setup
-      @index = Index.new(:users_test, first: :text, last: :text)
+      @index = Index.new(:users_test) do
+        text_field :first
+        text_field :last
+      end
     end
 
     def test_initialize

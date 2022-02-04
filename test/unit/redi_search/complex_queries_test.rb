@@ -5,9 +5,11 @@ require "test_helper"
 module RediSearch
   class ComplexQueriesTest < Minitest::Test
     def setup
-      @index = Index.new(
-        :users, name: :text, title: :text, description: :text, category: :text
-      )
+      @index = Index.new(:users) do
+        text_field :name
+        text_field :description
+        text_field :category
+      end
     end
 
     def test_and_not_multiple_phrase

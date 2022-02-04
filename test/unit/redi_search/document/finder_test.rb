@@ -7,7 +7,10 @@ module RediSearch
   class Document
     class FinderTest < Minitest::Test
       def setup
-        @index = Index.new(:users, first: :text, last: :text)
+        @index = Index.new(:users) do
+          text_field :first
+          text_field :last
+        end
       end
 
       def test_get_with_id

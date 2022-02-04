@@ -5,7 +5,10 @@ require "test_helper"
 module RediSearch
   class IndexTest < Minitest::Test # rubocop:disable Metrics/ClassLength
     def setup
-      @index = Index.new(:users, first: :text, last: :text)
+      @index = Index.new(:users) do
+        text_field :first
+        text_field :last
+      end
       @user = User.new(rand, "foo", "bar")
       @document = Document.for_object(@index, @user)
     end

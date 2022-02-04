@@ -6,7 +6,7 @@ module RediSearch
   class Search
     class ResultTest < Minitest::Test
       def setup
-        search = Search.new(Index.new(:users, name: :text), "foo")
+        search = Search.new(Index.new(:users) { text_field :name }, "foo")
         @result = Result.new(search, 1, ["users1", %w(name foo)])
       end
 

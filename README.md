@@ -103,17 +103,17 @@ defining what a search index is. According to [Swiftype](https://swiftype.com):
 ## Schema
 
 This defines the fields and the properties of those fields in the index. A
-schema is a hash, with field names as the keys, and the field type(and options)
-as the value. Each field can be one of four types: geo, numeric, tag, or text
-and can have many options. A simple example of a schema is:
+schema is a simple DSL. Each field can be one of four types: geo, numeric, tag,
+or text and can have many options. A simple example of a schema is:
 ```ruby
-{ first_name: :text, last_name: :text }
+text_field :first_name
+text_field :last_name
 ```
 
 The supported options for each type are as follows:
 
 ##### Text field
-With no options: `{ name: :text }`
+With no options: `text_field :name`
 
 <details>
   <summary>Options</summary>
@@ -122,7 +122,7 @@ With no options: `{ name: :text }`
       <b>weight</b> (default: 1.0)
       <ul>
         <li>Declares the importance of this field when calculating result accuracy. This is a multiplication factor.</li>
-        <li>Ex: <code>{ name: { text: { weight: 2 } } }</code></li>
+        <li>Ex: <code>text_field :name, weight: 2</code></li>
       </ul>
     </li>
     <li>
@@ -137,7 +137,7 @@ With no options: `{ name: :text }`
           </ul>
         </li>
         <li>
-          Ex: <code>{ name: { text: { phonetic: 'dm:en' } } }</code>
+          Ex: <code>text_field :name, phonetic: 'dm:en'</code>
         </li>
       </ul>
     </li>
@@ -145,28 +145,28 @@ With no options: `{ name: :text }`
       <b>sortable</b> (default: false)
       <ul>
         <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
-        <li>Ex: <code>{ name: { text: { sortable: true } } }</code></li>
+        <li>Ex: <code>text_field :name, sortable: true</code></li>
       </ul>
     </li>
     <li>
       <b>no_index</b> (default: false)
       <ul>
         <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
-        <li>Ex: <code>{ name: { text: { no_index: true } } }</code></li>
+        <li>Ex: <code>text_field :name, no_index: true</code></li>
       </ul>
     </li>
     <li>
       <b>no_stem</b> (default: false)
       <ul>
         <li>Disable stemming when indexing its values. This may be ideal for things like proper names.</li>
-        <li>Ex: <code>{ name: { text: { no_stem: true } } }</code></li>
+        <li>Ex: <code>text_feidl :name, no_stem: true</code></li>
       </ul>
     </li>
   </ul>
 </details>
 
 ##### Numeric field
-With no options: `{ price: :numeric }`
+With no options: `numeric_field :price`
 
 <details>
   <summary>Options</summary>
@@ -175,21 +175,21 @@ With no options: `{ price: :numeric }`
       <b>sortable</b> (default: false)
       <ul>
         <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
-        <li>Ex: <code>{ id: { numeric: { sortable: true } } }</code></li>
+        <li>Ex: <code>numeric_field :id, sortable: true</code></li>
       </ul>
     </li>
     <li>
       <b>no_index</b> (default: false)
       <ul>
         <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
-        <li>Ex: <code>{ id: { numeric: { no_index: true } } }</code></li>
+        <li>Ex: <code>numeric_field :id, no_index: true</code></li>
       </ul>
     </li>
   </ul>
 </details>
 
 ##### Tag field
-With no options: `{ tag: :tag }`
+With no options: `tag_field :tag`
 
 <details>
   <summary>Options</summary>
@@ -198,28 +198,28 @@ With no options: `{ tag: :tag }`
       <b>sortable</b> (default: false)
       <ul>
         <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
-        <li>Ex: <code>{ tag: { tag: { sortable: true } } }</code></li>
+        <li>Ex: <code>tag_field :tag, sortable: true</code></li>
       </ul>
     </li>
     <li>
       <b>no_index</b> (default: false)
       <ul>
         <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
-        <li>Ex: <code>{ tag: { tag: { no_index: true } } }</code></li>
+        <li>Ex: <code>tag_field :tag, no_index: true</code></li>
       </ul>
     </li>
     <li>
       <b>separator</b> (default: ",")
       <ul>
         <li>Indicates how the text contained in the field is to be split into individual tags. The default is ,. The value must be a single character.</li>
-        <li>Ex: <code>{ tag: { tag: { separator: ',' } } }</code></li>
+        <li>Ex: <code>tag_field :tag, separator: ','</code></li>
       </ul>
     </li>
   </ul>
 </details>
 
 ##### Geo field
-With no options: `{ place: :geo }`
+With no options: `geo_field :place`
 
 <details>
   <summary>Options</summary>
@@ -228,14 +228,14 @@ With no options: `{ place: :geo }`
       <b>sortable</b> (default: false)
       <ul>
         <li>Allows the user to later sort the results by the value of this field (this adds memory overhead so do not declare it on large text fields).</li>
-        <li>Ex: <code>{ place: { geo: { sortable: true } } }</code></li>
+        <li>Ex: <code>geo_field :place, sortable: true</code></li>
       </ul>
     </li>
     <li>
       <b>no_index</b> (default: false)
       <ul>
         <li>Field will not be indexed. This is useful in conjunction with <code>sortable</code>, to create fields whose update using PARTIAL will not cause full reindexing of the document. If a field has <code>no_index</code> and doesn't have <code>sortable</code>, it will just be ignored by the index.</li>
-        <li>Ex: <code>{ place: { geo: { no_index: true } } }</code></li>
+        <li>Ex: <code>geo_field :place, no_index: true</code></li>
       </ul>
     </li>
   </ul>
@@ -274,7 +274,9 @@ To initialize an `Index`, pass the name of the `Index` as a string or symbol
 and the `Schema`.
 
 ```ruby
-RediSearch::Index.new(name_of_index, schema)
+RediSearch::Index.new(name_of_index) do
+  text_field :foobar
+end
 ```
 
 #### Available Commands
@@ -343,7 +345,7 @@ be chained together. When searching, an array of `Document`s is returned
 which has public reader methods for all the schema fields.
 
 ```ruby
-main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
+main ❯ index = RediSearch::Index.new("user_idx") { text_field :name, phonetic: "dm:en" }
 main ❯ index.add RediSearch::Document.for_object(index, User.new("10039", "Gene", "Volkman"))
 main ❯ index.add RediSearch::Document.for_object(index, User.new("9998", "Jeannie", "Ledner"))
 main ❯ index.search("john")
@@ -495,10 +497,10 @@ keyword argument from inside your model. Ex:
 
 ```ruby
 class User < ApplicationRecord
-  redi_search schema: {
-    first: { text: { phonetic: "dm:en" } },
-    last: { text: { phonetic: "dm:en" } }
-  }
+  redi_search do
+    text_field :first, phonetic: "dm:en"
+    text_field :last, phonetic: "dm:en"
+  end
 end
 ```
 
@@ -553,10 +555,10 @@ optional `index_prefix` argument which gets prepended to the index name:
 
 ```ruby
 class User < ApplicationRecord
-  redi_search schema: {
-    first: { text: { phonetic: "dm:en" } },
-    last: { text: { phonetic: "dm:en" } }
-  }, index_prefix: 'prefix'
+  redi_search index_prefix: 'prefix' do
+    text_field :first, phonetic: "dm:en"
+    text_field :last, phonetic: "dm:en"
+  end
 end
 
 User.redi_search_index.name

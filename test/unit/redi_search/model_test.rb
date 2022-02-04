@@ -15,7 +15,9 @@ ActiveRecord::Migration.create_table :cars do |t|
 end
 
 class Character < ActiveRecord::Base
-  redi_search schema: { name: :text }
+  redi_search do
+    text_field :name
+  end
 end
 
 class Car < ActiveRecord::Base

@@ -11,9 +11,9 @@ module RediSearch
   class Index
     attr_reader :name, :schema, :model
 
-    def initialize(name, schema, model = nil)
+    def initialize(name, model = nil, &schema)
       @name = name.to_s
-      @schema = Schema.new(schema)
+      @schema = Schema.new(&schema)
       @model = model
     end
 

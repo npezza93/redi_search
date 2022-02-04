@@ -6,7 +6,7 @@ module RediSearch
   class Search
     class ClausesTest < Minitest::Test
       def setup
-        @search = Search.new(Index.new(:users, name: :text), "foo")
+        @search = Search.new(Index.new(:users) { text_field :name }, "foo")
       end
 
       def test_highlight

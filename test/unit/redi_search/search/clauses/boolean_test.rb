@@ -8,7 +8,9 @@ module RediSearch
     module Clauses
       class BooleanTest < Minitest::Test
         def test_raises_not_implement_error_until_operand_is_overriden
-          index = Index.new(:users, first: :text)
+          index = Index.new(:users) do
+            text_field :first
+          end
           search = Search.new(index, "foo")
           clause = Boolean.new(search, "bar")
 

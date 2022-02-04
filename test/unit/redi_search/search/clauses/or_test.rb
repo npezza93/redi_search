@@ -11,7 +11,9 @@ module RediSearch
         include BooleanInterfaceTest
 
         def setup
-          index = Index.new(:users, first: :text)
+          index = Index.new(:users) do
+            text_field :first
+          end
           @search = Search.new(index, "foo")
           @clause = Or.new(@search, "bar")
         end

@@ -12,12 +12,10 @@ module RediSearch
       attr_reader :redi_search_index, :redi_search_serializer
 
       # rubocop:disable Metrics/MethodLength
-      def redi_search(schema:, **options)
+      def redi_search(**options, &schema)
         @redi_search_index = Index.new(
-          [options[:index_prefix],
-           model_name.plural, RediSearch.env].compact.join("_"),
-          schema,
-          self
+          [options[:index_prefix], model_name.plural, RediSearch.env].compact.join("_"),
+          self, &schema
         )
         @redi_search_serializer = options[:serializer]
         register_redi_search_commit_hooks

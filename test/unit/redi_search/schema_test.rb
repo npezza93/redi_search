@@ -21,12 +21,12 @@ module RediSearch
     private
 
     def actual_schema
-      Schema.new({
-        name: { text: { sortable: true } },
-        age: { numeric: { sortable: true } },
-        myTag: { tag: { sortable: true } },
-        other: :text
-      })
+      Schema.new do
+        text_field :name, sortable: true
+        numeric_field :age, sortable: true
+        tag_field :myTag, sortable: true
+        text_field :other
+      end
     end
   end
 end
