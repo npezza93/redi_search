@@ -30,8 +30,8 @@ module RediSearch
       private
 
       def register_redi_search_commit_hooks
-        after_commit(:redi_search_add_document, on: %i(create update)) if
-          respond_to?(:after_commit)
+        after_save_commit(:redi_search_add_document) if
+          respond_to?(:after_save_commit)
         after_destroy_commit(:redi_search_delete_document) if
           respond_to?(:after_destroy_commit)
       end
