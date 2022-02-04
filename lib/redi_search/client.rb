@@ -20,9 +20,9 @@ module RediSearch
     end
 
     def multi
-      Response.new(redis.multi do
+      Response.new(redis.multi do |pipeline|
         instrument("pipeline", query: ["begin pipeline"])
-        capture_pipeline { yield }
+        capture_pipeline(pipeline) { yield }
         instrument("pipeline", query: ["finish pipeline"])
       end)
     end
@@ -32,14 +32,18 @@ module RediSearch
     attr_reader   :redis
     attr_accessor :pipeline
 
-    def capture_pipeline
-      self.pipeline = true
+    def capture_pipeline(pipeline)
+      self.pipeline = pipeline
       yield
       self.pipeline = false
     end
 
     def send_command(command, *params)
-      Response.new(redis.call(command, *params))
+      if pipeline
+        Response.new(pipeline.call(command, *params))
+      else
+        Response.new(redis.call(command, *params))
+      end
     end
 
     def instrument(action, payload, &block)
