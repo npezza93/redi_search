@@ -5,8 +5,10 @@ require "test_helper"
 module RediSearch
   class ClientTest < Minitest::Test
     def setup
-      @index = Index.new(:users, first: :text, last: :text)
-      @index.create
+      @index = Index.new(:users) do
+        text_field :first
+        text_field :last
+      end.tap(&:create)
     end
 
     def teardown

@@ -7,11 +7,21 @@ module RediSearch
         @name&.to_sym
       end
 
-      def serialize(value)
+      def coerce(value)
         value
       end
 
+      def serialize(record)
+        if value_block
+          instance_exec record, &value_block
+        else
+          record.public_send(name)
+        end
+      end
+
       private
+
+      attr_reader :value_block
 
       FALSES = [
         nil, "", false, 0, "0", "f", "F", "false", "FALSE", "off", "OFF"

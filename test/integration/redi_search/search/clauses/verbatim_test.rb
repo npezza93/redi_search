@@ -8,11 +8,12 @@ module RediSearch
     module Clauses
       class VerbatimTest < Minitest::Test
         def setup
-          @index = Index.new(:user, first: :text, last: :text, middle: :text)
-          @index.create
-          @index.add(Document.new(
-            @index, 1, first: :foo, last: :bar, middle: :baz
-          ))
+          @index = Index.new(:user) do
+            text_field :first
+            text_field :last
+          end.tap(&:create)
+
+          @index.add(Document.new(@index, 1, first: :foo, last: :bar))
           @searcher = Search.new(@index, "foo")
         end
 

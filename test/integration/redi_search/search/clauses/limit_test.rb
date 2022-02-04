@@ -8,12 +8,11 @@ module RediSearch
     module Clauses
       class LimitTest < Minitest::Test
         def setup
-          @index = Index.new(:user, first: :text, last: :text, middle: :text)
-          @index.create
-          @index.add(Document.new(
-            @index, 1, first: :foo, last: :bar, middle: :baz
-          ))
-          @searcher = Search.new(@index, "foo")
+          @index = Index.new(:user) do
+            text_field :first
+          end.tap(&:create)
+
+          @index.add(Document.new(@index, 1, first: :foo))
         end
 
         def teardown
@@ -21,11 +20,17 @@ module RediSearch
         end
 
         def test_clause
-          assert @searcher.limit(1).load
+          assert searcher.limit(1).load
         end
 
         def test_clause_with_offset
-          assert @searcher.limit(10, 10).load
+          assert searcher.limit(10, 10).load
+        end
+
+        private
+
+        def searcher
+          Search.new(@index, "foo")
         end
       end
     end

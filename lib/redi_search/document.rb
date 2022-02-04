@@ -8,16 +8,14 @@ module RediSearch
     include Display
 
     class << self
-      def for_object(index, record, serializer: nil, only: [])
-        object_to_serialize = serializer&.new(record) || record
+      def for_object(index, record, only: [])
+        field_values = index.schema.fields.filter_map do |field|
+          next unless only.empty? || only.include?(field.name)
 
-        field_values = index.schema.fields.map(&:name).filter_map do |field|
-          next unless only.empty? || only.include?(field)
-
-          [field.to_s, object_to_serialize.public_send(field)]
+          [field.name.to_s, field.serialize(record)]
         end.to_h
 
-        new(index, object_to_serialize.id, field_values)
+        new(index, record.id, field_values)
       end
 
       def get(index, document_id)
@@ -48,7 +46,7 @@ module RediSearch
 
     def redis_attributes
       attributes.flat_map do |field, value|
-        [field, index.schema[field.to_sym].serialize(value)]
+        [field, index.schema[field.to_sym].coerce(value)]
       end
     end
 

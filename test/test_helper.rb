@@ -25,21 +25,3 @@ def users(index:)
 
   @users[index]
 end
-
-class UserSerializer
-  def initialize(object)
-    @object = object
-  end
-
-  def id
-    object.id
-  end
-
-  def name
-    "#{object.first} #{object.last}"
-  end
-
-  private
-
-  attr_reader :object
-end

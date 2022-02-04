@@ -5,11 +5,13 @@ require "redi_search/schema/field"
 module RediSearch
   class Schema
     class TagField < Field
-      def initialize(name, separator: ",", sortable: false, no_index: false)
-        @name = name
-        @separator = separator
-        @sortable = sortable
-        @no_index = no_index
+      def initialize(name, separator: ",", sortable: false, no_index: false,
+                     &block)
+        @name        = name
+        @separator   = separator
+        @sortable    = sortable
+        @no_index    = no_index
+        @value_block = block
       end
 
       def to_a
@@ -20,7 +22,7 @@ module RediSearch
         query
       end
 
-      def serialize(value)
+      def coerce(value)
         value.join(separator)
       end
 

@@ -8,12 +8,11 @@ module RediSearch
     module Clauses
       class NoContentTest < Minitest::Test
         def setup
-          @index = Index.new(:user, first: :text, last: :text, middle: :text)
-          @index.create
-          @index.add(Document.new(
-            @index, 1, first: :foo, last: :bar, middle: :baz
-          ))
-          @searcher = Search.new(@index, "foo")
+          @index = Index.new(:user) do
+            text_field :first
+          end.tap(&:create)
+
+          @index.add(Document.new(@index, 1, first: :foo))
         end
 
         def teardown
@@ -21,11 +20,17 @@ module RediSearch
         end
 
         def test_clause
-          document = @searcher.no_content.load.first
-          %i(first middle last).each do |method|
+          document = searcher.no_content.load.first
+          %i(first).each do |method|
             refute_respond_to document, method
           end
           assert_respond_to document, :document_id
+        end
+
+        private
+
+        def searcher
+          Search.new(@index, "foo")
         end
       end
     end

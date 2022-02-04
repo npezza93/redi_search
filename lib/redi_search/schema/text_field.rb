@@ -4,13 +4,14 @@ module RediSearch
   class Schema
     class TextField < Field
       def initialize(name, weight: 1.0, phonetic: nil, sortable: false,
-                     no_index: false, no_stem: false)
+                     no_index: false, no_stem: false, &block)
         @name = name
         @weight = weight
         @phonetic = phonetic
         @sortable = sortable
         @no_index = no_index
         @no_stem = no_stem
+        @value_block = block
       end
 
       def to_a

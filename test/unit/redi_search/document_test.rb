@@ -83,16 +83,6 @@ module RediSearch
       refute_respond_to document, :last
     end
 
-    def test_for_object_serializer
-      index = Index.new(:users_test, name: :text)
-      document =
-        Document.for_object(index, users(index: 0), serializer: UserSerializer)
-
-      assert_equal "users_test1", document.document_id
-      refute_respond_to document, :first
-      assert_respond_to document, :name
-    end
-
     def test_get_class_method
       Document::Finder.any_instance.expects(:find).once.
         returns(Client::Response.new([]))

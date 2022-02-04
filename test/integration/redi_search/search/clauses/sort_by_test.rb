@@ -8,11 +8,12 @@ module RediSearch
     module Clauses
       class SortByTest < Minitest::Test
         def setup
-          @index = Index.new(:users, index_schema)
-          @index.create!
-          assert @index.add(Document.new(
-            @index, 1, first: :foo, last: :bar, middle: :baz
-          ))
+          @index = Index.new(:users) do
+            text_field :first, sortable: true
+            text_field :last
+          end.tap(&:create!)
+
+          assert @index.add(Document.new(@index, 1, first: :foo, last: :bar))
           @searcher = Search.new(@index, "foo")
         end
 
@@ -26,12 +27,6 @@ module RediSearch
 
         def test_clause_with_desc_order
           assert @searcher.sort_by(:first, order: :desc).load
-        end
-
-        private
-
-        def index_schema
-          { first: { text: { sortable: true } }, last: :text, middle: :text }
         end
       end
     end

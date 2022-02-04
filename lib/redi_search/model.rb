@@ -9,7 +9,7 @@ module RediSearch
     end
 
     module ClassMethods
-      attr_reader :redi_search_index, :redi_search_serializer
+      attr_reader :redi_search_index
 
       # rubocop:disable Metrics/MethodLength
       def redi_search(**options, &schema)
@@ -17,7 +17,6 @@ module RediSearch
           [options[:index_prefix], model_name.plural, RediSearch.env].compact.join("_"),
           self, &schema
         )
-        @redi_search_serializer = options[:serializer]
         register_redi_search_commit_hooks
 
         scope :search_import, -> { all }
@@ -58,10 +57,7 @@ module RediSearch
 
     module InstanceMethods
       def redi_search_document(only: [])
-        Document.for_object(
-          self.class.redi_search_index, self,
-          only: only, serializer: self.class.redi_search_serializer
-        )
+        Document.for_object(self.class.redi_search_index, self, only: only)
       end
 
       def redi_search_delete_document

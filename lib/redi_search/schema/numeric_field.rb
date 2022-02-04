@@ -5,10 +5,11 @@ require "redi_search/schema/field"
 module RediSearch
   class Schema
     class NumericField < Field
-      def initialize(name, sortable: false, no_index: false)
-        @name = name
-        @sortable = sortable
-        @no_index = no_index
+      def initialize(name, sortable: false, no_index: false, &block)
+        @name        = name
+        @sortable    = sortable
+        @no_index    = no_index
+        @value_block = block
       end
 
       def to_a
