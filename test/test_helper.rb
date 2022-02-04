@@ -13,6 +13,7 @@ require "minitest/autorun"
 require "minitest/pride"
 require "mocha/minitest"
 require "redi_search"
+require "debug"
 
 require "active_support/testing/assertions"
 
