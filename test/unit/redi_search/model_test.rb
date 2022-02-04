@@ -29,24 +29,24 @@ module RediSearch
       @character = Character.new(name: :foo_bar)
     end
 
-    def test_redi_search_document
-      document = @character.redi_search_document
+    def test_search_document
+      document = @character.search_document
       assert_instance_of Document, document
       assert_equal "foo_bar", document.name
     end
 
-    def test_redi_search_delete_document
-      assert_respond_to @character, :redi_search_delete_document
-      Character.redi_search_index.expects(:del).once.returns(true)
+    def test_search_delete_document
+      assert_respond_to @character, :remove_from_index
+      Character.search_index.expects(:del).once.returns(true)
 
-      assert @character.redi_search_delete_document
+      assert @character.remove_from_index
     end
 
-    def test_redi_search_add_document
-      assert_respond_to @character, :redi_search_add_document
-      Character.redi_search_index.expects(:add).once.returns(true)
+    def test_search_add_document
+      assert_respond_to @character, :add_to_index
+      Character.search_index.expects(:add).once.returns(true)
 
-      assert @character.redi_search_add_document
+      assert @character.add_to_index
     end
 
     def test_search_class_method
@@ -65,14 +65,14 @@ module RediSearch
 
     def test_methods_arent_available_unless_redi_search_called
       car = Car.new
-      refute_respond_to car, :redi_search_document
-      refute_respond_to car, :redi_search_delete_document
-      refute_respond_to car, :redi_search_add_document
+      refute_respond_to car, :search_document
+      refute_respond_to car, :remove_from_index
+      refute_respond_to car, :add_to_index
     end
 
     def test_reindex
-      Character.redi_search_index.expects(:reindex).once.returns(true)
-      Character.redi_search_index.expects(:add).once.returns(true)
+      Character.search_index.expects(:reindex).once.returns(true)
+      Character.search_index.expects(:add).once.returns(true)
 
       Character.create(name: :foo_bar)
       assert Character.reindex

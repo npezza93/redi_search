@@ -7,16 +7,16 @@ module RediSearch
     end
 
     module ClassMethods
-      attr_reader :redi_search_index
+      attr_reader :search_index
 
       # rubocop:disable Metrics/MethodLength
       def redi_search(**options, &schema)
-        @redi_search_index = Index.new(
+        @search_index = Index.new(
           [options[:index_prefix], model_name.plural, RediSearch.env].
             compact.join("_"),
           self, &schema
         )
-        register_redi_search_commit_hooks
+        register_search_commit_hooks
 
         scope :search_import, -> { all }
 
@@ -27,27 +27,26 @@ module RediSearch
 
       private
 
-      def register_redi_search_commit_hooks
-        after_save_commit(:redi_search_add_document) if
-          respond_to?(:after_save_commit)
-        after_destroy_commit(:redi_search_delete_document) if
+      def register_search_commit_hooks
+        after_save_commit(:add_to_index) if respond_to?(:after_save_commit)
+        after_destroy_commit(:remove_from_index) if
           respond_to?(:after_destroy_commit)
       end
     end
 
     module ModelClassMethods
       def search(term = nil, **term_options)
-        redi_search_index.search(term, **term_options)
+        search_index.search(term, **term_options)
       end
 
       def spellcheck(term, distance: 1)
-        redi_search_index.spellcheck(term, distance: distance)
+        search_index.spellcheck(term, distance: distance)
       end
 
       def reindex(recreate: false, only: [])
         search_import.find_in_batches.all? do |group|
-          redi_search_index.reindex(
-            group.map { |record| record.redi_search_document(only: only) },
+          search_index.reindex(
+            group.map { |record| record.search_document(only: only) },
             recreate: recreate
           )
         end
@@ -55,16 +54,16 @@ module RediSearch
     end
 
     module InstanceMethods
-      def redi_search_document(only: [])
-        Document.for_object(self.class.redi_search_index, self, only: only)
+      def search_document(only: [])
+        Document.for_object(self.class.search_index, self, only: only)
       end
 
-      def redi_search_delete_document
-        self.class.redi_search_index.del(redi_search_document)
+      def remove_from_index
+        self.class.search_index.del(search_document)
       end
 
-      def redi_search_add_document
-        self.class.redi_search_index.add(redi_search_document)
+      def add_to_index
+        self.class.search_index.add(search_document)
       end
     end
   end
