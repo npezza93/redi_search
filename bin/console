@@ -19,10 +19,10 @@ ActiveRecord::Migration.create_table :users do |t|
 end
 
 class User < ActiveRecord::Base
-  redi_search schema: {
-    first: { text: { phonetic: "dm:en" } },
-    last: { text: { phonetic: "dm:en" } }
-  }
+  redi_search do
+    text_field :first, phonetic: "dm:en"
+    text_field :last, phonetic: "dm:en"
+  end
 end
 
 def seed_users(count = 10_000)
