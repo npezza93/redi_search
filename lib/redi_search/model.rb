@@ -14,7 +14,8 @@ module RediSearch
       # rubocop:disable Metrics/MethodLength
       def redi_search(**options, &schema)
         @redi_search_index = Index.new(
-          [options[:index_prefix], model_name.plural, RediSearch.env].compact.join("_"),
+          [options[:index_prefix], model_name.plural, RediSearch.env].
+            compact.join("_"),
           self, &schema
         )
         register_redi_search_commit_hooks
