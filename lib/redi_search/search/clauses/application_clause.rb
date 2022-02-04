@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/validatable"
-
 module RediSearch
   class Search
     module Clauses

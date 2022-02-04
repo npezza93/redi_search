@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/schema/field"
-
 module RediSearch
   class Schema
     class TagField < Field

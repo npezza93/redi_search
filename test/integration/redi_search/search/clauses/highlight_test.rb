@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "redi_search/search"
-require "redi_search/search/clauses/highlight"
 
 module RediSearch
   class Search

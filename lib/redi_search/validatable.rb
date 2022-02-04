@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/validations/inclusion"
-require "redi_search/validations/presence"
-require "redi_search/validations/numericality"
-
 module RediSearch
   class ValidationError < StandardError
   end

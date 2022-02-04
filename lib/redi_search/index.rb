@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/hset"
-require "redi_search/create"
-require "redi_search/schema"
-require "redi_search/search"
-require "redi_search/spellcheck"
-require "redi_search/add_field"
-
 module RediSearch
   class Index
     attr_reader :name, :schema, :model

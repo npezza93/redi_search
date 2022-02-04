@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/lazily_load"
-require "redi_search/spellcheck/result"
-require "redi_search/validatable"
-
 module RediSearch
   class Spellcheck
     include LazilyLoad

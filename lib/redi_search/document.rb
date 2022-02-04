@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/document/display"
-require "redi_search/document/finder"
-
 module RediSearch
   class Document
     include Display

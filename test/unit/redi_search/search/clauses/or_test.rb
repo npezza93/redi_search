@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "redi_search/search"
-require "unit/redi_search/search/clauses/boolean_interface_test"
 
 module RediSearch
   class Search

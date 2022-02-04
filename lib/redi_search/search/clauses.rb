@@ -1,21 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/search/term"
-require "redi_search/search/clauses/slop"
-require "redi_search/search/clauses/in_order"
-require "redi_search/search/clauses/language"
-require "redi_search/search/clauses/sort_by"
-require "redi_search/search/clauses/limit"
-require "redi_search/search/clauses/no_content"
-require "redi_search/search/clauses/verbatim"
-require "redi_search/search/clauses/no_stop_words"
-require "redi_search/search/clauses/return"
-require "redi_search/search/clauses/with_scores"
-require "redi_search/search/clauses/highlight"
-require "redi_search/search/clauses/and"
-require "redi_search/search/clauses/or"
-require "redi_search/search/clauses/where"
-
 module RediSearch
   class Search
     module Clauses

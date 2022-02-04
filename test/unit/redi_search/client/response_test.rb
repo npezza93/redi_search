@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "redi_search/client"
 
 module RediSearch
   class Client

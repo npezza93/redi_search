@@ -3,8 +3,6 @@
 require "redis"
 require "active_support/notifications"
 
-require "redi_search/client/response"
-
 module RediSearch
   class Client
     def initialize(redis = Redis.new)

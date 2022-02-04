@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/validations/inclusion"
-
 module RediSearch
   module Validations
     class Numericality

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/schema/geo_field"
-require "redi_search/schema/numeric_field"
-require "redi_search/schema/tag_field"
-require "redi_search/schema/text_field"
-
 module RediSearch
   class Schema
     def initialize(&block)

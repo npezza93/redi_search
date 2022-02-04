@@ -4,14 +4,10 @@ require "delegate"
 require "forwardable"
 require "redis"
 require "active_support/lazy_load_hooks"
+require "zeitwerk"
 
-require "redi_search/configuration"
-require "redi_search/client"
-
-require "redi_search/model"
-require "redi_search/index"
-require "redi_search/log_subscriber"
-require "redi_search/document"
+loader = Zeitwerk::Loader.for_gem
+loader.setup
 
 module RediSearch
   class << self

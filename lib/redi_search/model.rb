@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "redi_search/index"
-
 module RediSearch
   module Model
     def self.included(base)
