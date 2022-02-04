@@ -5,8 +5,9 @@ require "test_helper"
 module RediSearch
   class AddFieldTest < Minitest::Test
     def setup
-      @index = Index.new(:cars, make: :text)
-      @index.create
+      @index = Index.new(:cars) do
+        text_field :make
+      end.tap(&:create)
     end
 
     def teardown

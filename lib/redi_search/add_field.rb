@@ -2,16 +2,18 @@
 
 module RediSearch
   class AddField
-    def initialize(index, field_name, schema)
-      @index = index
-      @field_name = field_name
-      @raw_schema = schema
+    def initialize(index, name, type, **options, &block)
+      @index   = index
+      @name    = name
+      @type    = type
+      @options = options
+      @block   = block
     end
 
     def call!
-      index.schema.add_field(field_name, raw_schema)
+      field = index.schema.add_field(name, type, **options, &block)
 
-      RediSearch.client.call!(*command).ok?
+      RediSearch.client.call!("ALTER", index.name, "SCHEMA", "ADD", *field).ok?
     end
 
     def call
@@ -22,14 +24,6 @@ module RediSearch
 
     private
 
-    attr_reader :index, :field_name, :raw_schema
-
-    def command
-      ["ALTER", index.name, "SCHEMA", "ADD", *field_schema]
-    end
-
-    def field_schema
-      @field_schema ||= Schema.make_field(field_name, raw_schema).to_a
-    end
+    attr_reader :index, :name, :type, :options, :block
   end
 end

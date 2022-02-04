@@ -13,7 +13,7 @@ module RediSearch
 
       def serialize(record)
         if value_block
-          instance_exec record, &value_block
+          record.instance_exec(&value_block)
         else
           record.public_send(name)
         end

@@ -49,6 +49,15 @@ module RediSearch
                                       phonetic: "fg").to_a
         )
       end
+
+      def test_passing_a_block_as_serializer
+        user = User.new(1, "foo", "bar")
+        field = TextField.new(:name) do
+          "#{first} #{last}"
+        end
+
+        assert_equal("foo bar", field.serialize(user))
+      end
     end
   end
 end
