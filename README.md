@@ -106,8 +106,10 @@ This defines the fields and the properties of those fields in the index. A
 schema is a simple DSL. Each field can be one of four types: geo, numeric, tag,
 or text and can have many options. A simple example of a schema is:
 ```ruby
-text_field :first_name
-text_field :last_name
+RediSearch::Schema.new do
+  text_field :first_name
+  text_field :last_name
+end
 ```
 
 The supported options for each type are as follows:
@@ -250,12 +252,10 @@ You can fetch a `Document` using `.get` class methods.
 given `document_id`.
 
 You can also make a `Document` instance using the
-`.for_object(index, record, serializer: nil, only: [])` class method. It takes
+`.for_object(index, record, only: [])` class method. It takes
 an `Index` instance and a Ruby object. That object must respond to all the
-fields specified in the `Index`'s `Schema` or pass a serializer class that
-accepts the object and responds to all the fields specified in the `Index`'s
-`Schema`. `only` accepts an array of fields from the schema and limits the
-fields that are passed to the `Document`.
+fields specified in the `Index`'s `Schema`. `only` accepts an array of fields
+from the schema and limits the fields that are passed to the `Document`.
 
 Once you have an instance of a `Document`, it responds to all the fields
 specified in the `Index`'s `Schema` as methods and `document_id`. `document_id`
@@ -271,7 +271,7 @@ Finally there is a `#del` method that will remove the `Document` from the
 ## Index
 
 To initialize an `Index`, pass the name of the `Index` as a string or symbol
-and the `Schema`.
+and the `Schema` block.
 
 ```ruby
 RediSearch::Index.new(name_of_index) do
@@ -332,8 +332,10 @@ end
   - Removes a `Document` from the `Index`.
 - `document_count`
   - Returns the number of `Document`s in the `Index`
-- `add_field(field_name, schema)`
-  - Adds a new field to the `Index`. Ex: `index.add_field(:first_name, text: { phonetic: "dm:en" })`
+- `add_field(name, type, **options, &block)`
+  - Adds a new field to the `Index`.
+  - The block and options are optional.
+  - Ex: `index.add_field(:first_name, :text, phonetic: "dm:en")`
 - `reindex(documents, recreate: false)`
    - If `recreate` is `true` the `Index` will be dropped and recreated
 
@@ -475,7 +477,7 @@ returns an array where each element contains suggestions for each search term
 and a normalized score based on its occurrences in the index.
 
 ```ruby
-main ❯ index = RediSearch::Index.new("user_idx", name: { text: { phonetic: "dm:en" } })
+main ❯ index = RediSearch::Index.new("user_idx") { text_field :name, phonetic: "dm:en" }
 main ❯ index.spellcheck("jimy")
   RediSearch (1.1ms)  FT.SPELLCHECK user_idx jimy DISTANCE 1
   => [#<RediSearch::Spellcheck::Result:0x00007f805591c670
@@ -517,21 +519,16 @@ similarly to `RediSearch::Index#reindex`. Some of the differences include:
     particular field.
 
 
-The `redi_search` class method also takes an optional `serializer` argument
-which takes the class name of a serializer. The serializer must respond to all
-the fields in a schema as methods. We don't serialize to a JSON object since
-RediSearch doesn't serialize documents that way.
+While defining the schema you can optionally pass it a block. If no block is
+passed the `name` will called on the model to get the value. If a block is
+passed the value for the field is obtained through calling the block.
 
 ```ruby
 class User < ApplicationRecord
-  redi_search schema: {
-    name: { text: { phonetic: "dm:en" } }
-  }, serializer: UserSerializer
-end
-
-class UserSerializer < SimpleDelegator
-  def name
-    "#{first_name} #{last_name}"
+  redi_search do
+    text_field :name do
+      "#{first_name} #{last_name}"
+    end
   end
 end
 ```
@@ -561,7 +558,7 @@ class User < ApplicationRecord
   end
 end
 
-User.redi_search_index.name
+User.search_index.name
 # => prefix_users_development
 ```
 
@@ -570,13 +567,13 @@ after creating and updating and will be removed from the `Index` upon
 destruction.
 
 There are a few more convenience methods that are publicly available:
-- `redi_search_document`
+- `search_document`
   - Returns the record as a `RediSearch::Document` instance
-- `redi_search_delete_document`
+- `remove_from_index`
   - Removes the record from the `Index`
-- `redi_search_add_document`
+- `add_to_index`
   - Adds the record to the `Index`
-- `redi_search_index`
+- `search_index`
   - Returns the `RediSearch::Index` instance
 
 
