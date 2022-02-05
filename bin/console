@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
   redi_search do
     text_field :first, phonetic: "dm:en"
     text_field :last, phonetic: "dm:en"
+    text_field :name, phonetic: "dm:en" do
+      "#{first} #{last}"
+    end
   end
 end
 
