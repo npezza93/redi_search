@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/npezza93/redi_search">
-    <img src="https://raw.githubusercontent.com/npezza93/redi_search/master/.github/logo.svg?sanitize=true" width="350">
+    <img src="https://raw.githubusercontent.com/npezza93/redi_search/main/.github/logo.svg?sanitize=true" width="350">
   </a>
 </p>
 
@@ -607,4 +607,4 @@ The gem is available as open source under the terms of the
 
 Everyone interacting in the RediSearch project’s codebases, issue trackers, chat
 rooms and mailing lists is expected to follow the [code of
-conduct](https://github.com/npezza93/redi_search/blob/master/CODE_OF_CONDUCT.md).
+conduct](https://github.com/npezza93/redi_search/blob/main/CODE_OF_CONDUCT.md).

@@ -8,7 +8,7 @@ require_relative "../lib/redi_search/version"
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("..", __dir__)
 MASTER_CHECK = <<~MASTER_CHECK
-  if [ $(git symbolic-ref --short -q HEAD) != 'master' ];
+  if [ $(git symbolic-ref --short -q HEAD) != 'main' ];
     then exit 1;
   fi
 MASTER_CHECK
@@ -20,7 +20,7 @@ end
 
 abort("\n== Version Type incorrect ==") unless VERSION_TYPES.include?(ARGV[0])
 
-abort("\n== Not on master") unless system(MASTER_CHECK)
+abort("\n== Not on main") unless system(MASTER_CHECK)
 
 current_version = RediSearch::VERSION.split(".").map(&:to_i)
 
