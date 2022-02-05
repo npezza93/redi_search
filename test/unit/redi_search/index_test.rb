@@ -77,12 +77,13 @@ module RediSearch
       @index.add!(@document)
     end
 
-    def test_multiple!
+    def test_add_multiple
       document2 = Document.for_object(@index, User.new(rand, "bar", "baz"))
-      Redis.new.stub(:call, "OK") do |redis|
-        RediSearch.stub(:client, Client.new(redis)) do
-          assert @index.add_multiple([@document, document2])
-        end
+      mock = Minitest::Mock.new
+      mock.expect(:multi, [])
+
+      RediSearch.stub(:client, mock) do
+        assert @index.add_multiple([@document, document2])
       end
     end
 
@@ -160,9 +161,13 @@ module RediSearch
     end
 
     def test_add_field
-      AddField.any_instance.expects(:call!).once
+      assert_nil @index.schema[:foo]
 
-      @index.add_field(:foo, :text)
+      mock_client(([String] * 7).push(Float), "OK") do
+        @index.add_field(:foo, :text)
+      end
+
+      assert_instance_of Schema::TextField, @index.schema[:foo]
     end
 
     private
