@@ -48,7 +48,7 @@ module RediSearch
           @term = if term.is_a? RediSearch::Search
                     term
                   else
-                    Term.new(term, **term_options)
+                    Term.new(term, nil, **term_options)
                   end
         end
 

@@ -10,16 +10,17 @@ module RediSearch
       validates_inclusion_of :option, within: %i(fuzziness optional prefix),
                                       allow_nil: true
 
-      def initialize(term, **options)
-        @term = term
+      def initialize(term, field = nil, **options)
+        @term    = term
+        @field   = field
         @options = options
 
         validate!
       end
 
       def to_s
-        if @term.is_a? Range
-          stringify_range
+        if term.is_a?(Range) then stringify_range
+        elsif !field.nil? && field.tag? then stringify_tag
         else
           stringify_query
         end
@@ -27,7 +28,7 @@ module RediSearch
 
       private
 
-      attr_accessor :term, :options
+      attr_accessor :term, :field, :options
 
       def fuzziness
         @fuzziness ||= options[:fuzziness]
@@ -50,7 +51,7 @@ module RediSearch
       end
 
       def stringify_query
-        @term.to_s.
+        term.to_s.
           tr("`", "\`").
           yield_self { |str| "#{fuzzy_operator}#{str}#{fuzzy_operator}" }.
           yield_self { |str| "#{optional_operator}#{str}" }.
@@ -58,8 +59,16 @@ module RediSearch
           yield_self { |str| "`#{str}`" }
       end
 
+      def stringify_tag
+        if term.is_a?(Array)
+          "{ #{term.join(' | ')} }"
+        else
+          "{ #{term} }"
+        end
+      end
+
       def stringify_range
-        first, last = @term.first, @term.last
+        first, last = term.first, term.last
         first = "-inf" if first == -Float::INFINITY
         last = "+inf" if last == Float::INFINITY
 

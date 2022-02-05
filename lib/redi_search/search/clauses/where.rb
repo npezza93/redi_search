@@ -62,7 +62,7 @@ module RediSearch
           if condition[1].is_a? RediSearch::Search
             condition[1]
           else
-            Term.new(condition[1], **options.to_h)
+            Term.new(condition[1], search.index.schema[@field], **options.to_h)
           end
         end
 

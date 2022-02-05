@@ -24,6 +24,10 @@ module RediSearch
         value.join(separator)
       end
 
+      def tag?
+        true
+      end
+
       private
 
       attr_reader :separator, :sortable, :no_index

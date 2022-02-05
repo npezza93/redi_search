@@ -51,6 +51,18 @@ module RediSearch
       def test_support_negative_infinite_range
         assert_equal "[-inf 1]", Term.new(-Float::INFINITY..1).to_s
       end
+
+      def test_support_single_tag
+        field = Schema::TagField.new(:tags)
+
+        assert_equal "{ foo }", Term.new(:foo, field).to_s
+      end
+
+      def test_support_array_fo_tags
+        field = Schema::TagField.new(:tags)
+
+        assert_equal "{ foo | bar }", Term.new(%i(foo bar), field).to_s
+      end
     end
   end
 end

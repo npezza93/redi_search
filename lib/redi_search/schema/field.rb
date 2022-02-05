@@ -19,6 +19,10 @@ module RediSearch
         end
       end
 
+      def tag?
+        false
+      end
+
       private
 
       attr_reader :value_block
