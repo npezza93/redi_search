@@ -60,7 +60,7 @@ module RediSearch
       end
 
       def stringify_tag
-        "{ #{[*term].join(' | ')} }"
+        "{ #{Array(term).join(' | ')} }"
       end
 
       def stringify_range
