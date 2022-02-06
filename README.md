@@ -6,9 +6,6 @@
 
 # RediSearch
 
-![Build Status](https://github.com/npezza93/redi_search/workflows/tests/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c6437acac5684de2549d/maintainability)](https://codeclimate.com/github/npezza93/redi_search/maintainability)
-
 A simple, but powerful, Ruby wrapper around RediSearch, a search engine on top of
 Redis.
 
