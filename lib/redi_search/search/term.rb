@@ -20,7 +20,7 @@ module RediSearch
 
       def to_s
         if term.is_a?(Range) then stringify_range
-        elsif !field.nil? && field.tag? then stringify_tag
+        elsif field.is_a?(Schema::TagField) then stringify_tag
         else
           stringify_query
         end
@@ -60,11 +60,7 @@ module RediSearch
       end
 
       def stringify_tag
-        if term.is_a?(Array)
-          "{ #{term.join(' | ')} }"
-        else
-          "{ #{term} }"
-        end
+        "{ #{[*term].join(' | ')} }"
       end
 
       def stringify_range
