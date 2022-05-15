@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "active_support/log_subscriber"
+require "active_support/isolated_execution_state"
 
 module RediSearch
   class LogSubscriber < ActiveSupport::LogSubscriber
