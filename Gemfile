@@ -17,4 +17,4 @@ gem "rubocop-rake"
 gem "simplecov"
 gem "sqlite3"
 
-gem "activerecord", "~> 6.1"
+gem "activerecord", "~> 7.0"
