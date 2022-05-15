@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require "active_support/version"
 require "active_support/log_subscriber"
 if ActiveSupport::VERSION::MAJOR > 6
   require "active_support/isolated_execution_state"
