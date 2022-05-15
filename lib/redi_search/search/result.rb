@@ -21,6 +21,8 @@ module RediSearch
       end
 
       def_delegators :results, :each, :empty?, :[], :last
+      def_delegator :search, :index
+      def_delegator :index, :schema
 
       def inspect
         results
@@ -58,8 +60,16 @@ module RediSearch
           fields = slice.last unless no_content?
           score = slice[1].to_f if with_scores?
 
-          Document.new(search.index, document_id, Hash[*fields.to_a], score)
+          parse_result(document_id, fields, score)
         end
+      end
+
+      def parse_result(document_id, fields, score)
+        field_values = fields.to_a.each_slice(2).to_h do |name, value|
+          [name, schema[name].cast(value)]
+        end
+
+        Document.new(search.index, document_id, field_values, score)
       end
     end
   end

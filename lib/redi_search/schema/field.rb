@@ -11,6 +11,10 @@ module RediSearch
         value
       end
 
+      def cast(value)
+        value
+      end
+
       def serialize(record)
         if value_block
           record.instance_exec(&value_block)

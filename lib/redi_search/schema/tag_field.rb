@@ -24,6 +24,10 @@ module RediSearch
         value.join(separator)
       end
 
+      def cast(value)
+        value.split(separator)
+      end
+
       private
 
       attr_reader :separator, :sortable, :no_index

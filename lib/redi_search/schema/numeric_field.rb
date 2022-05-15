@@ -17,6 +17,14 @@ module RediSearch
         query
       end
 
+      def cast(value)
+        if value.to_s.include?(".")
+          value.to_f
+        else
+          value.to_i
+        end
+      end
+
       private
 
       attr_reader :sortable, :no_index
