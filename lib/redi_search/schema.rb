@@ -40,7 +40,7 @@ module RediSearch
     end
 
     def [](name)
-      fields.find { |field| field.name == name }
+      fields.find { |field| field.name.to_sym == name.to_sym }
     end
 
     private
