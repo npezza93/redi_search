@@ -31,7 +31,7 @@ module RediSearch
 
       @loaded = true
 
-      RediSearch.client.call!(*command).yield_self do |response|
+      RediSearch.client.call!(*command).then do |response|
         parse_response(response)
       end
     end

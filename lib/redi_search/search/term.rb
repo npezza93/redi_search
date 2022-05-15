@@ -53,10 +53,10 @@ module RediSearch
       def stringify_query
         term.to_s.
           tr("`", "\`").
-          yield_self { |str| "#{fuzzy_operator}#{str}#{fuzzy_operator}" }.
-          yield_self { |str| "#{optional_operator}#{str}" }.
-          yield_self { |str| "#{str}#{prefix_operator}" }.
-          yield_self { |str| "`#{str}`" }
+          then { |str| "#{fuzzy_operator}#{str}#{fuzzy_operator}" }.
+          then { |str| "#{optional_operator}#{str}" }.
+          then { |str| "#{str}#{prefix_operator}" }.
+          then { |str| "`#{str}`" }
       end
 
       def stringify_tag

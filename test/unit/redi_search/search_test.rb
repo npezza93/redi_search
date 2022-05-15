@@ -67,7 +67,7 @@ module RediSearch
                                         [{ id: ["1"] }])
       Search.new(
         Index.new(:users, model) { text_field :name }, "foo"
-      ).yield_self { |search| yield search }
+      ).then { |search| yield search }
 
       assert_mock model
     end

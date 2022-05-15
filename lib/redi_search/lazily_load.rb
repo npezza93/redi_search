@@ -53,7 +53,7 @@ module RediSearch
 
       @loaded = true
 
-      call!.yield_self do |response|
+      call!.then do |response|
         parse_response(response)
       end
     end

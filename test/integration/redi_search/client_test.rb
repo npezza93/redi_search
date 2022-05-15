@@ -16,10 +16,10 @@ module RediSearch
     end
 
     def test_multi
-      assert(RediSearch.client.multi do
+      assert_predicate(RediSearch.client.multi do
         @index.add(Document.for_object(@index, users(index: 0)))
         @index.add(Document.for_object(@index, users(index: 1)))
-      end.ok?)
+      end, :ok?)
     end
   end
 end

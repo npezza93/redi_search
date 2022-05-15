@@ -95,19 +95,19 @@ module RediSearch
 
     def test_exists?
       mock_client(%w(INFO users), ["stuff"]) do
-        assert @index.exist?
+        assert_predicate @index, :exist?
       end
     end
 
     def test_exists_when_index_doesnt_exist
       mock_client(%w(INFO users), "") do
-        refute @index.exist?
+        refute_predicate @index, :exist?
       end
     end
 
     def test_exist_failure
       mock_exceptional_client do
-        refute @index.exist?
+        refute_predicate @index, :exist?
       end
     end
 

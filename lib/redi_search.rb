@@ -30,7 +30,7 @@ module RediSearch
     end
 
     def env
-      ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+      ENV.fetch("RAILS_ENV") { ENV.fetch("RACK_ENV", "development") }
     end
   end
 end
