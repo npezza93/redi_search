@@ -43,8 +43,8 @@ module RediSearch
         search_index.spellcheck(term, distance: distance)
       end
 
-      def reindex(recreate: false, only: [])
-        search_import.find_in_batches.all? do |group|
+      def reindex(recreate: false, only: [], batch_size: 1000)
+        search_import.find_in_batches(batch_size:).all? do |group|
           search_index.reindex(
             group.map { |record| record.search_document(only: only) },
             recreate: recreate
