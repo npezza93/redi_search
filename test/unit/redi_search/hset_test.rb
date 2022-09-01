@@ -43,8 +43,8 @@ module RediSearch
     def mock_client
       client = Minitest::Mock.new.expect(:call!, Client::Response.new("OK"), [
         "HSET", @document.document_id, ["first", @document.first,
-                                        "last", @document.last], skip_ft: true
-      ].compact)
+                                        "last", @document.last]
+      ].compact, skip_ft: true)
 
       RediSearch.stub(:client, client) { yield }
 

@@ -64,7 +64,7 @@ module RediSearch
 
     def search_with_model
       model = Minitest::Mock.new.expect(:where, active_record_relation_double,
-                                        [{ id: ["1"] }])
+                                        [], id: ["1"])
       Search.new(
         Index.new(:users, model) { text_field :name }, "foo"
       ).then { |search| yield search }
