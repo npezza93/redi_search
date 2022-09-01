@@ -92,14 +92,14 @@ module RediSearch
 
     def test_inspect
       document = Document.new(@index, 100, { first: :foo, last: :bar })
-      expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\
+      expected_inspection = "#<RediSearch::Document first: foo, last: bar, " \
                             "document_id: users_test100>"
       assert_equal expected_inspection, document.inspect
     end
 
     def test_inspect_with_score
       document = Document.new(@index, 100, { first: :foo, last: :bar }, 2)
-      expected_inspection = "#<RediSearch::Document first: foo, last: bar, "\
+      expected_inspection = "#<RediSearch::Document first: foo, last: bar, " \
                             "document_id: users_test100, score: 2>"
 
       assert_equal expected_inspection, document.inspect

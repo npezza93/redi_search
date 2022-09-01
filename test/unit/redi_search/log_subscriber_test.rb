@@ -97,7 +97,7 @@ module RediSearch
       instrument("explaincli", query: %w(EXPLAINCLI SEARCH foo))
 
       assert_equal(
-        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[34mFT.EXPLAINCLI "\
+        "\e[1m\e[31mRediSearch (0.9ms)\e[0m  \e[1m\e[34mFT.EXPLAINCLI " \
         "SEARCH foo\e[0m",
         @logger.logged(:debug).last
       )
