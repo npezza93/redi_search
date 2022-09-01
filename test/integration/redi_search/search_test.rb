@@ -18,7 +18,7 @@ module RediSearch
 
     def test_explain
       assert_match(
-        /UNION { first_name .*\+first_nam\(expanded\) first_nam\(expanded\) }/,
+        /UNION {\s*first_name\s*\+first_nam\(expanded\)\s*first_nam\(expanded\) }/, # rubocop:disable Layout/LineLength
         Search.new(@index, "first_name").explain
       )
     end
