@@ -15,6 +15,8 @@ module RediSearch
         end
 
         def to_s
+          return prior_clause if field.nil?
+
           [
             prior_clause,
             "(#{not_operator}@#{field}:#{queryify_term})"
