@@ -17,6 +17,7 @@ module RediSearch
 
         mock_client("HGETALL", default_response, "#{@index.name}1") do
           document = finder.find
+
           assert_equal "#{@index.name}1", document.document_id
         end
       end
@@ -34,6 +35,7 @@ module RediSearch
 
         mock_client("HGETALL", default_response, "#{@index.name}1") do
           document = finder.find
+
           assert_equal "#{@index.name}1", document.document_id
         end
       end

@@ -31,6 +31,7 @@ module RediSearch
 
     def test_search_document
       document = @character.search_document
+
       assert_instance_of Document, document
       assert_equal "foo_bar", document.name
     end
@@ -65,6 +66,7 @@ module RediSearch
 
     def test_methods_arent_available_unless_redi_search_called
       car = Car.new
+
       refute_respond_to car, :search_document
       refute_respond_to car, :remove_from_index
       refute_respond_to car, :add_to_index
@@ -75,6 +77,7 @@ module RediSearch
       Character.search_index.expects(:add).once.returns(true)
 
       Character.create(name: :foo_bar)
+
       assert Character.reindex
     end
   end

@@ -114,6 +114,7 @@ module RediSearch
     def test_info
       mock_client(%w(INFO users), %w(foo bar baz temp)) do
         info = @index.info
+
         assert_equal "bar", info.foo
         assert_equal "temp", info.baz
       end

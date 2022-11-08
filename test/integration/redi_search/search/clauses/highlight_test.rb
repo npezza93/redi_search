@@ -21,6 +21,7 @@ module RediSearch
 
         def test_clause
           document = @searcher.highlight(fields: %i(first)).load.first
+
           assert_includes document.first, "<b>"
           assert_includes document.first, "</b>"
         end
@@ -29,6 +30,7 @@ module RediSearch
           document = @searcher.highlight(
             fields: %i(first), opening_tag: "tt", closing_tag: "td"
           ).load.first
+
           assert_includes document.first, "tt"
           assert_includes document.first, "td"
         end

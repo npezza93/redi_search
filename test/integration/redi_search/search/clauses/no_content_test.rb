@@ -20,6 +20,7 @@ module RediSearch
 
         def test_clause
           document = searcher.no_content.load.first
+
           %i(first).each do |method|
             refute_respond_to document, method
           end

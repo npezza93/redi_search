@@ -23,11 +23,13 @@ module RediSearch
 
         def test_prior_clause
           @clause = And.new(@search, "bar", And.new(@search, "baz"))
+
           assert_equal "`baz` `bar`", @clause.to_s
         end
 
         def test_term_is_search
           @clause = And.new(@search, @search, And.new(@search, "baz"))
+
           assert_equal "`baz` (`foo`)", @clause.to_s
         end
 
@@ -42,6 +44,7 @@ module RediSearch
         def test_notting
           @clause = And.new(@search, nil)
           @clause.not("baz")
+
           assert_equal "-`baz`", @clause.to_s
         end
       end

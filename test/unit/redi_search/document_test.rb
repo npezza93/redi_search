@@ -13,6 +13,7 @@ module RediSearch
 
     def test_initialize
       document = Document.new(@index, 100, { first: :foo, last: :bar })
+
       assert_equal :foo, document.first
       assert_equal :bar, document.last
     end
@@ -65,6 +66,7 @@ module RediSearch
 
     def test_failed_del
       document = Document.new(@index, 100, { first: :foo, last: :bar })
+
       mock_client(document, 0) do
         refute document.del
       end
@@ -94,6 +96,7 @@ module RediSearch
       document = Document.new(@index, 100, { first: :foo, last: :bar })
       expected_inspection = "#<RediSearch::Document first: foo, last: bar, " \
                             "document_id: users_test100>"
+
       assert_equal expected_inspection, document.inspect
     end
 
@@ -114,6 +117,7 @@ module RediSearch
       )
 
       RediSearch.stub(:client, client) { yield }
+
       assert_mock client
     end
   end

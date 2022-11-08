@@ -14,6 +14,7 @@ module RediSearch
     def test_query_execution
       mock_client("foo", 1, [["TERM", "foo", [["0.5", "foob"]]]]) do
         suggestions = Spellcheck.new(@index, "foo").load
+
         assert_equal 1, suggestions.size
         assert_equal "foo", suggestions.first.term
         assert_equal 1, suggestions.first.suggestions.size
@@ -23,6 +24,7 @@ module RediSearch
     def test_distance
       mock_client("foo", 2, [["TERM", "foo", [["0.5", "foob"]]]]) do
         suggestions = Spellcheck.new(@index, "foo", distance: 2).load
+
         assert_equal 1, suggestions.size
       end
     end
@@ -42,6 +44,7 @@ module RediSearch
     def test_count
       mock_client("foo", 2, [["TERM", "foo", [["0.5", "foob"]]]]) do
         spellcheck = Spellcheck.new(@index, "foo", distance: 2)
+
         assert_equal 1, spellcheck.count
       end
     end

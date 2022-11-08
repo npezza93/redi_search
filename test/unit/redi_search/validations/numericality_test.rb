@@ -41,6 +41,7 @@ module RediSearch
         mock.expect(:field, 2)
 
         assert_raises(ValidationError) { validator.validate!(mock) }
+
         assert_mock mock
       end
 
@@ -50,6 +51,7 @@ module RediSearch
         mock = Minitest::Mock.new.expect(:field, 0.5)
 
         assert_raises(ValidationError) { validator.validate!(mock) }
+
         assert_mock mock
       end
 
@@ -58,6 +60,7 @@ module RediSearch
         mock = Minitest::Mock.new.expect(:field, nil)
 
         assert_raises(ValidationError) { validator.validate!(mock) }
+
         assert_mock mock
       end
     end

@@ -52,7 +52,7 @@ module RediSearch
 
       def stringify_query
         term.to_s.
-          tr("`", "\`").
+          tr("`", "`").
           then { |str| "#{fuzzy_operator}#{str}#{fuzzy_operator}" }.
           then { |str| "#{optional_operator}#{str}" }.
           then { |str| "#{str}#{prefix_operator}" }.

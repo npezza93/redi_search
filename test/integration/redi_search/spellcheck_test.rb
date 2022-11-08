@@ -18,6 +18,7 @@ module RediSearch
 
     def test_query_execution
       suggestions = Spellcheck.new(@index, "first_name").load
+
       assert_equal 1, suggestions.size
       assert_equal "first_name", suggestions.first.term
       assert_equal 1, suggestions.first.suggestions.size

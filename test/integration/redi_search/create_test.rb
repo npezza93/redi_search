@@ -9,6 +9,7 @@ module RediSearch
         text_field :first
         text_field :last
       end
+
       refute_predicate @index, :exist?
     end
 

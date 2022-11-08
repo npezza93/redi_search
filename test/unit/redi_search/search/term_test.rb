@@ -23,7 +23,7 @@ module RediSearch
       end
 
       def test_escapes_backticks_in_term
-        assert_equal "`te\`rm`", Term.new("te`rm").to_s
+        assert_equal "`te`rm`", Term.new("te`rm").to_s
       end
 
       def test_unsupported_options_throw_error

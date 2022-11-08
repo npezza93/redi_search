@@ -23,12 +23,14 @@ module RediSearch
           @clause = Where.new(
             @search, { first: :bar }, And.new(@search, "baz")
           )
+
           assert_equal "`baz` (@first:`bar`)", @clause.to_s
         end
 
         def test_notting
           @clause = Where.new(@search, nil)
           @clause.not(first: :baz)
+
           assert_equal "(-@first:`baz`)", @clause.to_s
         end
       end

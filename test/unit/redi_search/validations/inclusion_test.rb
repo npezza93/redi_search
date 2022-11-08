@@ -29,6 +29,7 @@ module RediSearch
         assert_raises ValidationError do
           validator.validate!(mock)
         end
+
         assert_mock mock
       end
 
@@ -39,6 +40,7 @@ module RediSearch
         assert_raises ValidationError do
           validator.validate!(mock)
         end
+
         assert_mock mock
       end
     end

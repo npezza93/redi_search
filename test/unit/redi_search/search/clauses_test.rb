@@ -117,6 +117,7 @@ module RediSearch
       def assert_result_count(client)
         RediSearch.stub(:client, client) do
           yield if block_given?
+
           assert_equal 1, @search.count
         end
 
