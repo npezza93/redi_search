@@ -60,11 +60,13 @@ module RediSearch
       def where(**condition)
         @term_clause = Where.new(self, condition, @term_clause)
 
-        if condition.empty?
-          @term_clause
-        else
-          self
-        end
+        self
+      end
+
+      def not(**condition)
+        raise NoMethodError unless @term_clause.is_a?(Where)
+
+        @term_clause.not(condition)
       end
 
       def and(new_term = nil, **term_options)

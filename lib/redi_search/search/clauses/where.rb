@@ -15,7 +15,7 @@ module RediSearch
         end
 
         def to_s
-          return prior_clause if field.nil?
+          return prior_clause.to_s if field.nil?
 
           [
             prior_clause,
