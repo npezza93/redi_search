@@ -100,10 +100,6 @@ module RediSearch
         assert_result_count(client)
       end
 
-      def test_where_without_terms_returns_the_clause_to_be_chained
-        assert_instance_of Search::Where, @search.where
-      end
-
       def test_and_without_terms_returns_the_clause_to_be_chained
         assert_instance_of Search::And, @search.and
       end
