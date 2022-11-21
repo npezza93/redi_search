@@ -20,7 +20,7 @@ module RediSearch
           record.instance_exec(&value_block)
         else
           record.public_send(name)
-        end
+        end.to_s
       end
 
       private
