@@ -14,7 +14,7 @@ module RediSearch
     end
 
     def test_multi
-      redis_mock = Minitest::Mock.new.expect(:multi, ["OK"])
+      redis_mock = Minitest::Mock.new.expect(:pipelined, ["OK"])
 
       assert_equal([Client::Response.new("OK")],
                    Client.new(redis_mock).multi do
