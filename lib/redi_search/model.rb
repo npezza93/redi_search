@@ -18,7 +18,7 @@ module RediSearch
         )
         register_search_commit_hooks
 
-        scope :search_import, -> { all }
+        scope :search_import, -> { all } unless defined?(search_import)
 
         include InstanceMethods
         extend ModelClassMethods

@@ -25,7 +25,7 @@ module RediSearch
 
     def test_call_bang_raises_the_error_to_the_consumer
       mock_exceptional_client do
-        assert_raises Redis::CommandError do
+        assert_raises RedisClient::CommandError do
           AddField.new(@index, :model, :text).call!
         end
       end
@@ -34,8 +34,8 @@ module RediSearch
     private
 
     def mock_exceptional_client
-      Client.new.stub :call!, ->(*) { raise Redis::CommandError } do |client|
-        RediSearch.stub(:client, client) { yield }
+      Client.new.stub :call!, ->(*) { raise RedisClient::CommandError } do |c|
+        RediSearch.stub(:client, c) { yield }
       end
     end
 

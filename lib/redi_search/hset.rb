@@ -13,7 +13,7 @@ module RediSearch
 
     def call
       call!
-    rescue Redis::CommandError
+    rescue RedisClient::CommandError
       false
     end
 

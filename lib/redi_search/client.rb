@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require "redis"
 require "active_support/notifications"
 
 module RediSearch
   class Client
-    def initialize(redis = Redis.new)
+    def initialize(redis = RedisClient.new)
       @redis = redis
       @pipeline = false
     end
@@ -18,11 +17,12 @@ module RediSearch
     end
 
     def multi
-      Response.new(redis.multi do |pipeline|
-        instrument("pipeline", query: ["begin pipeline"])
+      instrument("pipeline", query: ["begin pipeline"])
+      Response.new(redis.pipelined do |pipeline|
         capture_pipeline(pipeline) { yield }
-        instrument("pipeline", query: ["finish pipeline"])
       end)
+    ensure
+      instrument("pipeline", query: ["finish pipeline"])
     end
 
     private
@@ -33,6 +33,7 @@ module RediSearch
     def capture_pipeline(pipeline)
       self.pipeline = pipeline
       yield
+    ensure
       self.pipeline = false
     end
 

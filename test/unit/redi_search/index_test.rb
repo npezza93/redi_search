@@ -59,7 +59,7 @@ module RediSearch
 
     def test_falure_drop!
       mock_exceptional_client do
-        assert_raises Redis::CommandError do
+        assert_raises RedisClient::CommandError do
           @index.drop!
         end
       end
@@ -184,9 +184,10 @@ module RediSearch
     end
 
     def mock_exceptional_client
-      Client.new.stub :call!, ->(*) { raise Redis::CommandError } do |client|
-        RediSearch.stub(:client, client) { yield }
-      end
+      Client.new.
+        stub :call!, ->(*) { raise RedisClient::CommandError } do |client|
+          RediSearch.stub(:client, client) { yield }
+        end
     end
   end
 end
