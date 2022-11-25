@@ -5,6 +5,7 @@ module RediSearch
     module Clauses
       class Return < ApplicationClause
         clause_term :fields, presence: true
+        clause_order 10
 
         def initialize(fields:)
           @fields = fields

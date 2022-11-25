@@ -4,7 +4,7 @@ require "active_support/notifications"
 
 module RediSearch
   class Client
-    def initialize(redis = RedisClient.new)
+    def initialize(redis = Redis.new)
       @redis = redis
       @pipeline = false
     end

@@ -28,7 +28,7 @@ module RediSearch
 
     def drop(keep_docs: false)
       drop!(keep_docs: keep_docs)
-    rescue RedisClient::CommandError
+    rescue Redis::CommandError
       false
     end
 
@@ -60,7 +60,7 @@ module RediSearch
 
     def exist?
       !client.call!("INFO", name).empty?
-    rescue RedisClient::CommandError
+    rescue Redis::CommandError
       false
     end
 
@@ -68,7 +68,7 @@ module RediSearch
       hash = Hash[*client.call!("INFO", name)]
       info_struct = Struct.new(*hash.keys.map(&:to_sym))
       info_struct.new(*hash.values)
-    rescue RedisClient::CommandError
+    rescue Redis::CommandError
       nil
     end
 

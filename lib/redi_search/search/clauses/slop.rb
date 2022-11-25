@@ -5,6 +5,7 @@ module RediSearch
     module Clauses
       class Slop < ApplicationClause
         clause_term :slop, numericality: { within: 0..Float::INFINITY }
+        clause_order 13
 
         def initialize(slop:)
           @slop = slop

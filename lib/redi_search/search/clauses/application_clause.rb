@@ -6,6 +6,10 @@ module RediSearch
       class ApplicationClause
         include Validatable
 
+        def clause_order
+          self.class.order
+        end
+
         class << self
           def clause_term(term, **validations)
             attr_reader term
@@ -13,6 +17,12 @@ module RediSearch
             validations.each do |validation_type, options|
               define_validation(term, validation_type, options)
             end
+          end
+
+          attr_reader :order
+
+          def clause_order(number)
+            @order = number
           end
 
           private

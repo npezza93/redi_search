@@ -4,6 +4,8 @@ module RediSearch
   class Search
     module Clauses
       class InOrder < ApplicationClause
+        clause_order 15
+
         def clause
           validate!
 

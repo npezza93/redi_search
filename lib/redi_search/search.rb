@@ -5,8 +5,9 @@ module RediSearch
     extend Forwardable
     include LazilyLoad
     include Clauses
+    include Queries
 
-    attr_reader :term_clause, :used_clauses, :index, :clauses
+    attr_reader :query, :used_clauses, :index, :clauses
 
     def_delegator :index, :model
 
@@ -15,8 +16,7 @@ module RediSearch
       @clauses = []
       @used_clauses = Set.new
 
-      @term_clause = term &&
-        And.new(self, term, nil, **term_options)
+      @query = term && And.new(self, term, nil, **term_options)
     end
 
     def results
@@ -31,7 +31,7 @@ module RediSearch
 
     def explain
       RediSearch.client.call!(
-        "EXPLAINCLI", index.name, term_clause.to_s
+        "EXPLAINCLI", index.name, query.to_s
       ).join(" ").strip
     end
 
@@ -44,7 +44,8 @@ module RediSearch
     attr_writer :index, :clauses
 
     def command
-      ["SEARCH", index.name, term_clause.to_s, *clauses]
+      ["SEARCH", index.name, query.to_s,
+       *clauses.sort_by(&:clause_order).flat_map(&:clause)]
     end
 
     def parse_response(response)
@@ -52,7 +53,7 @@ module RediSearch
     end
 
     def valid?
-      !term_clause.to_s.empty?
+      !query.to_s.empty?
     end
   end
 end

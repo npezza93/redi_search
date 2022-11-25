@@ -3,13 +3,13 @@
 module RediSearch
   class Search
     module Clauses
-      class NoContent < ApplicationClause
-        clause_order 1
+      class WithSortKeys < ApplicationClause
+        clause_order 6
 
         def clause
           validate!
 
-          ["NOCONTENT"]
+          ["WITHSORTKEYS"]
         end
       end
     end

@@ -4,6 +4,8 @@ module RediSearch
   class Search
     module Clauses
       class WithScores < ApplicationClause
+        clause_order 4
+
         def clause
           validate!
 

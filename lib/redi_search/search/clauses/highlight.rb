@@ -3,7 +3,9 @@
 module RediSearch
   class Search
     module Clauses
-      class Highlight
+      class Highlight < ApplicationClause
+        clause_order 12
+
         def initialize(fields: [], opening_tag: "<b>", closing_tag: "</b>")
           @fields = fields
           @opening_tag = opening_tag

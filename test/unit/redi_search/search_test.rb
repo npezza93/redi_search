@@ -46,7 +46,7 @@ module RediSearch
     def test_inspect_with_exception
       Client.new.
         stub(:call!,
-             ->(*) { raise(RedisClient::CommandError, "error") }) do |c|
+             ->(*) { raise(Redis::CommandError, "error") }) do |c|
         RediSearch.stub(:client, c) { assert_equal "error", search.inspect }
       end
     end

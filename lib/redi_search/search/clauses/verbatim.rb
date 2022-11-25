@@ -4,6 +4,8 @@ module RediSearch
   class Search
     module Clauses
       class Verbatim < ApplicationClause
+        clause_order 2
+
         def clause
           validate!
 

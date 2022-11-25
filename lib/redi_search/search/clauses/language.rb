@@ -5,6 +5,7 @@ module RediSearch
     module Clauses
       class Language < ApplicationClause
         clause_term :language, presence: true
+        clause_order 16
 
         def initialize(language:)
           @language = language

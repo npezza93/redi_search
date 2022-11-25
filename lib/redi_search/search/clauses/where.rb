@@ -39,7 +39,7 @@ module RediSearch
 
         def queryify_term
           if term.is_a? RediSearch::Search
-            "(#{term.term_clause})"
+            "(#{term.query})"
           else
             term.to_s
           end

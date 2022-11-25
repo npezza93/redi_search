@@ -48,7 +48,7 @@ module RediSearch
         end
 
         def test_where
-          @clause = Or.new(@search, nil, @search.term_clause)
+          @clause = Or.new(@search, nil, @search.query)
           @clause.where(first: "baz")
 
           assert_equal "`foo`|(@first:`baz`)", @clause.to_s

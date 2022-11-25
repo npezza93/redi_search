@@ -10,6 +10,7 @@ module RediSearch
         clause_term :offset, presence: true, numericality: {
           within: 0..Float::INFINITY, only_integer: true
         }
+        clause_order 22
 
         def initialize(total:, offset: 0)
           @total = total

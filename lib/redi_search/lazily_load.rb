@@ -74,7 +74,7 @@ module RediSearch
       execute unless loaded?
 
       yield
-    rescue RedisClient::CommandError => e
+    rescue Redis::CommandError => e
       e.message
     end
   end

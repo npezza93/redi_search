@@ -2,7 +2,7 @@
 
 require "delegate"
 require "forwardable"
-require "redis_client"
+require "redis"
 require "active_support/lazy_load_hooks"
 require "zeitwerk"
 
@@ -26,7 +26,7 @@ module RediSearch
     end
 
     def client
-      @client ||= Client.new(RedisClient.new(configuration.redis_config.to_h))
+      @client ||= Client.new(Redis.new(configuration.redis_config.to_h))
     end
 
     def env
