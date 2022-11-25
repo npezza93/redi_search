@@ -4,7 +4,7 @@ require "test_helper"
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class WhereTest < Minitest::Test
         def setup
           index = Index.new(:users) do

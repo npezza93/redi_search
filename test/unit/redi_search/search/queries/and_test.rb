@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "unit/redi_search/search/clauses/boolean_interface_test"
+require "unit/redi_search/search/queries/boolean_interface_test"
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class AndTest < Minitest::Test
         include BooleanInterfaceTest
 

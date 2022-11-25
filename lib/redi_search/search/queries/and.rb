@@ -2,7 +2,7 @@
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class And < Boolean
         private
 

@@ -2,7 +2,7 @@
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class Boolean
         extend Forwardable
 
@@ -65,7 +65,7 @@ module RediSearch
         end
 
         def queryify_search
-          if term.query.is_a?(RediSearch::Search::Clauses::Where)
+          if term.query.is_a?(RediSearch::Search::Queries::Where)
             term.query
           else
             "(#{term.query})"

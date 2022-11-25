@@ -4,7 +4,7 @@ require "test_helper"
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class BooleanTest < Minitest::Test
         def test_raises_not_implement_error_until_operand_is_overriden
           index = Index.new(:users) { text_field :first }

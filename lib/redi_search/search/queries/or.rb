@@ -2,7 +2,7 @@
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class Or < Boolean
         def where(**condition)
           @term = search.dup.where(**condition)

@@ -2,7 +2,7 @@
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       class Where
         extend Forwardable
 

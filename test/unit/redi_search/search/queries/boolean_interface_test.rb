@@ -4,7 +4,7 @@ require "test_helper"
 
 module RediSearch
   class Search
-    module Clauses
+    module Queries
       module BooleanInterfaceTest
         def test_respond_to_to_s
           assert_respond_to @clause, :to_s
