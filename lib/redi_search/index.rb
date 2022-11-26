@@ -14,6 +14,10 @@ module RediSearch
       Search.new(self, term, **term_options)
     end
 
+    def aggregate(term = nil, **term_options)
+      Aggregate.new(self, term, **term_options)
+    end
+
     def spellcheck(query, distance: 1)
       Spellcheck.new(self, query, distance: distance)
     end

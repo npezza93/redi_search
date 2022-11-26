@@ -39,6 +39,10 @@ module RediSearch
         search_index.search(term, **term_options)
       end
 
+      def aggregate(term = nil, **term_options)
+        search_index.aggregate(term, **term_options)
+      end
+
       def spellcheck(term, distance: 1)
         search_index.spellcheck(term, distance: distance)
       end

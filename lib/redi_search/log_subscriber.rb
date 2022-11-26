@@ -42,7 +42,7 @@ module RediSearch
     # rubocop:disable Metrics/MethodLength
     def action_color(action)
       case action.to_sym
-      when :search, :spellcheck then YELLOW
+      when :search, :spellcheck, :aggregate then YELLOW
       when :create, :hset then GREEN
       when :dropindex, :del then RED
       when :hgetall, :info then CYAN
