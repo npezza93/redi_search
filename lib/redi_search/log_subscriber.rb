@@ -36,7 +36,8 @@ module RediSearch
     private
 
     def log_name(event)
-      color("#{event.payload[:name]} (#{event.duration.round(1)}ms)", RED, bold: true)
+      color("#{event.payload[:name]} (#{event.duration.round(1)}ms)",
+            RED, bold: true)
     end
 
     # rubocop:disable Metrics/MethodLength
