@@ -18,6 +18,10 @@ module RediSearch
       self[name] || push(Schema::NumericField.new(name, ...))
     end
 
+    def vector_field(name, **options, &block)
+      self[name] || push(Schema::VectorField.new(name, ...))
+    end
+
     def tag_field(name, ...)
       self[name] || push(Schema::TagField.new(name, ...))
     end
@@ -29,6 +33,7 @@ module RediSearch
     def add_field(name, type, ...)
       case type
       when :text then method(:text_field)
+      when :vector then method(:vector_field)
       when :numeric then method(:numeric_field)
       when :tag then method(:tag_field)
       when :geo then method(:geo_field)
