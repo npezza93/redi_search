@@ -5,15 +5,11 @@ module RediSearch
     include Display
 
     class << self
-      def for_object(index, record, only: [], save: {})
+      def for_object(index, record, only: [])
         field_values = index.schema.fields.filter_map do |field|
           next unless only.empty? || only.include?(field.name)
           
-          if save.include?(field.name)
-            [field.name.to_s, save[field.name]]
-          else
-            [field.name.to_s, field.serialize(record)]
-          end
+          [field.name.to_s, field.serialize(record)]
         end.to_h
 
         new(index, record.id, field_values)
