@@ -59,7 +59,10 @@ module RediSearch
 
     module InstanceMethods
       def search_document(only: [], save: {})
-        Document.for_object(self.class.search_index, self, only: only, save: save)
+        Document.for_object(self.class.search_index, 
+                            self, 
+                            only: only, 
+                            save: save)
       end
 
       def remove_from_index
