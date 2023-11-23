@@ -91,9 +91,11 @@ module RediSearch
       info.num_docs.to_i
     end
 
+    # rubocop:disable Style/ArgumentsForwarding
     def add_field(name, type, **options, &block)
       AddField.new(self, name, type, **options, &block).call!
     end
+    # rubocop:enable Style/ArgumentsForwarding
 
     private
 
