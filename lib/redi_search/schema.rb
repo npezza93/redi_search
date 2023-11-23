@@ -10,29 +10,29 @@ module RediSearch
       instance_exec(&block)
     end
 
-    def text_field(name, **options, &block)
-      self[name] || push(Schema::TextField.new(name, **options, &block))
+    def text_field(name, ...)
+      self[name] || push(Schema::TextField.new(name, ...))
     end
 
-    def numeric_field(name, **options, &block)
-      self[name] || push(Schema::NumericField.new(name, **options, &block))
+    def numeric_field(name, ...)
+      self[name] || push(Schema::NumericField.new(name, ...))
     end
 
-    def tag_field(name, **options, &block)
-      self[name] || push(Schema::TagField.new(name, **options, &block))
+    def tag_field(name, ...)
+      self[name] || push(Schema::TagField.new(name, ...))
     end
 
-    def geo_field(name, **options, &block)
-      self[name] || push(Schema::GeoField.new(name, **options, &block))
+    def geo_field(name, ...)
+      self[name] || push(Schema::GeoField.new(name, ...))
     end
 
-    def add_field(name, type, **options, &block)
+    def add_field(name, type, ...)
       case type
       when :text then method(:text_field)
       when :numeric then method(:numeric_field)
       when :tag then method(:tag_field)
       when :geo then method(:geo_field)
-      end.call(name, **options, &block)
+      end.call(name, ...)
     end
 
     def to_a

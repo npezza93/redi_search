@@ -91,8 +91,8 @@ module RediSearch
       info.num_docs.to_i
     end
 
-    def add_field(name, type, **options, &block)
-      AddField.new(self, name, type, **options, &block).call!
+    def add_field(_name, _type, ...)
+      AddField.new(...).call!
     end
 
     private
