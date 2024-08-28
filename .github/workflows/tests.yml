@@ -13,17 +13,15 @@ jobs:
       matrix:
         ruby: [ '3.1', '3.2', '3.3' ]
         gemfile: [ 'Gemfile', 'gemfiles/activerecord_71.gemfile' ]
+    env:
+      BUNDLE_GEMFILE: ${{ github.workspace }}/${{ matrix.gemfile }}
     steps:
     - uses: actions/checkout@v4
     - name: Set up Ruby ${{ matrix.ruby }}
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
-        bundler-cache: false
-    - name: Install dependencies
-      run: |
-        gem install bundler --no-document
-        BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle install
+        bundler-cache: true
     - name: Run tests
       run: BUNDLE_GEMFILE=${{ matrix.gemfile }} bundle exec rake test:unit
   integration:
