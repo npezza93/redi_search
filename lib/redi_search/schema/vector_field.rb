@@ -16,20 +16,14 @@ module RediSearch
         @name = name
         @value_block = block
 
-        { algorithm:, count:, type:,
-          dim:, distance_metric:, initial_cap:,
-          block_size:, sortable:,
-          no_index: }.each do |attr, value|
+        { algorithm:, count:, type:, dim:, distance_metric:, initial_cap:,
+          block_size:, sortable:, no_index: }.each do |attr, value|
           instance_variable_set(:"@#{attr}", value)
         end
       end
 
       def to_a
-        query = [name.to_s, "VECTOR"]
-        query += [algorithm, count] if algorithm && count
-        query += ["TYPE", type] if type
-        query += ["DIM", dim] if dim
-        query += ["DISTANCE_METRIC", distance_metric] if distance_metric
+        query = [name.to_s, "VECTOR", *extra_clauses]
         query += ["INITIAL_CAP", initial_cap] if initial_cap
         query += ["BLOCK_SIZE", block_size] if block_size
         query += boolean_options_string
@@ -44,6 +38,16 @@ module RediSearch
 
       def boolean_options
         %i(sortable no_index)
+      end
+
+      def extra_clauses
+        query = []
+        query += [algorithm, count] if algorithm && count
+        query += ["TYPE", type] if type
+        query += ["DIM", dim] if dim
+        query += ["DISTANCE_METRIC", distance_metric] if distance_metric
+
+        query
       end
     end
   end

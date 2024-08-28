@@ -12,14 +12,14 @@ module RediSearch
 
         def test_clause
           assert_equal(
-            ["SORTBY", :field, :asc],
+            ["SORTBY", :field, :ASC],
             @clause.new(field: :field).clause
           )
         end
 
         def test_clause_with_desc_order
           assert_equal(
-            ["SORTBY", :field, :desc],
+            ["SORTBY", :field, :DESC],
             @clause.new(field: :field, order: :desc).clause
           )
         end
