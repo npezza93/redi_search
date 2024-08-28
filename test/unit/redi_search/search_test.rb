@@ -62,11 +62,11 @@ module RediSearch
     end
 
     def search_with_model
-      model = Minitest::Mock.new.expect(:where, active_record_relation_double,
-                                        [], id: ["1"])
-      Search.new(
-        Index.new(:users, model) { text_field :name }, "foo"
-      ).then { |search| yield search }
+      model = Minitest::Mock.new.expect(:in_order_of, 
+                                        active_record_relation_double, 
+                                        [:id, ["1"]])
+      Search.new(Index.new(:users, model) { text_field :name }, 
+                 "foo").then { |search| yield search }
 
       assert_mock model
     end
