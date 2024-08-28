@@ -31,6 +31,10 @@ module RediSearch
         add_to_clauses(Return.new(fields:))
       end
 
+      def params(*fields)
+        add_to_clauses(Params.new(fields:))
+      end
+
       def highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")
         add_to_clauses(Highlight.new(
           fields:, opening_tag:, closing_tag:
@@ -39,6 +43,10 @@ module RediSearch
 
       def slop(slop)
         add_to_clauses(Slop.new(slop:))
+      end
+
+      def dialect(dialect)
+        add_to_clauses(Dialect.new(dialect:))
       end
 
       def timeout(timeout)
