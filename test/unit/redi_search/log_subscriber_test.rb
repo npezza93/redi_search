@@ -107,7 +107,7 @@ module RediSearch
 
     def instrument(action, payload)
       @log_subscriber.action(Event.new(
-        0.9, name: "RediSearch", action: action, **payload
+        0.9, name: "RediSearch", action:, **payload
       ))
     end
   end

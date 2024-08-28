@@ -4,10 +4,10 @@ module RediSearch
   class Schema
     attr_reader :fields
 
-    def initialize(&block)
+    def initialize(&)
       @fields = []
 
-      instance_exec(&block)
+      instance_exec(&)
     end
 
     def text_field(name, ...)

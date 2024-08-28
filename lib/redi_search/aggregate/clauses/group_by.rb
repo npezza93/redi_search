@@ -21,53 +21,53 @@ module RediSearch
         end
 
         def count(as: nil)
-          self.reducer = Reducers::Count.new(as: as).tap(&:validate!)
+          self.reducer = Reducers::Count.new(as:).tap(&:validate!)
         end
 
         def distinct_count(property:, as: nil)
           self.reducer = Reducers::DistinctCount.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def distinctish_count(property:, as: nil)
           self.reducer = Reducers::DistinctishCount.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def sum(property:, as: nil)
           self.reducer = Reducers::Sum.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def min(property:, as: nil)
           self.reducer = Reducers::Min.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def max(property:, as: nil)
           self.reducer = Reducers::Max.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def average(property:, as: nil)
           self.reducer = Reducers::Average.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def stdev(property:, as: nil)
           self.reducer = Reducers::Stdev.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         def quantile(property:, quantile:, as: nil)
           self.reducer = Reducers::Quantile.new(
-            property: property, quantile: quantile, as: as
+            property:, quantile:, as:
           ).tap(&:validate!)
         end
 
         def to_list(property:, as: nil)
           self.reducer = Reducers::ToList.
-                         new(property: property, as: as).tap(&:validate!)
+                         new(property:, as:).tap(&:validate!)
         end
 
         private

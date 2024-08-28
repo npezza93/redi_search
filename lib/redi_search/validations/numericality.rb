@@ -36,7 +36,7 @@ module RediSearch
       end
 
       def validate_inclusion!(object)
-        Inclusion.new(field: field, within: within).validate!(object)
+        Inclusion.new(field:, within:).validate!(object)
       end
     end
   end

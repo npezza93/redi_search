@@ -48,9 +48,9 @@ module RediSearch
     def instrument(action, payload, &block)
       ActiveSupport::Notifications.instrument(
         "action.redi_search",
-        { name: "RediSearch", action: action, inside_pipeline: pipeline }.
+        { name: "RediSearch", action:, inside_pipeline: pipeline }.
           merge(payload),
-        &Proc.new(&(block || proc {}))
+        &Proc.new(&block || proc {})
       )
     end
   end

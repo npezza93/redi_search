@@ -4,9 +4,9 @@ module RediSearch
   class Index
     attr_reader :name, :schema, :model
 
-    def initialize(name, model = nil, &schema)
+    def initialize(name, model = nil, &)
       @name = name.to_s
-      @schema = Schema.new(&schema)
+      @schema = Schema.new(&)
       @model = model
     end
 
@@ -19,7 +19,7 @@ module RediSearch
     end
 
     def spellcheck(query, distance: 1)
-      Spellcheck.new(self, query, distance: distance)
+      Spellcheck.new(self, query, distance:)
     end
 
     def create(**options)
@@ -31,7 +31,7 @@ module RediSearch
     end
 
     def drop(keep_docs: false)
-      drop!(keep_docs: keep_docs)
+      drop!(keep_docs:)
     rescue Redis::CommandError
       false
     end
@@ -92,8 +92,8 @@ module RediSearch
     end
 
     # rubocop:disable Style/ArgumentsForwarding
-    def add_field(name, type, **options, &block)
-      AddField.new(self, name, type, **options, &block).call!
+    def add_field(name, type, **options, &)
+      AddField.new(self, name, type, **options, &).call!
     end
     # rubocop:enable Style/ArgumentsForwarding
 

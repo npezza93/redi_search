@@ -26,9 +26,9 @@ Gem::Specification.new do |spec|
     "changelog_uri" => "https://github.com/npezza93/redi_search/releases",
   }
 
-  spec.required_ruby_version = ">= 3.0"
+  spec.required_ruby_version = ">= 3.1"
 
-  spec.add_runtime_dependency "activesupport", ">= 5.1", "< 8.0"
-  spec.add_runtime_dependency "redis", ">= 4.0", "< 6.0"
-  spec.add_runtime_dependency "zeitwerk"
+  spec.add_dependency "activesupport", "< 9.0"
+  spec.add_dependency "redis", ">= 4.0"
+  spec.add_dependency "zeitwerk"
 end

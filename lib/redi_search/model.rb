@@ -10,11 +10,11 @@ module RediSearch
       attr_reader :search_index
 
       # rubocop:disable Metrics/MethodLength
-      def redi_search(**options, &schema)
+      def redi_search(**options, &)
         @search_index = Index.new(
           [options[:index_prefix], model_name.plural, RediSearch.env].
             compact.join("_"),
-          self, &schema
+          self, &
         )
         register_search_commit_hooks
 
@@ -44,14 +44,14 @@ module RediSearch
       end
 
       def spellcheck(term, distance: 1)
-        search_index.spellcheck(term, distance: distance)
+        search_index.spellcheck(term, distance:)
       end
 
       def reindex(recreate: false, only: [], batch_size: 1000)
-        search_import.find_in_batches(batch_size: batch_size).all? do |group|
+        search_import.find_in_batches(batch_size:).all? do |group|
           search_index.reindex(
-            group.map { |record| record.search_document(only: only) },
-            recreate: recreate
+            group.map { |record| record.search_document(only:) },
+            recreate:
           )
         end
       end
@@ -59,7 +59,7 @@ module RediSearch
 
     module InstanceMethods
       def search_document(only: [])
-        Document.for_object(self.class.search_index, self, only: only)
+        Document.for_object(self.class.search_index, self, only:)
       end
 
       def remove_from_index

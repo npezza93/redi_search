@@ -28,21 +28,21 @@ module RediSearch
       end
 
       def return(*fields)
-        add_to_clauses(Return.new(fields: fields))
+        add_to_clauses(Return.new(fields:))
       end
 
       def highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")
         add_to_clauses(Highlight.new(
-          fields: fields, opening_tag: opening_tag, closing_tag: closing_tag
+          fields:, opening_tag:, closing_tag:
         ))
       end
 
       def slop(slop)
-        add_to_clauses(Slop.new(slop: slop))
+        add_to_clauses(Slop.new(slop:))
       end
 
       def timeout(timeout)
-        add_to_clauses(Timeout.new(timeout: timeout))
+        add_to_clauses(Timeout.new(timeout:))
       end
 
       def in_order
@@ -50,15 +50,15 @@ module RediSearch
       end
 
       def language(language)
-        add_to_clauses(Language.new(language: language))
+        add_to_clauses(Language.new(language:))
       end
 
       def sort_by(field, order: :asc)
-        add_to_clauses(SortBy.new(field: field, order: order))
+        add_to_clauses(SortBy.new(field:, order:))
       end
 
       def limit(total, offset = 0)
-        add_to_clauses(Limit.new(total: total, offset: offset))
+        add_to_clauses(Limit.new(total:, offset:))
       end
 
       def count

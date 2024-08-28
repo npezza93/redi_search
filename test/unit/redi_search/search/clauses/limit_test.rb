@@ -29,7 +29,7 @@ module RediSearch
         def test_invalid_offset
           [nil, -1, 10.5].each do |offset|
             assert_raises(ValidationError) do
-              @clause.new(total: 1, offset: offset).clause
+              @clause.new(total: 1, offset:).clause
             end
           end
         end

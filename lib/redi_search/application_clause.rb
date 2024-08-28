@@ -27,9 +27,9 @@ module RediSearch
 
       def define_validation(term, type, options)
         if options.is_a? Hash
-          public_send("validates_#{type}_of", term, **options)
+          public_send(:"validates_#{type}_of", term, **options)
         else
-          public_send("validates_#{type}_of", term)
+          public_send(:"validates_#{type}_of", term)
         end
       end
     end

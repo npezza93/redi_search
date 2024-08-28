@@ -26,18 +26,18 @@ module RediSearch
     end
 
     def load(*fields)
-      add_to_clauses(Clauses::Load.new(fields: fields))
+      add_to_clauses(Clauses::Load.new(fields:))
     end
 
     def group_by(*fields)
-      add_to_clauses(Clauses::GroupBy.new(fields: fields))
+      add_to_clauses(Clauses::GroupBy.new(fields:))
     end
 
     def count(as: nil)
       clause = clauses.reverse.find { |cl| cl.is_a?(Clauses::GroupBy) } ||
         raise(MissingGroupByClause, "call group_by first")
 
-      clause.count(as: as)
+      clause.count(as:)
       self
     end
 
@@ -45,7 +45,7 @@ module RediSearch
       clause = clauses.reverse.find { |cl| cl.is_a?(Clauses::GroupBy) } ||
         raise(MissingGroupByClause, "call group_by first")
 
-      clause.count(property: property, quantile: quantile, as: as)
+      clause.count(property:, quantile:, as:)
 
       self
     end
@@ -56,25 +56,25 @@ module RediSearch
         clause = clauses.reverse.find { |cl| cl.is_a?(Clauses::GroupBy) } ||
           raise(MissingGroupByClause, "call group_by first")
 
-        clause.public_send(reducer, property: property, as: as)
+        clause.public_send(reducer, property:, as:)
         self
       end
     end
 
     def sort_by(*fields)
-      add_to_clauses(Clauses::SortBy.new(fields: fields))
+      add_to_clauses(Clauses::SortBy.new(fields:))
     end
 
     def apply(expression, as:)
-      add_to_clauses(Clauses::Apply.new(expression: expression, as: as))
+      add_to_clauses(Clauses::Apply.new(expression:, as:))
     end
 
     def filter(expression)
-      add_to_clauses(Clauses::Filter.new(expression: expression))
+      add_to_clauses(Clauses::Filter.new(expression:))
     end
 
     def limit(total, offset = 0)
-      add_to_clauses(Clauses::Limit.new(total: total, offset: offset))
+      add_to_clauses(Clauses::Limit.new(total:, offset:))
     end
 
     private

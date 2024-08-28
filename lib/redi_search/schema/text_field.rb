@@ -8,9 +8,9 @@ module RediSearch
         @name = name
         @value_block = block
 
-        { weight: weight, phonetic: phonetic, sortable: sortable,
-          no_index: no_index, no_stem: no_stem }.each do |attr, value|
-            instance_variable_set("@#{attr}", value)
+        { weight:, phonetic:, sortable:,
+          no_index:, no_stem: }.each do |attr, value|
+            instance_variable_set(:"@#{attr}", value)
           end
       end
 

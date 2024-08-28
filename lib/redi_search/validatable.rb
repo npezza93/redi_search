@@ -15,14 +15,14 @@ module RediSearch
       def validates_inclusion_of(field, within:, **options)
         self.validations = [
           *validations.to_a,
-          Validations::Inclusion.new(field: field, within: within, **options)
+          Validations::Inclusion.new(field:, within:, **options)
         ]
       end
 
       def validates_presence_of(field)
         self.validations = [
           *validations.to_a,
-          Validations::Presence.new(field: field)
+          Validations::Presence.new(field:)
         ]
       end
 
@@ -30,7 +30,7 @@ module RediSearch
         self.validations = [
           *validations.to_a,
           Validations::Numericality.new(
-            field: field, within: within, **options
+            field:, within:, **options
           )
         ]
       end
