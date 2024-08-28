@@ -8,7 +8,7 @@ module RediSearch
       def for_object(index, record, only: [])
         field_values = index.schema.fields.filter_map do |field|
           next unless only.empty? || only.include?(field.name)
-          
+
           [field.name.to_s, field.serialize(record)]
         end.to_h
 

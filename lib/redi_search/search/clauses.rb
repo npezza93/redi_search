@@ -32,7 +32,7 @@ module RediSearch
       end
 
       def params(*fields)
-        add_to_clauses(Params.new(fields: fields))
+        add_to_clauses(Params.new(fields:))
       end
 
       def highlight(fields: [], opening_tag: "<b>", closing_tag: "</b>")
@@ -46,7 +46,7 @@ module RediSearch
       end
 
       def dialect(dialect)
-        add_to_clauses(Dialect.new(dialect: dialect))
+        add_to_clauses(Dialect.new(dialect:))
       end
 
       def timeout(timeout)

@@ -3,24 +3,24 @@
 module RediSearch
   class Schema
     class VectorField < Field
-      def initialize(name, 
-                     algorithm: "FLAT", 
-                     count: 0, 
-                     type: "FLOAT32", 
-                     dim: 0, 
-                     distance_metric: "COSINE", 
-                     initial_cap: 0, 
-                     block_size: 1024, 
-                     sortable: false, 
+      def initialize(name,
+                     algorithm: "FLAT",
+                     count: 0,
+                     type: "FLOAT32",
+                     dim: 0,
+                     distance_metric: "COSINE",
+                     initial_cap: 0,
+                     block_size: 1024,
+                     sortable: false,
                      no_index: false, &block)
         @name = name
         @value_block = block
 
-        { algorithm: algorithm, count: count, type: type,
-          dim: dim, distance_metric: distance_metric, initial_cap: initial_cap,
-          block_size: block_size, sortable: sortable, 
-          no_index: no_index }.each do |attr, value|
-          instance_variable_set("@#{attr}", value)
+        { algorithm:, count:, type:,
+          dim:, distance_metric:, initial_cap:,
+          block_size:, sortable:,
+          no_index: }.each do |attr, value|
+          instance_variable_set(:"@#{attr}", value)
         end
       end
 
@@ -39,15 +39,8 @@ module RediSearch
 
       private
 
-      attr_reader :algorithm,
-                  :count,
-                  :type,
-                  :dim,
-                  :distance_metric,
-                  :initial_cap,
-                  :block_size,
-                  :sortable, 
-                  :no_index
+      attr_reader :algorithm, :count, :type, :dim, :distance_metric,
+                  :initial_cap, :block_size, :sortable, :no_index
 
       def boolean_options
         %i(sortable no_index)

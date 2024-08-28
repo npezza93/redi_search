@@ -18,7 +18,7 @@ module RediSearch
       self[name] || push(Schema::NumericField.new(name, ...))
     end
 
-    def vector_field(name, **options, &block)
+    def vector_field(name, ...)
       self[name] || push(Schema::VectorField.new(name, ...))
     end
 
@@ -30,7 +30,7 @@ module RediSearch
       self[name] || push(Schema::GeoField.new(name, ...))
     end
 
-    def add_field(name, type, ...)
+    def add_field(name, type, ...) # rubocop:disable Metrics/MethodLength
       case type
       when :text then method(:text_field)
       when :vector then method(:vector_field)
